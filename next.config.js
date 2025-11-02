@@ -3,7 +3,7 @@
 module.exports = {
   reactStrictMode: true,
   experimental: {
-    runtime: "experimental-edge"
+    runtime: 'experimental-edge'
   },
   async rewrites() {
     return [
@@ -12,7 +12,7 @@ module.exports = {
         destination: 'https://api.heygen.com/v1/:path*'
       }
     ]
-  },    
+  },
   images: {
     remotePatterns: [
       {
@@ -20,6 +20,12 @@ module.exports = {
         hostname: 'avatars.githubusercontent.com',
         port: '',
         pathname: '**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'coin-images.coingecko.com',
+        port: '',
+        pathname: '/coins/images/**'
       }
     ]
   }
