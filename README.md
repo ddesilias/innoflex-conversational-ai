@@ -1,3 +1,17 @@
+# Trade Mentor
+
+Application Next.js et TypeScript avec chat IA, pages de données de marché, journal de trading et intégration d’avatar. Les fonctionnalités disponibles dépendent de la branche et des services configurés.
+
+## Technologies
+
+Next.js · React · Vercel AI SDK · NextAuth · Prisma · Tailwind CSS.
+
+## Provenance et installation
+
+Ce projet adapte le template **AI Chatbot de Vercel**. Sa documentation et ses crédits d’origine sont conservés ci-dessous ; consulter aussi [LICENSE](LICENSE).
+
+---
+
 <a href="https://chat.vercel.ai/">
   <img alt="Next.js 14 and App Router-ready AI chatbot." src="https://chat.vercel.ai/opengraph-image.png">
   <h1 align="center">Next.js AI Chatbot</h1>
