@@ -6,7 +6,7 @@ import { Session } from '@/lib/types'
 import { getMissingKeys } from '@/app/actions'
 
 export const metadata = {
-  title: 'Next.js AI Chatbot'
+  title: { absolute: 'Trade Mentor — Assistant IA' }
 }
 
 export default async function IndexPage() {
