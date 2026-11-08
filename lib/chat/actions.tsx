@@ -1,3 +1,4 @@
+import { reserveUsage } from '@/lib/security/usage'
 import 'server-only'
 
 import {
@@ -109,6 +110,11 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
 async function submitUserMessage(content: string) {
   'use server'
 
+  const session = await auth()
+  if (!session?.user?.id) throw new Error('Unauthorized')
+  if (typeof content !== 'string' || !content.trim() || content.length > 8000) throw new Error('Invalid message')
+  await reserveUsage(session.user.id, 'ai')
+
   const aiState = getMutableAIState<typeof AI>()
 
   aiState.update({
@@ -128,6 +134,7 @@ async function submitUserMessage(content: string) {
 
   const result = await streamUI({
     model: openai('gpt-3.5-turbo'),
+    maxTokens: 1024,
     initial: <SpinnerMessage />,
     system: `\
     You are a stock trading conversation bot and you can help users buy stocks, step by step.

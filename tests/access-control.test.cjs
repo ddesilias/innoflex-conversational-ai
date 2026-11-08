@@ -53,10 +53,31 @@ test('anonymous avatar requests never call a paid provider', async () => {
     let calls = 0
     const { POST } = load(`app/avatar/api/${route}/route.ts`, {
       '@/auth': { auth: async () => null },
+      '@/lib/security/usage': { reserveUsage: async () => {} },
+      '@/lib/security/quota': load('lib/security/quota.ts', {}),
+      zod: require('zod'),
       '@ai-sdk/openai': { openai: () => { calls++; throw Error('Provider called') } },
       ai: { streamText: () => { calls++; throw Error('Provider called') } }
     })
     assert.equal((await POST()).status, 401)
     assert.equal(calls, 0)
+  }
+})
+test('exhausted avatar quotas return 429 before any provider call', async () => {
+  const quota = load('lib/security/quota.ts', {})
+  for (const route of ['chat', 'get-access-token']) {
+    let providers = 0
+    const { POST } = load(`app/avatar/api/${route}/route.ts`, {
+      '@/auth': { auth: async () => ({ user: { id: 'alice' } }) },
+      '@/lib/security/usage': { reserveUsage: async () => { throw new quota.QuotaError(429, 60) } },
+      '@/lib/security/quota': quota,
+      zod: require('zod'),
+      '@ai-sdk/openai': { openai: () => { providers++; throw Error('Must not run') } },
+      ai: { streamText: () => { providers++; throw Error('Must not run') } }
+    })
+    const response = await POST({ text: async () => JSON.stringify({ messages: [{ role: 'user', content: 'Hello' }] }) })
+    assert.equal(response.status, 429)
+    assert.equal(response.headers.get('retry-after'), '60')
+    assert.equal(providers, 0)
   }
 })

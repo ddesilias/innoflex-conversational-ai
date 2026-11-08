@@ -69,3 +69,15 @@ POST /api/billing/portal exige une session et une origine conforme, vérifie le 
 35 tests passent, TypeScript et lint des composants modifiés passent. Revue React : composant serveur pour l’accès, SDK Stripe hors du bundle client, nettoyage de la requête au démontage, boutons natifs avec états désactivés et message de statut accessible. Les interactions navigateur avec Stripe restent à valider sur une préproduction configurée.
 
 Compilation Next.js réussie avec /billing et les routes checkout, portal, status et webhook. Les avertissements préexistants et l’échec DNS CoinGecko restent visibles pendant la génération ; aucune certification de santé globale n’est déclarée.
+
+## Rafraîchissement des droits et quotas pilote
+
+La consultation du statut relit l’abonnement côté Stripe lorsque le snapshot a au moins dix minutes. Le chemin utilise le même verrou et la même écriture atomique que les webhooks, vérifie la liaison de l’utilisateur et n’invente pas de premier abonnement si son webhook manque. Après quinze minutes, un miroir non rafraîchi ne donne aucun droit. Ce mécanisme est à la demande ; aucun ordonnanceur de fond n’est installé et les fonctionnalités IA n’ont pas encore de différenciation commerciale par offre.
+
+Les appels du chat principal et du chat avatar partagent un compteur journalier par utilisateur. Les jetons avatar ont un compteur séparé. Les limites AI_DAILY_REQUEST_LIMIT et AVATAR_DAILY_TOKEN_LIMIT sont obligatoires, entières et comprises entre 1 et 10000 ; aucun volume commercial n’est présumé. Si la configuration ou Redis manque, aucun appel fournisseur n’est autorisé. Un dépassement HTTP renvoie 429 avec Retry-After. Le jour UTC et l’expiration viennent de l’horloge Redis.
+
+Une tentative réservée reste comptée si le fournisseur échoue : ce compteur limite les requêtes, pas les factures ou les tokens réellement consommés. Il ne constitue pas un budget financier ni une protection contre des comptes multiples. Les réponses chat sont limitées à 1024 tokens. Les messages avatar ont des limites de taille et de rôles ; la validation complète de tous les parcours reste à poursuivre.
+
+Validation : 43 tests locaux passent, plus 5 tests d’intégration sur Redis 7 réel dans un conteneur Docker sans ports/volumes, supprimé après exécution. Ces tests couvrent quotas concurrents, changement de jour, concurrence sur la propriété des chats, conflit de liaison client et écriture protégée par le jeton de verrou. Ils ne remplacent pas la validation du Redis managé de préproduction et de ses règles multi-clés. TypeScript passe. Commande reproductible : npm run test:redis (Docker nécessaire).
+
+Compilation Next.js réussie après ajout des quotas et du rafraîchissement. Les avertissements existants et les erreurs réseau CoinGecko restent à traiter séparément.
