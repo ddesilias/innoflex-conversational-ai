@@ -17,8 +17,11 @@ function load(file, mocks) {
 function actions(user, owner = 'bob') {
   const writes = [], reads = []
   const pipeline = { hmset: (...x) => writes.push(x), zadd: (...x) => writes.push(x), exec: async () => [] }
-  const kv = { hgetall: async key => { reads.push(key); return owner ? { id: 'private', userId: owner } : null }, pipeline: () => pipeline }
-  return { api: load('app/actions.ts', { 'next/cache': {}, 'next/navigation': {}, '@vercel/kv': { kv }, '@/auth': { auth: async () => user ? { user: { id: user } } : null } }), reads, writes }
+  const kv = { hgetall: async key => { reads.push(key); return owner ? { id: 'private', userId: owner } : null }, pipeline: () => pipeline, eval: async (script, keys, args) => {
+    if (owner && owner !== args[0]) return 0
+    writes.push([keys[0], { path: args[4] }]); return 1
+  } }
+  return { api: load('app/actions.ts', { 'next/cache': {}, 'next/navigation': {}, '@vercel/kv': { kv }, '@/lib/security/save-chat': load('lib/security/save-chat.ts', {}), '@/auth': { auth: async () => user ? { user: { id: user } } : null } }), reads, writes }
 }
 test('anonymous and forged identities cannot read private chats', async () => {
   for (const user of [null, 'alice']) {
@@ -39,7 +42,7 @@ test('forged ownership and overwriting another user chat are refused', async () 
     assert.equal(writes.length, 0)
   }
 })
-test('new chat uses server path and does not accept forged sharing metadata', async () => {
+test('new chat sends server path and excludes client sharing fields from persistence', async () => {
   const { api, writes } = actions('alice', null)
   await api.saveChat({ id: 'new', userId: 'alice', path: '/forged', sharePath: '/share/new', messages: [] })
   assert.equal(writes[0][1].path, '/chat/new')

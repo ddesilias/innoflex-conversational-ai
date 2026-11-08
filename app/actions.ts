@@ -6,6 +6,7 @@ import { kv } from '@vercel/kv'
 
 import { auth } from '@/auth'
 import { type Chat } from '@/lib/types'
+import { saveChatScript } from '@/lib/security/save-chat'
 
 export async function getChats(userId?: string | null) {
   const session = await auth()
@@ -138,22 +139,13 @@ export async function saveChat(chat: Chat) {
   if (!session?.user?.id || chat.userId !== session.user.id) {
     return { error: 'Unauthorized' }
   }
-  const existing = await kv.hgetall<Chat>(`chat:${chat.id}`)
-  if (existing && existing.userId !== session.user.id) {
-    return { error: 'Unauthorized' }
-  }
-  // Do not let a client overwrite server-controlled sharing or ownership fields.
-  const payload = {
-    id: chat.id, title: chat.title, createdAt: existing?.createdAt ?? chat.createdAt,
-    userId: session.user.id, path: `/chat/${chat.id}`, messages: chat.messages,
-    ...(existing?.sharePath ? { sharePath: existing.sharePath } : {})
-  }
-  const pipeline = kv.pipeline()
-  pipeline.hmset(`chat:${chat.id}`, payload)
-  pipeline.zadd(`user:chat:${session.user.id}`, {
-    score: Date.now(), member: `chat:${chat.id}`
-  })
-  await pipeline.exec()
+  // Keep ownership check and writes together, including when an ID is first claimed.
+  const saved = await kv.eval(saveChatScript,
+    [`chat:${chat.id}`, `user:chat:${session.user.id}`],
+    [session.user.id, chat.id, chat.title, JSON.stringify(chat.createdAt),
+      `/chat/${chat.id}`, JSON.stringify(chat.messages), Date.now()]
+  )
+  if (saved !== 1) return { error: 'Unauthorized' }
 }
 
 export async function refreshHistory(path: string) {
