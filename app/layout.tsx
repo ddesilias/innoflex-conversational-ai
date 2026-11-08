@@ -13,8 +13,8 @@ export const metadata = {
     ? new URL(`https://${process.env.VERCEL_URL}`)
     : undefined,
   title: {
-    default: 'Trade Mentor — Assistant IA',
-    template: '%s | Trade Mentor'
+    default: 'INNOFLEX Conversational AI — Assistant IA',
+    template: '%s | INNOFLEX Conversational AI'
   },
   description: 'Assistant IA et espace de travail pour explorer les données de marché, les actualités et un journal de trading.',
   icons: {
