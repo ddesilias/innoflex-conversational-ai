@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useId } from 'react'
 import { scaleLinear } from 'd3-scale'
 import { subMonths, format } from 'date-fns'
 import { useResizeObserver } from 'usehooks-ts'
-import { useAIState } from 'ai/rsc'
+import { useAIState } from '@ai-sdk/rsc'
 
 interface Stock {
   symbol: string

@@ -1,6 +1,6 @@
 'use client'
 
-import { useActions, useUIState } from 'ai/rsc'
+import { useActions, useUIState } from '@ai-sdk/rsc'
 
 import type { AI } from '@/lib/chat/actions'
 

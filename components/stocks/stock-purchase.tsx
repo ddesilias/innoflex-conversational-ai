@@ -1,7 +1,7 @@
 'use client'
 
 import { useId, useState } from 'react'
-import { useActions, useAIState, useUIState } from 'ai/rsc'
+import { useActions, useAIState, useUIState } from '@ai-sdk/rsc'
 import { formatNumber } from '@/lib/utils'
 
 import type { AI } from '@/lib/chat/actions'

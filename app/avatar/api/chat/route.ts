@@ -1,3 +1,4 @@
+import { configuredModel } from '@/lib/ai/config';
 import { reserveUsage } from '@/lib/security/usage';
 import { QuotaError } from '@/lib/security/quota';
 import { z } from 'zod';
@@ -21,6 +22,9 @@ export async function POST(req: Request) {
       role: z.enum(['user', 'assistant']), content: z.string().min(1).max(8000)
     })).min(1).max(40) }).parse(JSON.parse(text)).messages;
   } catch { return new Response('Invalid messages', { status: 400 }); }
+  let model: string;
+  try { model = configuredModel(process.env.OPENAI_CHAT_MODEL); }
+  catch { return new Response('Chat unavailable', { status: 503 }); }
   try { await reserveUsage(session.user.id, 'ai'); }
   catch (error) {
     const status = error instanceof QuotaError ? error.status : 503;
@@ -30,10 +34,10 @@ export async function POST(req: Request) {
   }
 
   const result = await streamText({
-    model: openai("gpt-4-turbo"),
+    model: openai(model),
     messages,
-    maxTokens: 1024,
+    maxOutputTokens: 1024,
   });
 
-  return result.toAIStreamResponse();
+  return result.toTextStreamResponse();
 }

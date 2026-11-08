@@ -52,7 +52,7 @@ export default async function CoinsListWithMarketData(currency: string) {
    return validatedData
  } catch (error) {
    if (error instanceof z.ZodError) {
-     console.error('Erreur de validation :', error.errors)
+     console.error('Erreur de validation :', error.issues)
    } else {
      console.error('Erreur de requête API :', error)
    }

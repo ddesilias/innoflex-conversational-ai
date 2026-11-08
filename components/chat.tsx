@@ -1,7 +1,7 @@
 'use client'
 import { useLocalStorage } from '@/lib/hooks/use-local-storage'
 import { useEffect } from 'react'
-import { useUIState, useAIState } from 'ai/rsc'
+import { useUIState, useAIState } from '@ai-sdk/rsc'
 import { Message, Session } from '@/lib/types'
 import { usePathname, useRouter } from 'next/navigation'
 import { useScrollAnchor } from '@/lib/hooks/use-scroll-anchor'

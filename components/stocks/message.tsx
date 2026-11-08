@@ -7,7 +7,7 @@ import { CodeBlock } from '../ui/codeblock'
 import { MemoizedReactMarkdown } from '../markdown'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
-import { StreamableValue, useStreamableValue } from 'ai/rsc'
+import { StreamableValue, useStreamableValue } from '@ai-sdk/rsc'
 import { useStreamableText } from '@/lib/hooks/use-streamable-text'
 
 

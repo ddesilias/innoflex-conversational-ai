@@ -2,7 +2,7 @@ import React from 'react'
 import { Input, Spinner, Tooltip } from '@nextui-org/react'
 import { Airplane, ArrowRight, PaperPlaneRight } from '@phosphor-icons/react'
 import clsx from 'clsx'
-import { useAIState, useActions, useUIState } from 'ai/rsc'
+import { useAIState, useActions, useUIState } from '@ai-sdk/rsc'
 import { UserMessage } from '../stocks/message'
 interface StreamingAvatarTextInputProps {
   label: string

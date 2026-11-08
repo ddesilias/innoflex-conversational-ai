@@ -14,19 +14,13 @@ import {
 } from '@nextui-org/react'
 import { Microphone, MicrophoneStage } from '@phosphor-icons/react'
 import clsx from 'clsx'
-import OpenAI from 'openai'
 import { useEffect, useRef, useState } from 'react'
 import InteractiveAvatarTextInput from './interactive-avatar-text-input'
-import { useActions, useUIState } from 'ai/rsc'
+import { useActions, useUIState } from '@ai-sdk/rsc'
 import type { AI } from '@/lib/chat/actions'
 import { Message, Session } from '@/lib/types'
 import { EmptyScreen } from '@/components/empty-screen'
 import { ChatList } from '@/components/chat-list'
-const openai = new OpenAI({
-  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true
-})
-
 export default function InteractiveAvatar({
   aiMessage,
   messages,
@@ -223,7 +217,7 @@ export default function InteractiveAvatar({
         }
         mediaRecorder.current.onstop = () => {
           const audioBlob = new Blob(audioChunks.current, {
-            type: 'audio/wav'
+            type: mediaRecorder.current?.mimeType || 'audio/webm'
           })
           audioChunks.current = []
           transcribeAudio(audioBlob)
@@ -245,18 +239,15 @@ export default function InteractiveAvatar({
 
   async function transcribeAudio(audioBlob: Blob) {
     try {
-      // Convert Blob to File
-      const audioFile = new File([audioBlob], 'recording.wav', {
-        type: 'audio/wav'
+      if (audioBlob.size > 2 * 1024 * 1024) throw new Error('Recording too large')
+      const response = await fetch('/avatar/api/transcribe', {
+        method: 'POST', headers: { 'Content-Type': audioBlob.type || 'audio/webm' }, body: audioBlob
       })
-      const response = await openai.audio.transcriptions.create({
-        model: 'whisper-1',
-        file: audioFile
-      })
-      const transcription = response.text
-      console.log('Transcription: ', transcription)
+      if (!response.ok) throw new Error('Transcription unavailable')
+      const result = await response.json()
+      setText(result.text)
     } catch (error) {
-      console.error('Error transcribing audio:', error)
+      setDebug('Transcription indisponible. Réessayez avec un enregistrement plus court.')
     }
   }
 
