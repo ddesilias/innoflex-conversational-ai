@@ -32,3 +32,9 @@ La présence passée d’une clé publique réelle et l’état des anciens dép
 Le rapport JSON contient une empreinte de package.json et pnpm-lock.yaml. Le dashboard invalide les compteurs si elle ne correspond plus aux fichiers locaux.
 
 Sources : [avis Next.js](https://github.com/advisories/GHSA-2464-fhr4-w9xw), [avis Auth.js](https://github.com/advisories/GHSA-8fpg-xm3f-6cx3), [avis jsondiffpatch](https://github.com/advisories/GHSA-j4fx-xxwh-2485), [avis Zod](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5), [migration RSC vers UI](https://ai-sdk.dev/docs/ai-sdk-rsc/migrating-to-ui).
+
+## Comptes utilisateurs
+
+Le stockage des nouveaux mots de passe utilise désormais scrypt asynchrone (N=131072, r=8, p=1), un sel aléatoire et une comparaison en temps constant. Les comptes SHA-256 existants migrent lors d’une connexion correcte ; un script Redis compare l’identité et l’ancienne empreinte avant toute mise à jour. La création est atomique. Les fonctions de lecture/création du stockage ne sont plus des actions serveur publiques ; la session reçoit uniquement l’identifiant et l’adresse du compte. Les nouvelles inscriptions exigent 12 à 256 caractères.
+
+Cette étape porte la validation à 56 tests et 7 tests Redis isolés, avec TypeScript et compilation réussis. Le contrôle des tentatives répétées, la récupération de compte et les parcours réels restent à traiter. Voir [la préparation commerciale](../COMMERCIAL-READINESS.md). Aucun compte réel n’a été migré pendant ces tests.

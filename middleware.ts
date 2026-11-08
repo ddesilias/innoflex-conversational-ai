@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-export { auth } from 'auth'
 
 export async function middleware(req: NextRequest) {
   // Authentification

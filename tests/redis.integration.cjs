@@ -12,9 +12,10 @@ let container
 function load(file) {
   const output = {}
   vm.runInNewContext(ts.transpileModule(fs.readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText,
-    { exports: output, require: name => { if (name === '@vercel/kv') return { kv: {} }; throw Error(name) } })
+    { exports: output, require: name => { if (name === 'server-only') return {}; if (name === 'node:crypto') return require('node:crypto'); if (name === './password') return {}; if (name === '@vercel/kv') return { kv: {} }; throw Error(name) } })
   return output
 }
+const { createAccountScript, upgradePasswordScript } = load('lib/accounts/store.ts')
 const { quotaScript } = load('lib/security/quota.ts')
 const { saveChatScript } = load('lib/security/save-chat.ts')
 const { bindCustomerScript } = load('lib/billing/customer-store.ts')
@@ -71,4 +72,22 @@ test('expired reconciliation lease cannot write or mark an event processed', asy
   assert.equal(await evaluate(commitBillingScript, keys, ['new-worker', JSON.stringify(snapshot)]), 1)
   assert.equal(JSON.parse(await redis('GET', keys[3])).subscriptionId, 'sub_test')
   assert.equal(await redis('GET', keys[2]), '1')
+})
+
+test('concurrent account creation never overwrites the winning identity', async () => {
+  const create = id => evaluate(createAccountScript, ['user:race@example.test'], [id, 'race@example.test', `hash-${id}`, `salt-${id}`])
+  const results = await Promise.all([create('alice'), create('bob')])
+  assert.equal(results.filter(result => result === 1).length, 1)
+  const owner = await redis('HGET', 'user:race@example.test', 'id')
+  assert.equal(await redis('HGET', 'user:race@example.test', 'password'), `hash-${owner}`)
+})
+test('password upgrades compare identity and old credentials atomically', async () => {
+  const key = 'user:upgrade@example.test'
+  await redis('HSET', key, 'id', 'alice', 'password', 'old', 'salt', 'old-salt')
+  assert.equal(await evaluate(upgradePasswordScript, [key], ['bob', 'old', 'old-salt', 'new', 'new-salt']), 0)
+  assert.equal(await evaluate(upgradePasswordScript, [key], ['alice', 'wrong', 'old-salt', 'new', 'new-salt']), 0)
+  assert.equal(await redis('HGET', key, 'password'), 'old')
+  assert.equal(await evaluate(upgradePasswordScript, [key], ['alice', 'old', 'old-salt', 'new', 'new-salt']), 1)
+  assert.equal(await evaluate(upgradePasswordScript, [key], ['alice', 'old', 'old-salt', 'stale', 'stale-salt']), 0)
+  assert.equal(await redis('HGET', key, 'password'), 'new')
 })

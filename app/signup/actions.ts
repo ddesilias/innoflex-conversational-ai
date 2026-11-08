@@ -1,40 +1,10 @@
 'use server'
 
 import { signIn } from '@/auth'
-import { ResultCode, getStringFromBuffer } from '@/lib/utils'
+import { ResultCode } from '@/lib/utils'
 import { z } from 'zod'
-import { kv } from '@vercel/kv'
-import { getUser } from '../login/actions'
+import { createAccount } from '@/lib/accounts/store'
 import { AuthError } from 'next-auth'
-
-export async function createUser(
-  email: string,
-  hashedPassword: string,
-  salt: string
-) {
-  const existingUser = await getUser(email)
-
-  if (existingUser) {
-    return {
-      type: 'error',
-      resultCode: ResultCode.UserAlreadyExists
-    }
-  } else {
-    const user = {
-      id: crypto.randomUUID(),
-      email,
-      password: hashedPassword,
-      salt
-    }
-
-    await kv.hmset(`user:${email}`, user)
-
-    return {
-      type: 'success',
-      resultCode: ResultCode.UserCreated
-    }
-  }
-}
 
 interface Result {
   type: string
@@ -50,8 +20,8 @@ export async function signup(
 
   const parsedCredentials = z
     .object({
-      email: z.string().email(),
-      password: z.string().min(6)
+      email: z.string().email().max(254),
+      password: z.string().min(12).max(256)
     })
     .safeParse({
       email,
@@ -59,18 +29,11 @@ export async function signup(
     })
 
   if (parsedCredentials.success) {
-    const salt = crypto.randomUUID()
-
-    const encoder = new TextEncoder()
-    const saltedPassword = encoder.encode(password + salt)
-    const hashedPasswordBuffer = await crypto.subtle.digest(
-      'SHA-256',
-      saltedPassword
-    )
-    const hashedPassword = getStringFromBuffer(hashedPasswordBuffer)
-
     try {
-      const result = await createUser(email, hashedPassword, salt)
+      const created = await createAccount(email, password)
+      const result = created
+        ? { type: 'success', resultCode: ResultCode.UserCreated }
+        : { type: 'error', resultCode: ResultCode.UserAlreadyExists }
 
       if (result.resultCode === ResultCode.UserCreated) {
         await signIn('credentials', {
