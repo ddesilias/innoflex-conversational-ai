@@ -1,71 +1,63 @@
-<a href="https://chat.vercel.ai/">
-  <img alt="Next.js 14 and App Router-ready AI chatbot." src="https://chat.vercel.ai/opengraph-image.png">
-  <h1 align="center">Next.js AI Chatbot</h1>
-</a>
+# Trade Mentor
 
-<p align="center">
-  An open-source AI chatbot app template built with Next.js, the Vercel AI SDK, OpenAI, and Vercel KV.
-</p>
+Assistant conversationnel construit avec Next.js et le Vercel AI SDK. Le dépôt explore aussi des interfaces de données de marché et des intégrations d’avatar sur une branche de développement dédiée.
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#model-providers"><strong>Model Providers</strong></a> ·
-  <a href="#deploy-your-own"><strong>Deploy Your Own</strong></a> ·
-  <a href="#running-locally"><strong>Running locally</strong></a> ·
-  <a href="#authors"><strong>Authors</strong></a>
-</p>
-<br/>
+[Voir la démonstration](https://trade-mentor-ai.vercel.app) · [Documentation du template d’origine](docs/UPSTREAM-README.md)
 
-## Features
+## Fonctionnalités et périmètre
 
-- [Next.js](https://nextjs.org) App Router
-- React Server Components (RSCs), Suspense, and Server Actions
-- [Vercel AI SDK](https://sdk.vercel.ai/docs) for streaming chat UI
-- Support for OpenAI (default), Anthropic, Cohere, Hugging Face, or custom AI chat models and/or LangChain
-- [shadcn/ui](https://ui.shadcn.com)
-  - Styling with [Tailwind CSS](https://tailwindcss.com)
-  - [Radix UI](https://radix-ui.com) for headless component primitives
-  - Icons from [Phosphor Icons](https://phosphoricons.com)
-- Chat History, rate limiting, and session storage with [Vercel KV](https://vercel.com/storage/kv)
-- [NextAuth.js](https://github.com/nextauthjs/next-auth) for authentication
+| Branche | Contenu |
+| --- | --- |
+| `main` | Chat IA en streaming, authentification, historique et partage de conversations ; base de la démonstration de production |
+| [`cryptocurrency`](https://github.com/ddesilias/trade-mentor/tree/cryptocurrency) | Développement des pages de marché, actualités et avatar ; page de journal encore à l’état d’ébauche |
 
-## Model Providers
+Le journal de trading n’est pas une fonctionnalité achevée. La disponibilité du chat et des intégrations dépend des services et des clés configurés.
 
-This template ships with OpenAI `gpt-3.5-turbo` as the default. However, thanks to the [Vercel AI SDK](https://sdk.vercel.ai/docs), you can switch LLM providers to [Anthropic](https://anthropic.com), [Cohere](https://cohere.com/), [Hugging Face](https://huggingface.co), or using [LangChain](https://js.langchain.com) with just a few lines of code.
+## Architecture
 
-## Deploy Your Own
+Next.js 14 et React Server Components composent l’interface. Les Server Actions transmettent les messages au modèle OpenAI via le Vercel AI SDK. NextAuth gère les sessions ; PostgreSQL et Vercel KV assurent les besoins de persistance présents dans le code.
 
-You can deploy your own version of the Next.js AI Chatbot to Vercel with one click:
+```mermaid
+flowchart LR
+    A[Interface React] --> B[Server Actions Next.js]
+    B --> C[OpenAI / réponse en streaming]
+    B --> D[(Vercel KV)]
+    A --> E[NextAuth]
+    E --> F[(PostgreSQL)]
+```
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?demo-title=Next.js+Chat&demo-description=A+full-featured%2C+hackable+Next.js+AI+chatbot+built+by+Vercel+Labs&demo-url=https%3A%2F%2Fchat.vercel.ai%2F&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F4aVPvWuTmBvzM5cEdRdqeW%2F4234f9baf160f68ffb385a43c3527645%2FCleanShot_2023-06-16_at_17.09.21.png&project-name=Next.js+Chat&repository-name=nextjs-chat&repository-url=https%3A%2F%2Fgithub.com%2Fvercel-labs%2Fai-chatbot&from=templates&skippable-integrations=1&env=OPENAI_API_KEY%2CAUTH_SECRET&envDescription=How+to+get+these+env+vars&envLink=https%3A%2F%2Fgithub.com%2Fvercel-labs%2Fai-chatbot%2Fblob%2Fmain%2F.env.example&teamCreateStatus=hidden&stores=[{"type":"kv"}])
-
-## Creating a KV Database Instance
-
-Follow the steps outlined in the [quick start guide](https://vercel.com/docs/storage/vercel-kv/quickstart#create-a-kv-database) provided by Vercel. This guide will assist you in creating and configuring your KV database instance on Vercel, enabling your application to interact with it.
-
-Remember to update your environment variables (`KV_URL`, `KV_REST_API_URL`, `KV_REST_API_TOKEN`, `KV_REST_API_READ_ONLY_TOKEN`) in the `.env` file with the appropriate credentials provided during the KV database setup.
-
-## Running locally
-
-You will need to use the environment variables [defined in `.env.example`](.env.example) to run Next.js AI Chatbot. It's recommended you use [Vercel Environment Variables](https://vercel.com/docs/projects/environment-variables) for this, but a `.env` file is all that is necessary.
-
-> Note: You should not commit your `.env` file or it will expose secrets that will allow others to control access to your various OpenAI and authentication provider accounts.
-
-1. Install Vercel CLI: `npm i -g vercel`
-2. Link local instance with Vercel and GitHub accounts (creates `.vercel` directory): `vercel link`
-3. Download your environment variables: `vercel env pull`
+## Démarrage local
 
 ```bash
+git clone https://github.com/ddesilias/trade-mentor.git
+cd trade-mentor
 pnpm install
 pnpm dev
 ```
 
-Your app template should now be running on [localhost:3000](http://localhost:3000/).
+Configurer un fichier `.env.local` privé avant de lancer les services concernés :
 
-## Authors
+| Variable | Usage |
+| --- | --- |
+| `AUTH_SECRET` | Secret serveur utilisé par NextAuth |
+| `OPENAI_API_KEY` | Appels au modèle OpenAI |
+| `DATABASE_URL` | Connexion PostgreSQL |
+| `KV_URL`, `KV_REST_API_URL`, `KV_REST_API_TOKEN`, `KV_REST_API_READ_ONLY_TOKEN` | Stockage et accès KV |
+| `NEXT_PUBLIC_X_CG_DEMO_API_KEY` | Accès CoinGecko sur `cryptocurrency` ; variable exposée au navigateur |
 
-This library is created by [Vercel](https://vercel.com) and [Next.js](https://nextjs.org) team members, with contributions from:
+Créer un secret aléatoire propre à chaque environnement. Les clés serveur restent dans les variables d’environnement et ne doivent pas être commitées. Les intégrations supplémentaires de `cryptocurrency` demandent leur propre configuration.
 
-- Jared Palmer ([@jaredpalmer](https://twitter.com/jaredpalmer)) - [Vercel](https://vercel.com)
-- Shu Ding ([@shuding\_](https://twitter.com/shuding_)) - [Vercel](https://vercel.com)
-- shadcn ([@shadcn](https://twitter.com/shadcn)) - [Vercel](https://vercel.com)
+## Repères dans le code
+
+- `lib/chat/actions.tsx` : orchestration du chat et streaming.
+- `auth.config.ts` et `auth.ts` : configuration des sessions et connexion.
+- `app/(chat)` : interface et routes des conversations.
+- `lib/coin-gecko-api` sur `cryptocurrency` : récupération et validation des données de marché.
+
+## Validation et limites
+
+La vérification TypeScript de la branche de développement passe. Le contrôle de présentation porte sur les pages publiques ; aucun compte n’a été créé et aucun appel IA payant n’a été déclenché pour cette vérification. La connexion avec un compte réel et le parcours complet de conversation restent à valider.
+
+## Origine du projet
+
+Ce dépôt adapte le template **AI Chatbot de Vercel**. Les crédits et la documentation antérieure sont conservés dans [docs/UPSTREAM-README.md](docs/UPSTREAM-README.md), avec la [licence du dépôt](LICENSE). Les fonctionnalités héritées du template font partie de cette base ; elles ne sont pas présentées comme une création intégrale originale.
