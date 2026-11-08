@@ -15,7 +15,7 @@ Le journal de trading n’est pas une fonctionnalité achevée. La disponibilit�
 
 ## Architecture
 
-Next.js 14 et React Server Components composent l’interface. Les Server Actions transmettent les messages au modèle OpenAI via le Vercel AI SDK. NextAuth gère les sessions ; PostgreSQL et Vercel KV assurent les besoins de persistance présents dans le code.
+Next.js 15 et React Server Components composent l’interface. Les Server Actions transmettent les messages au modèle OpenAI via le Vercel AI SDK. NextAuth gère les sessions ; PostgreSQL et Vercel KV assurent les besoins de persistance présents dans le code.
 
 ```mermaid
 flowchart LR

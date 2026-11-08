@@ -2,9 +2,6 @@
 
 module.exports = {
   reactStrictMode: true,
-  experimental: {
-    runtime: 'experimental-edge'
-  },
   async rewrites() {
     return [
       {

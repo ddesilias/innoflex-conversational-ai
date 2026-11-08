@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^0.0.9",
-    "@auth/prisma-adapter": "^1.5.2",
     "@heygen/streaming-avatar": "^1.0.11",
     "@neondatabase/serverless": "^0.9.0",
     "@nextui-org/button": "2.0.34",
@@ -66,8 +65,8 @@
     "geist": "^1.2.1",
     "intl-messageformat": "^10.5.0",
     "nanoid": "^5.0.4",
-    "next": "14.2.3",
-    "next-auth": "5.0.0-beta.4",
+    "next": "15.5.28",
+    "next-auth": "5.0.0-beta.32",
     "next-themes": "^0.2.1",
     "node-fetch": "2",
     "openai": "^4.24.7",
@@ -98,7 +97,7 @@
     "autoprefixer": "^10.4.17",
     "dotenv": "^16.4.5",
     "eslint": "^8.56.0",
-    "eslint-config-next": "14.1.0",
+    "eslint-config-next": "15.5.28",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jsx-a11y": "^6.4.1",
@@ -118,5 +117,12 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.3.3"
   },
-  "packageManager": "pnpm@9.1.4"
+  "packageManager": "pnpm@9.1.4",
+  "pnpm": {
+    "overrides": {
+      "form-data@>=2.0.0 <3.0.0": "2.5.6",
+      "form-data@>=4.0.0 <5.0.0": "4.0.6",
+      "seroval@>=1.0.0 <2.0.0": "1.6.8"
+    }
+  }
 }
