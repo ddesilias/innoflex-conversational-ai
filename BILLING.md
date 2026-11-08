@@ -59,3 +59,13 @@ Le client Stripe est lié à l’utilisateur dans les deux sens. Une intention d
 La première liaison à un abonnement est vérifiée contre le client enregistré, le tarif autorisé et les métadonnées relues chez Stripe. La liaison à cet abonnement et le snapshot sont enregistrés atomiquement. Le remplacement d’un ancien abonnement par un nouveau reste volontairement bloqué tant que son cycle de vie n’est pas implémenté.
 
 Validation : 31 tests et TypeScript réussis. Le parcours est encore simulé. Restent : paramètres de test, validation Redis réelle, page de facturation, portail client, renouvellement sûr des tentatives, rafraîchissement des droits et application effective des quotas/droits dans les fonctions IA. Aucun tarif ni paiement réel créé.
+
+## Page de facturation et portail client
+
+La page /billing exige une connexion et est accessible depuis le menu utilisateur « Facturation · mode test ». Elle affiche un statut inconnu/indisponible lorsque la configuration manque, et ne confirme pas l’abonnement à partir des paramètres d’URL du retour Checkout. Les redirections navigateur acceptent uniquement les hôtes HTTPS exacts checkout.stripe.com et billing.stripe.com.
+
+POST /api/billing/portal exige une session et une origine conforme, vérifie le compte Stripe et relit le client associé côté serveur. Un client supprimé, en mode live ou associé à un autre utilisateur est refusé. Le portail Stripe doit encore être configuré dans l’environnement de test ; aucune option de portail ni tarification réelle n’a été activée.
+
+35 tests passent, TypeScript et lint des composants modifiés passent. Revue React : composant serveur pour l’accès, SDK Stripe hors du bundle client, nettoyage de la requête au démontage, boutons natifs avec états désactivés et message de statut accessible. Les interactions navigateur avec Stripe restent à valider sur une préproduction configurée.
+
+Compilation Next.js réussie avec /billing et les routes checkout, portal, status et webhook. Les avertissements préexistants et l’échec DNS CoinGecko restent visibles pendant la génération ; aucune certification de santé globale n’est déclarée.

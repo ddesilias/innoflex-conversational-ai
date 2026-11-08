@@ -41,7 +41,7 @@ test('status reads only the session user and refuses stale paid access', async (
     userId: 'alice', paid: true, status: 'active', validUntil: Date.now() + 3600000, checkedAt: Date.now() - 3600000
   })
   const body = await (await route.GET()).json()
-  assert.deepEqual(route.reads, ['billing:test:subscription:alice'])
+  assert.deepEqual(route.reads, ['billing:test:subscription:alice', 'billing:test:customer:alice'])
   assert.equal(body.paidAccess, false)
   assert.equal(body.sync, 'refresh-required')
   assert.equal(body.customerId, undefined)
