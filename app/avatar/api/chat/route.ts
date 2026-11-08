@@ -1,3 +1,4 @@
+import { personalAssistantSystem } from '@/lib/ai/personal-assistant';
 import { configuredModel } from '@/lib/ai/config';
 import { reserveUsage } from '@/lib/security/usage';
 import { QuotaError } from '@/lib/security/quota';
@@ -36,6 +37,7 @@ export async function POST(req: Request) {
   const result = await streamText({
     model: openai(model),
     messages,
+    system: personalAssistantSystem,
     maxOutputTokens: 1024,
   });
 

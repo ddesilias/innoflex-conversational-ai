@@ -33,26 +33,10 @@ export function ChatPanel({
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
 
   const exampleMessages = [
-    {
-      heading: 'What are the',
-      subheading: 'trending memecoins today?',
-      message: `What are the trending memecoins today?`
-    },
-    {
-      heading: 'What is the price of',
-      subheading: '$DOGE right now?',
-      message: 'What is the price of $DOGE right now?'
-    },
-    {
-      heading: 'I would like to buy',
-      subheading: '42 $DOGE',
-      message: `I would like to buy 42 $DOGE`
-    },
-    {
-      heading: 'What are some',
-      subheading: `recent events about $DOGE?`,
-      message: `What are some recent events about $DOGE?`
-    }
+    { heading: 'Rédiger un message', subheading: 'Trouver les mots justes', message: 'Aide-moi à rédiger un message clair et cordial. Demande-moi le destinataire et mon objectif.' },
+    { heading: 'Organiser ma semaine', subheading: 'Passer des idées aux priorités', message: 'Aide-moi à préparer un planning réaliste pour ma semaine. Demande-moi mes priorités et mes contraintes.' },
+    { heading: 'Comprendre un sujet', subheading: 'Une explication à mon niveau', message: 'Je voudrais mieux comprendre un sujet. Demande-moi lequel et ce que je connais déjà.' },
+    { heading: 'Préparer une décision', subheading: 'Comparer les options', message: 'Aide-moi à comparer plusieurs options pour prendre une décision. Demande-moi le contexte et mes critères.' }
   ]
 
   return (
@@ -68,7 +52,6 @@ export function ChatPanel({
                     index > 1 && 'hidden md:block'
                   }`}
                   onClick={async () => {
-                    console.log('submitUserMessage', example.message)
                     setMessages(currentMessages => [
                       ...currentMessages,
                       {

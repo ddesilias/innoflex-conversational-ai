@@ -53,6 +53,7 @@ test('anonymous avatar requests never call a paid provider', async () => {
     let calls = 0
     const { POST } = load(`app/avatar/api/${route}/route.ts`, {
       '@/auth': { auth: async () => null },
+      '@/lib/ai/personal-assistant': load('lib/ai/personal-assistant.ts', {}),
       '@/lib/ai/config': { configuredModel: () => 'test-model' },
       '@/lib/security/usage': { reserveUsage: async () => {} },
       '@/lib/security/quota': load('lib/security/quota.ts', {}),
@@ -70,6 +71,7 @@ test('exhausted avatar quotas return 429 before any provider call', async () => 
     let providers = 0
     const { POST } = load(`app/avatar/api/${route}/route.ts`, {
       '@/auth': { auth: async () => ({ user: { id: 'alice' } }) },
+      '@/lib/ai/personal-assistant': load('lib/ai/personal-assistant.ts', {}),
       '@/lib/ai/config': { configuredModel: () => 'test-model' },
       '@/lib/security/usage': { reserveUsage: async () => { throw new quota.QuotaError(429, 60) } },
       '@/lib/security/quota': quota,

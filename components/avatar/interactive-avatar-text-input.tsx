@@ -1,4 +1,5 @@
 import React from 'react'
+import { toast } from 'sonner'
 import { Input, Spinner, Tooltip } from '@nextui-org/react'
 import { Airplane, ArrowRight, PaperPlaneRight } from '@phosphor-icons/react'
 import clsx from 'clsx'
@@ -22,6 +23,7 @@ export default function InteractiveAvatarTextInput({
 }: StreamingAvatarTextInputProps) {
   const { submitUserMessage } = useActions()
   const [input, setInput] = React.useState('')
+  const [pending, setPending] = React.useState(false)
   const [messages, setMessages] = useUIState<typeof AI>()
 
   async function handleSubmit(
@@ -30,10 +32,13 @@ export default function InteractiveAvatarTextInput({
       | React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
     e?.preventDefault()
-    if (input.trim() === '') {
+    if (pending || loading || disabled || input.trim() === '') {
       return
     }
 
+    const submittedInput = input
+    setPending(true)
+    setInput('')
     setMessages(currentMessages => [
       ...currentMessages,
       {
@@ -42,19 +47,23 @@ export default function InteractiveAvatarTextInput({
       }
     ])
 
-    const responseMessage = await submitUserMessage(input)
-
-    setMessages(currentMessages => [...currentMessages, responseMessage])
-
-    setInput('')
+    try {
+      const responseMessage = await submitUserMessage(submittedInput)
+      setMessages(currentMessages => [...currentMessages, responseMessage])
+    } catch {
+      setInput(submittedInput)
+      toast.error('La réponse n’a pas pu être générée. Votre message reste disponible pour réessayer.')
+    } finally {
+      setPending(false)
+    }
   }
   return (
     <Input
       endContent={
         <div className="flex flex-row items-center h-full">
           {endContent}
-          <Tooltip content="Send message">
-            {loading ? (
+          <Tooltip content="Envoyer le message">
+            {loading || pending ? (
               <Spinner
                 className="text-indigo-300 hover:text-indigo-200"
                 size="sm"
@@ -63,6 +72,8 @@ export default function InteractiveAvatarTextInput({
             ) : (
               <button
                 type="submit"
+                aria-label="Envoyer le message"
+                disabled={disabled || pending || loading}
                 className="focus:outline-none"
                 onClick={handleSubmit}
               >
@@ -82,12 +93,12 @@ export default function InteractiveAvatarTextInput({
       placeholder={placeholder}
       size="sm"
       onKeyDown={e => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
           handleSubmit()
         }
       }}
       onValueChange={setInput}
-      isDisabled={disabled}
+      isDisabled={disabled || pending || loading}
       value={input}
     />
   )

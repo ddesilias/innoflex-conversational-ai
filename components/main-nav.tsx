@@ -5,10 +5,7 @@ export default function MainNav() {
     <>
       <nav className="ml-4 flex sm:justify-center space-x-4">
         {[
-          ['Chat', '/'],
-          ['Cryptocurrency', '/cryptocurrency'],
-          ['News', '/news'],
-          ['Trading Journal', '/trading-journal']
+          ['Assistant personnel', '/']
         ].map(([title, url]) => (
           <Button variant="ghost" key={url}>
             <Link
