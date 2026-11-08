@@ -1,15 +1,15 @@
-# Trade Mentor
+# INNOFLEX Conversational AI
 
 Assistant conversationnel construit avec Next.js et le Vercel AI SDK. Le dépôt explore aussi des interfaces de données de marché et des intégrations d’avatar sur une branche de développement dédiée.
 
-[Voir la démonstration](https://trade-mentor-ai.vercel.app) · [Documentation du template d’origine](docs/UPSTREAM-README.md)
+[Voir la démonstration](https://innoflex-conversational-ai.vercel.app) · [Documentation du template d’origine](docs/UPSTREAM-README.md)
 
 ## Fonctionnalités et périmètre
 
 | Branche | Contenu |
 | --- | --- |
 | `main` | Chat IA en streaming, authentification, historique et partage de conversations ; base de la démonstration de production |
-| [`cryptocurrency`](https://github.com/ddesilias/trade-mentor/tree/cryptocurrency) | Développement des pages de marché, actualités et avatar ; page de journal encore à l’état d’ébauche |
+| [`cryptocurrency`](https://github.com/ddesilias/innoflex-conversational-ai/tree/cryptocurrency) | Développement des pages de marché, actualités et avatar ; page de journal encore à l’état d’ébauche |
 
 Le journal de trading n’est pas une fonctionnalité achevée. La disponibilité du chat et des intégrations dépend des services et des clés configurés.
 
@@ -29,8 +29,8 @@ flowchart LR
 ## Démarrage local
 
 ```bash
-git clone https://github.com/ddesilias/trade-mentor.git
-cd trade-mentor
+git clone https://github.com/ddesilias/innoflex-conversational-ai.git
+cd innoflex-conversational-ai
 pnpm install
 pnpm dev
 ```
