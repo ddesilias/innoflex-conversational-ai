@@ -36,3 +36,16 @@ L’adaptateur Redis store.ts enregistre atomiquement le snapshot et l’identif
 Les droits préparés exigent un abonnement actif, sans pause de collecte, sur le tarif prévu, avec une période valide. Les essais gratuits ne sont pas assimilés à des abonnements payants. Un snapshot de plus de 15 minutes échoue sans accorder de droit : le rafraîchissement périodique ou à la demande doit donc être branché avant activation. Cette valeur est une politique technique de préproduction, pas un engagement commercial validé.
 
 Validation : 20 tests et TypeScript réussis. Les tests de synchronisation utilisent Stripe et le stockage simulés ; ils ne certifient pas l’API réelle ou les scripts Redis. Les routes, le mapping initial, le rafraîchissement et le branchement des droits dans l’application restent à réaliser. Aucun paiement activé.
+
+## Routes de préproduction ajoutées
+
+- POST /api/billing/webhook : signature Stripe obligatoire, vérification du compte API courant puis réconciliation. Les événements live et Connect sont refusés.
+- GET /api/billing/status : session obligatoire, lecture limitée à son utilisateur, réponse privée non mise en cache. Aucun droit payant si le miroir est périmé.
+
+Activation volontaire via BILLING_TEST_ENABLED=true, STRIPE_SECRET_KEY en mode test, STRIPE_TEST_PRICE_ID, BILLING_APP_ORIGIN et STRIPE_WEBHOOK_SECRET. Sans ces paramètres, réponse 503. Le compte API doit être acct_1PvL4SKQ6tQikNSX ; aucun compte n’est supposé validé tant que cet appel réel n’a pas réussi.
+
+La liaison initiale utilisateur/client/abonnement et le rafraîchissement des droits restent à brancher ; Checkout n’est toujours pas exposé aux utilisateurs. Un webhook sans liaison initiale retourne une erreur réessayable, sans accorder de droit. Les versions précédentes de ce document décrivent les étapes successives ; cette section actualise l’état des routes.
+
+Validation locale : 25 tests et TypeScript réussis. Pas de test API Stripe ou Redis réel et pas de déploiement déclarés à cette étape.
+
+Compilation Next.js réussie avec les routes status et webhook présentes. Avertissements existants de lint/configuration ; appels CoinGecko en échec DNS pendant la génération, sans échec de compilation. Les cinq paramètres de facturation listés ci-dessus sont absents des fichiers locaux examinés : aucune intégration réelle n’est validée.
