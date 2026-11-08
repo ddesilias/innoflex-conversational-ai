@@ -49,3 +49,13 @@ La liaison initiale utilisateur/client/abonnement et le rafraîchissement des dr
 Validation locale : 25 tests et TypeScript réussis. Pas de test API Stripe ou Redis réel et pas de déploiement déclarés à cette étape.
 
 Compilation Next.js réussie avec les routes status et webhook présentes. Avertissements existants de lint/configuration ; appels CoinGecko en échec DNS pendant la génération, sans échec de compilation. Les cinq paramètres de facturation listés ci-dessus sont absents des fichiers locaux examinés : aucune intégration réelle n’est validée.
+
+## Démarrage Checkout branché
+
+POST /api/billing/checkout exige une session et une origine identique à BILLING_APP_ORIGIN. Le corps de la requête ne choisit ni utilisateur, ni client, ni tarif, ni URL. Le compte API est contrôlé avant les appels de création.
+
+Le client Stripe est lié à l’utilisateur dans les deux sens. Une intention de création persistante fournit une clé d’idempotence stable ; après 23 heures, une création incertaine exige une réconciliation au lieu de risquer un doublon. Les intentions Checkout suivent le même principe. Un abonnement en cours, y compris incomplet ou impayé, empêche un nouveau Checkout. Une intention expirée ou un changement de tarif demande encore un traitement explicite : le renouvellement automatique des tentatives n’est pas implémenté.
+
+La première liaison à un abonnement est vérifiée contre le client enregistré, le tarif autorisé et les métadonnées relues chez Stripe. La liaison à cet abonnement et le snapshot sont enregistrés atomiquement. Le remplacement d’un ancien abonnement par un nouveau reste volontairement bloqué tant que son cycle de vie n’est pas implémenté.
+
+Validation : 31 tests et TypeScript réussis. Le parcours est encore simulé. Restent : paramètres de test, validation Redis réelle, page de facturation, portail client, renouvellement sûr des tentatives, rafraîchissement des droits et application effective des quotas/droits dans les fonctions IA. Aucun tarif ni paiement réel créé.

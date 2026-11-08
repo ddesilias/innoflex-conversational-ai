@@ -13,7 +13,7 @@ export interface BillingStore {
   processed(eventId: string): Promise<boolean>
   lock(customerId: string, token: string): Promise<boolean>
   unlock(customerId: string, token: string): Promise<void>
-  binding(customerId: string): Promise<{ userId: string; subscriptionId: string } | null>
+  binding(customerId: string): Promise<{ userId: string; subscriptionId?: string } | null>
   commit(eventId: string, token: string, snapshot: BillingSnapshot): Promise<void>
 }
 
@@ -36,11 +36,14 @@ export function subscriptionReconciler(
     try {
       if (await store.processed(event.id)) return
       const binding = await store.binding(customerId)
-      if (!binding?.userId || binding.subscriptionId !== object.id) throw new Error('Subscription binding missing')
+      if (!binding?.userId || (binding.subscriptionId && binding.subscriptionId !== object.id)) throw new Error('Subscription binding missing')
       const subscription = await stripe.subscriptions.retrieve(object.id)
       const actualCustomer = typeof subscription.customer === 'string' ? subscription.customer : subscription.customer.id
       if (subscription.livemode || actualCustomer !== customerId) throw new Error('Subscription scope mismatch')
       const items = subscription.items.data.filter(item => item.price.id === priceId)
+      if (!binding.subscriptionId && (subscription.metadata.userId !== binding.userId || items.length !== 1)) {
+        throw new Error('Initial subscription binding mismatch')
+      }
       const checkedAt = now()
       const end = items.length === 1 ? items[0].current_period_end * 1000 : 0
       const validUntil = Math.min(end, subscription.cancel_at ? subscription.cancel_at * 1000 : end)

@@ -64,3 +64,12 @@ test('paid access expires, rejects another user and rejects stale observations',
   assert.equal(out.hasPaidAccess(s.snapshot, 'alice', now + 900_000), false)
   assert.equal(out.hasPaidAccess({ ...s.snapshot, validUntil: now }, 'alice', now), false)
 })
+
+ test('initial subscription requires the server customer binding and matching Stripe metadata', async () => {
+  const s = setup()
+  s.store.binding = async () => ({ userId: 'alice' })
+  s.subscription.metadata = { userId: 'bob' }
+  await assert.rejects(s.run(event)); assert.equal(s.writes, 0)
+  s.subscription.metadata = { userId: 'alice' }
+  await s.run(event); assert.equal(s.snapshot.userId, 'alice')
+})
