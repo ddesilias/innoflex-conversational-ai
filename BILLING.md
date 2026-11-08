@@ -26,3 +26,13 @@ STRIPE_SECRET_KEY (mode test), STRIPE_TEST_PRICE_ID (tarif récurrent de test), 
 6. Relier erreurs, retards de synchronisation et statuts d’abonnement au dashboard.
 
 Sources : https://docs.stripe.com/billing/subscriptions/webhooks ; https://docs.stripe.com/events/manage-webhook-endpoints ; https://docs.stripe.com/testing
+
+## Synchronisation préparée
+
+Le module reconcile.ts relit l’abonnement Stripe après acquisition d’un verrou par client. Il vérifie la liaison utilisateur/client/abonnement enregistrée côté serveur et le tarif autorisé ; les métadonnées reçues seules ne donnent aucun droit. Les événements dupliqués sont ignorés après leur traitement réussi. Les erreurs restent réessayables.
+
+L’adaptateur Redis store.ts enregistre atomiquement le snapshot et l’identifiant d’événement, sous contrôle du jeton de verrou. Un traitement dont le verrou a expiré ne peut plus écrire. Les événements traités sont conservés 30 jours ; un événement plus ancien retraité relit toujours l’état Stripe courant. Le stockage utilise des clés distinctes billing:test:… . L’adaptateur doit être validé contre le Redis de préproduction, notamment sa compatibilité avec les scripts multi-clés.
+
+Les droits préparés exigent un abonnement actif, sans pause de collecte, sur le tarif prévu, avec une période valide. Les essais gratuits ne sont pas assimilés à des abonnements payants. Un snapshot de plus de 15 minutes échoue sans accorder de droit : le rafraîchissement périodique ou à la demande doit donc être branché avant activation. Cette valeur est une politique technique de préproduction, pas un engagement commercial validé.
+
+Validation : 20 tests et TypeScript réussis. Les tests de synchronisation utilisent Stripe et le stockage simulés ; ils ne certifient pas l’API réelle ou les scripts Redis. Les routes, le mapping initial, le rafraîchissement et le branchement des droits dans l’application restent à réaliser. Aucun paiement activé.
