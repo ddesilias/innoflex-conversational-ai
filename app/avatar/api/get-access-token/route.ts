@@ -1,6 +1,10 @@
+import { auth } from '@/auth';
 const HEYGEN_API_KEY = process.env.HEYGEN_API_KEY;
 
 export async function POST() {
+  const session = await auth();
+  if (!session?.user?.id) return new Response('Unauthorized', { status: 401 });
+
   try {
     if (!HEYGEN_API_KEY) {
       throw new Error("API key is missing from .env");
@@ -21,7 +25,7 @@ export async function POST() {
       status: 200,
     });
   } catch (error) {
-    console.error("Error retrieving access token:", error);
+    console.error("Avatar token request failed");
 
     return new Response("Failed to retrieve access token", {
       status: 500,

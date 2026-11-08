@@ -8,9 +8,11 @@ import { auth } from '@/auth'
 import { type Chat } from '@/lib/types'
 
 export async function getChats(userId?: string | null) {
-  if (!userId) {
+  const session = await auth()
+  if (!session?.user?.id || (userId && userId !== session.user.id)) {
     return []
   }
+  userId = session.user.id
 
   try {
     const pipeline = kv.pipeline()
@@ -31,9 +33,11 @@ export async function getChats(userId?: string | null) {
 }
 
 export async function getChat(id: string, userId: string) {
+  const session = await auth()
+  if (!session?.user?.id || (userId && userId !== session.user.id)) return null
   const chat = await kv.hgetall<Chat>(`chat:${id}`)
 
-  if (!chat || (userId && chat.userId !== userId)) {
+  if (!chat || chat.userId !== session.user.id) {
     return null
   }
 
@@ -131,17 +135,25 @@ export async function shareChat(id: string) {
 export async function saveChat(chat: Chat) {
   const session = await auth()
 
-  if (session && session.user) {
-    const pipeline = kv.pipeline()
-    pipeline.hmset(`chat:${chat.id}`, chat)
-    pipeline.zadd(`user:chat:${chat.userId}`, {
-      score: Date.now(),
-      member: `chat:${chat.id}`
-    })
-    await pipeline.exec()
-  } else {
-    return
+  if (!session?.user?.id || chat.userId !== session.user.id) {
+    return { error: 'Unauthorized' }
   }
+  const existing = await kv.hgetall<Chat>(`chat:${chat.id}`)
+  if (existing && existing.userId !== session.user.id) {
+    return { error: 'Unauthorized' }
+  }
+  // Do not let a client overwrite server-controlled sharing or ownership fields.
+  const payload = {
+    id: chat.id, title: chat.title, createdAt: existing?.createdAt ?? chat.createdAt,
+    userId: session.user.id, path: `/chat/${chat.id}`, messages: chat.messages,
+    ...(existing?.sharePath ? { sharePath: existing.sharePath } : {})
+  }
+  const pipeline = kv.pipeline()
+  pipeline.hmset(`chat:${chat.id}`, payload)
+  pipeline.zadd(`user:chat:${session.user.id}`, {
+    score: Date.now(), member: `chat:${chat.id}`
+  })
+  await pipeline.exec()
 }
 
 export async function refreshHistory(path: string) {

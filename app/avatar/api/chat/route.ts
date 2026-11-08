@@ -1,3 +1,4 @@
+import { auth } from '@/auth';
 import { openai } from "@ai-sdk/openai";
 import { streamText } from "ai";
 
@@ -5,15 +6,16 @@ import { streamText } from "ai";
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
+  const session = await auth();
+  if (!session?.user?.id) return new Response('Unauthorized', { status: 401 });
+
   
   const { messages } = await req.json();
-  console.log("messages", messages);
 
   const result = await streamText({
     model: openai("gpt-4-turbo"),
     messages,
   });
-  console.log("result", result.toAIStreamResponse());
 
   return result.toAIStreamResponse();
 }
