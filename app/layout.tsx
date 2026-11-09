@@ -1,4 +1,5 @@
 import { GeistSans } from 'geist/font/sans'
+import { APP_NAME } from '@/lib/brand'
 import { GeistMono } from 'geist/font/mono'
 
 import '@/styles/globals.css'
@@ -13,8 +14,8 @@ export const metadata = {
     ? new URL(`https://${process.env.VERCEL_URL}`)
     : undefined,
   title: {
-    default: 'INNOFLEX SI — Espace de trading',
-    template: '%s | INNOFLEX SI'
+    default: APP_NAME,
+    template: '%s | INNOFLEX Trading & Investissement'
   },
   description:
     'Un espace de trading pour préparer vos séances, documenter vos décisions et revoir votre pratique.',

@@ -64,9 +64,14 @@ async function send(
         personalizations: [{ to: [{ email }] }],
         custom_args: {
           innoflex_product: 'innoflex-conversational-ai',
-          innoflex_environment: process.env.VERCEL_ENV === 'preview' ? 'preview' : process.env.VERCEL_ENV === 'production' ? 'production' : 'local'
+          innoflex_environment:
+            process.env.VERCEL_ENV === 'preview'
+              ? 'preview'
+              : process.env.VERCEL_ENV === 'production'
+                ? 'production'
+                : 'local'
         },
-        from: { email: config.from, name: 'INNOFLEX' },
+        from: { email: config.from, name: 'INNOFLEX Trading & Investissement' },
         subject,
         content: [{ type: 'text/plain', value: text }],
         tracking_settings: {

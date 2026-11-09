@@ -1,0 +1,381 @@
+{
+  "schemaVersion": 1,
+  "scanDate": "2026-11-09",
+  "scope": "all-dependencies",
+  "tool": "pnpm audit --json",
+  "dependencyFingerprint": "d0462f4a99e6b1c9725724da5f92f6f638621f63d94b9d0ce0ba20882f608088",
+  "branch": "security/session-bound-chat-access",
+  "vulnerabilities": {
+    "info": 0,
+    "low": 5,
+    "moderate": 37,
+    "high": 15,
+    "critical": 0
+  },
+  "advisories": [
+    {
+      "module": "yargs-parser",
+      "severity": "moderate",
+      "title": "yargs-parser Vulnerable to Prototype Pollution",
+      "patchedVersions": ">=13.1.2",
+      "url": "https://github.com/advisories/GHSA-p9pc-299p-vxgp"
+    },
+    {
+      "module": "request",
+      "severity": "moderate",
+      "title": "Server-Side Request Forgery in Request",
+      "patchedVersions": "<0.0.0",
+      "url": "https://github.com/advisories/GHSA-p8p7-x288-28g6"
+    },
+    {
+      "module": "katex",
+      "severity": "moderate",
+      "title": "KaTeX missing normalization of the protocol in URLs allows bypassing forbidden protocols",
+      "patchedVersions": ">=0.16.10",
+      "url": "https://github.com/advisories/GHSA-3wc5-fcw2-2329"
+    },
+    {
+      "module": "katex",
+      "severity": "moderate",
+      "title": "KaTeX's `\\includegraphics` does not escape filename",
+      "patchedVersions": ">=0.16.10",
+      "url": "https://github.com/advisories/GHSA-f98w-7cxr-ff2h"
+    },
+    {
+      "module": "katex",
+      "severity": "moderate",
+      "title": "KaTeX's maxExpand bypassed by Unicode sub/superscripts",
+      "patchedVersions": ">=0.16.10",
+      "url": "https://github.com/advisories/GHSA-cvr6-37gx-v8wc"
+    },
+    {
+      "module": "tough-cookie",
+      "severity": "moderate",
+      "title": "tough-cookie Prototype Pollution vulnerability",
+      "patchedVersions": ">=4.1.3",
+      "url": "https://github.com/advisories/GHSA-72xf-g2v4-qvf3"
+    },
+    {
+      "module": "ajv",
+      "severity": "moderate",
+      "title": "Prototype Pollution in Ajv",
+      "patchedVersions": ">=6.12.3",
+      "url": "https://github.com/advisories/GHSA-v88g-cgmw-v5xw"
+    },
+    {
+      "module": "micromatch",
+      "severity": "moderate",
+      "title": "Regular Expression Denial of Service (ReDoS) in micromatch",
+      "patchedVersions": ">=4.0.8",
+      "url": "https://github.com/advisories/GHSA-952p-6rrq-rcjv"
+    },
+    {
+      "module": "jsonpointer",
+      "severity": "moderate",
+      "title": "Prototype Pollution in node-jsonpointer",
+      "patchedVersions": ">=5.0.0",
+      "url": "https://github.com/advisories/GHSA-282f-qqgm-c34q"
+    },
+    {
+      "module": "@babel/runtime",
+      "severity": "moderate",
+      "title": "Babel has inefficient RegExp complexity in generated code with .replace when transpiling named capturing groups",
+      "patchedVersions": ">=7.26.10",
+      "url": "https://github.com/advisories/GHSA-968p-4wvh-cqc8"
+    },
+    {
+      "module": "brace-expansion",
+      "severity": "low",
+      "title": "brace-expansion Regular Expression Denial of Service vulnerability",
+      "patchedVersions": ">=1.1.12",
+      "url": "https://github.com/advisories/GHSA-v6h2-p8h4-qcjw"
+    },
+    {
+      "module": "prismjs",
+      "severity": "moderate",
+      "title": "PrismJS DOM Clobbering vulnerability",
+      "patchedVersions": ">=1.30.0",
+      "url": "https://github.com/advisories/GHSA-x7hr-w5r2-h6wg"
+    },
+    {
+      "module": "katex",
+      "severity": "moderate",
+      "title": "KaTeX \\htmlData does not validate attribute names",
+      "patchedVersions": ">=0.16.21",
+      "url": "https://github.com/advisories/GHSA-cg87-wmx4-v546"
+    },
+    {
+      "module": "diff",
+      "severity": "low",
+      "title": "jsdiff has a Denial of Service vulnerability in parsePatch and applyPatch",
+      "patchedVersions": ">=5.2.2",
+      "url": "https://github.com/advisories/GHSA-73rr-hh4g-fpgx"
+    },
+    {
+      "module": "js-yaml",
+      "severity": "moderate",
+      "title": "js-yaml has prototype pollution in merge (<<)",
+      "patchedVersions": ">=4.1.1",
+      "url": "https://github.com/advisories/GHSA-mh29-5h37-fv8m"
+    },
+    {
+      "module": "katex",
+      "severity": "moderate",
+      "title": "KaTeX's maxExpand bypassed by `\\edef`",
+      "patchedVersions": ">=0.16.10",
+      "url": "https://github.com/advisories/GHSA-64fm-8hw2-v72w"
+    },
+    {
+      "module": "qs",
+      "severity": "low",
+      "title": "qs's arrayLimit bypass in comma parsing allows denial of service",
+      "patchedVersions": ">=6.14.2",
+      "url": "https://github.com/advisories/GHSA-w7fw-mjwx-w883"
+    },
+    {
+      "module": "minimatch",
+      "severity": "high",
+      "title": "minimatch has a ReDoS via repeated wildcards with non-matching literal in pattern",
+      "patchedVersions": ">=3.1.3",
+      "url": "https://github.com/advisories/GHSA-3ppc-4f35-3m26"
+    },
+    {
+      "module": "minimatch",
+      "severity": "high",
+      "title": "minimatch has ReDoS: matchOne() combinatorial backtracking via multiple non-adjacent GLOBSTAR segments",
+      "patchedVersions": ">=3.1.3",
+      "url": "https://github.com/advisories/GHSA-7r86-cg39-jmmj"
+    },
+    {
+      "module": "minimatch",
+      "severity": "high",
+      "title": "minimatch ReDoS: nested *() extglobs generate catastrophically backtracking regular expressions",
+      "patchedVersions": ">=3.1.4",
+      "url": "https://github.com/advisories/GHSA-23c5-xmqv-rm74"
+    },
+    {
+      "module": "ajv",
+      "severity": "moderate",
+      "title": "ajv has ReDoS when using `$data` option",
+      "patchedVersions": ">=6.14.0",
+      "url": "https://github.com/advisories/GHSA-2g4f-4pwh-qvx6"
+    },
+    {
+      "module": "qs",
+      "severity": "moderate",
+      "title": "qs's arrayLimit bypass in its bracket notation allows DoS via memory exhaustion",
+      "patchedVersions": ">=6.14.1",
+      "url": "https://github.com/advisories/GHSA-6rw7-vpxm-498p"
+    },
+    {
+      "module": "flatted",
+      "severity": "high",
+      "title": "flatted vulnerable to unbounded recursion DoS in parse() revive phase",
+      "patchedVersions": ">=3.4.0",
+      "url": "https://github.com/advisories/GHSA-25h7-pfq9-p65f"
+    },
+    {
+      "module": "brace-expansion",
+      "severity": "moderate",
+      "title": "brace-expansion: Zero-step sequence causes process hang and memory exhaustion",
+      "patchedVersions": ">=1.1.13",
+      "url": "https://github.com/advisories/GHSA-f886-m6hf-6m8v"
+    },
+    {
+      "module": "yaml",
+      "severity": "moderate",
+      "title": "yaml is vulnerable to Stack Overflow via deeply nested YAML collections",
+      "patchedVersions": ">=1.10.3",
+      "url": "https://github.com/advisories/GHSA-48c2-rrv3-qjmp"
+    },
+    {
+      "module": "yaml",
+      "severity": "moderate",
+      "title": "yaml is vulnerable to Stack Overflow via deeply nested YAML collections",
+      "patchedVersions": ">=2.8.3",
+      "url": "https://github.com/advisories/GHSA-48c2-rrv3-qjmp"
+    },
+    {
+      "module": "uuid",
+      "severity": "moderate",
+      "title": "uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided",
+      "patchedVersions": ">=11.1.1",
+      "url": "https://github.com/advisories/GHSA-w5hq-g745-h8pq"
+    },
+    {
+      "module": "qs",
+      "severity": "moderate",
+      "title": "qs has a remotely triggerable DoS: qs.stringify crashes with TypeError on null/undefined entries in comma-format arrays when encodeValuesOnly is set",
+      "patchedVersions": ">=6.15.2",
+      "url": "https://github.com/advisories/GHSA-q8mj-m7cp-5q26"
+    },
+    {
+      "module": "js-yaml",
+      "severity": "moderate",
+      "title": "JS-YAML: Quadratic-complexity DoS in merge key handling via repeated aliases",
+      "patchedVersions": ">=4.2.0",
+      "url": "https://github.com/advisories/GHSA-h67p-54hq-rp68"
+    },
+    {
+      "module": "brace-expansion",
+      "severity": "high",
+      "title": "brace-expansion: DoS via exponential-time expansion of consecutive non-expanding {} groups",
+      "patchedVersions": ">=1.1.16",
+      "url": "https://github.com/advisories/GHSA-3jxr-9vmj-r5cp"
+    },
+    {
+      "module": "js-yaml",
+      "severity": "high",
+      "title": "js-yaml: YAML merge-key chains can force quadratic CPU consumption",
+      "patchedVersions": ">=4.3.0",
+      "url": "https://github.com/advisories/GHSA-52cp-r559-cp3m"
+    },
+    {
+      "module": "brace-expansion",
+      "severity": "high",
+      "title": "brace-expansion: DoS via unbounded expansion length causing an out-of-memory process crash",
+      "patchedVersions": ">=1.1.17",
+      "url": "https://github.com/advisories/GHSA-mh99-v99m-4gvg"
+    },
+    {
+      "module": "brace-expansion",
+      "severity": "high",
+      "title": "brace-expansion: DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitigation",
+      "patchedVersions": ">=1.1.18",
+      "url": "https://github.com/advisories/GHSA-rgw5-rvv9-x895"
+    },
+    {
+      "module": "js-yaml",
+      "severity": "high",
+      "title": "JS-YAML: Quadratic CPU consumption in !!omap resolution (3.x and 4.x) — CVE-2026-59870 fix not backported",
+      "patchedVersions": ">=4.3.1",
+      "url": "https://github.com/advisories/GHSA-5p4m-2wfm-xmqj"
+    },
+    {
+      "module": "browserslist",
+      "severity": "high",
+      "title": "Browserslist: Unbounded memory growth (no cache eviction) via distinct query results, leading to eventual OOM",
+      "patchedVersions": ">=4.28.7",
+      "url": "https://github.com/advisories/GHSA-c83g-rgw3-j3cx"
+    },
+    {
+      "module": "browserslist",
+      "severity": "high",
+      "title": "Browserslist: Uncaught crash / prototype write via untrusted browserslist-stats.json custom stats (normalizeStats)",
+      "patchedVersions": ">=4.28.7",
+      "url": "https://github.com/advisories/GHSA-73wf-gq98-2v4g"
+    },
+    {
+      "module": "qs",
+      "severity": "moderate",
+      "title": "qs: Denial of Service via Attacker Controlled isBuffer",
+      "patchedVersions": ">=6.16.0",
+      "url": "https://github.com/advisories/GHSA-4mjr-xmp4-gh2g"
+    },
+    {
+      "module": "fflate",
+      "severity": "moderate",
+      "title": "fflate unzipSync can enter an infinite loop when parsing malformed ZIP64 archives",
+      "patchedVersions": ">=0.7.5",
+      "url": "https://github.com/advisories/GHSA-px8p-9vwx-vf98"
+    },
+    {
+      "module": "js-yaml",
+      "severity": "high",
+      "title": "js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources",
+      "patchedVersions": ">=4.3.2",
+      "url": "https://github.com/advisories/GHSA-2883-xcg3-v3hh"
+    },
+    {
+      "module": "brace-expansion",
+      "severity": "moderate",
+      "title": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+      "patchedVersions": ">=1.1.21",
+      "url": "https://github.com/advisories/GHSA-q2hr-2g5m-vwhr"
+    },
+    {
+      "module": "brace-expansion",
+      "severity": "high",
+      "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+      "patchedVersions": ">=1.1.20",
+      "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7"
+    },
+    {
+      "module": "brace-expansion",
+      "severity": "high",
+      "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+      "patchedVersions": ">=1.1.19",
+      "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p"
+    },
+    {
+      "module": "flatted",
+      "severity": "high",
+      "title": "Prototype Pollution via parse() in NodeJS flatted",
+      "patchedVersions": ">=3.4.2",
+      "url": "https://github.com/advisories/GHSA-rf6f-7fwh-wjgh"
+    },
+    {
+      "module": "katex",
+      "severity": "low",
+      "title": "KaTeX: Existing prototype pollution can bypass trust restrictions",
+      "patchedVersions": ">=0.18.2",
+      "url": "https://github.com/advisories/GHSA-238p-pmpm-9mq7"
+    },
+    {
+      "module": "postcss-selector-parser",
+      "severity": "moderate",
+      "title": "PostCSS: Quadratic complexity in flat selector parsing allows CPU exhaustion",
+      "patchedVersions": ">=6.1.5",
+      "url": "https://github.com/advisories/GHSA-rj75-hqrm-r3gf"
+    },
+    {
+      "module": "satori",
+      "severity": "moderate",
+      "title": "Satori-generated SVG has improper escaping",
+      "patchedVersions": ">=0.33.5",
+      "url": "https://github.com/advisories/GHSA-wx4j-mvgx-mqwp"
+    },
+    {
+      "module": "deepmerge",
+      "severity": "low",
+      "title": "deepmerge mergeObject() allows prototype poisoning of returned objects",
+      "patchedVersions": "<0.0.0",
+      "url": "https://github.com/advisories/GHSA-gcqx-w48m-w2h4"
+    },
+    {
+      "module": "qs",
+      "severity": "moderate",
+      "title": "qs : qs.stringify with arrayFormat 'comma' throws an uncaught TypeError on array elements carrying a non-callable own toString (DoS)",
+      "patchedVersions": ">=6.16.1",
+      "url": "https://github.com/advisories/GHSA-6pq8-jhm2-2vcw"
+    },
+    {
+      "module": "glob",
+      "severity": "moderate",
+      "title": "Glob: AbortSignal cancellation bypass allows post-timeout filesystem traversal",
+      "patchedVersions": ">=14.0.2",
+      "url": "https://github.com/advisories/GHSA-3g3m-2fjr-6pw4"
+    },
+    {
+      "module": "lodash.omit",
+      "severity": "moderate",
+      "title": "lodash vulnerable to prototype pollution via array-path bypass in `_.unset`, `_.omit`, and `_.pullAt",
+      "patchedVersions": ">=4.18.0",
+      "url": "https://github.com/advisories/GHSA-f23m-r3pf-42rh"
+    },
+    {
+      "module": "lodash.omit",
+      "severity": "moderate",
+      "title": "Lodash has Prototype Pollution Vulnerability in `_.unset`, `_.omit`, and `_.pullAt` functions",
+      "patchedVersions": ">=4.18.0",
+      "url": "https://github.com/advisories/GHSA-xxjr-mmjv-4gpg"
+    },
+    {
+      "module": "minimatch",
+      "severity": "moderate",
+      "title": "minimatch has potential denial of service via globparts amplification",
+      "patchedVersions": ">=11.0.1",
+      "url": "https://github.com/advisories/GHSA-g3hv-75wg-m249"
+    }
+  ]
+}

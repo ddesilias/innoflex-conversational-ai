@@ -65,7 +65,7 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
         </div>
       ) : (
         <div className="flex items-center justify-center min-h-screen w-full">
-          <p>Connectez-vous pour retrouver votre assistant personnel.</p>
+          <p>Connectez-vous pour retrouver votre assistant IA.</p>
         </div>
       )}
     </>

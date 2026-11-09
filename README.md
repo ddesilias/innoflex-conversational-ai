@@ -1,15 +1,15 @@
-# INNOFLEX Conversational AI
+# INNOFLEX Trading & Investissement
 
-Assistant conversationnel construit avec Next.js et le Vercel AI SDK. Le dépôt explore aussi des interfaces de données de marché et des intégrations d’avatar sur une branche de développement dédiée.
+Espace de trading : journal personnel, cycles, revue des décisions et assistant IA interne. La branche de préproduction ajoute une messagerie privée distincte, sur invitation. Le nom technique du dépôt et les URL historiques sont conservés.
 
-[Voir la démonstration](https://innoflex-conversational-ai.vercel.app) · [Documentation du template d’origine](docs/UPSTREAM-README.md)
+[Voir la démonstration](https://innoflex-trading-investissement.vercel.app) · [Documentation du template d’origine](docs/UPSTREAM-README.md)
 
 ## Fonctionnalités et périmètre
 
 | Branche | Contenu |
 | --- | --- |
 | `main` | Chat IA en streaming, authentification, historique et partage de conversations ; base de la démonstration de production |
-| [`cryptocurrency`](https://github.com/ddesilias/innoflex-conversational-ai/tree/cryptocurrency) | Développement des pages de marché, actualités et avatar ; page de journal encore à l’état d’ébauche |
+| [`cryptocurrency`](https://github.com/ddesilias/innoflex-trading-investissement/tree/cryptocurrency) | Développement des pages de marché, actualités et avatar ; page de journal encore à l’état d’ébauche |
 
 Le journal de trading n’est pas une fonctionnalité achevée. La disponibilité du chat et des intégrations dépend des services et des clés configurés.
 
@@ -29,8 +29,8 @@ flowchart LR
 ## Démarrage local
 
 ```bash
-git clone https://github.com/ddesilias/innoflex-conversational-ai.git
-cd innoflex-conversational-ai
+git clone https://github.com/ddesilias/innoflex-trading-investissement.git
+cd innoflex-trading-investissement
 pnpm install
 pnpm dev
 ```
@@ -61,3 +61,19 @@ La vérification TypeScript de la branche de développement passe. Le contrôle 
 ## Origine du projet
 
 Ce dépôt adapte le template **AI Chatbot de Vercel**. Les crédits et la documentation antérieure sont conservés dans [docs/UPSTREAM-README.md](docs/UPSTREAM-README.md), avec la [licence du dépôt](LICENSE). Les fonctionnalités héritées du template font partie de cette base ; elles ne sont pas présentées comme une création intégrale originale.
+
+## Branche de préproduction actuelle
+
+La branche `security/session-bound-chat-access` contient le journal connecté,
+les cycles indépendants, les revues, l’assistant IA et le pilote de messagerie
+privée sur invitation. Ces fonctionnalités ne sont pas encore promues en
+production et ne constituent pas une offre payante ouverte.
+
+- [Journal et validations](TRADING-JOURNAL.md)
+- [Messagerie privée et limites du pilote](MESSAGERIE.md)
+- [Noms des ressources](RESOURCE-NAMES.md)
+
+Les appels IA restent désactivés tant qu’un budget n’est pas autorisé. L’audit
+de production ne détecte pas de vulnérabilité haute ou critique ; des
+vulnérabilités modérées et basses subsistent. L’audit incluant les outils de
+développement comporte aussi des vulnérabilités hautes, à traiter séparément.

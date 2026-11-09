@@ -3,7 +3,7 @@ import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import BillingPanel from './billing-panel'
 
-export const metadata = { title: { absolute: 'Facturation | INNOFLEX Conversational AI' } }
+export const metadata = { title: { absolute: 'Facturation | INNOFLEX Trading & Investissement' } }
 export const dynamic = 'force-dynamic'
 
 export default async function BillingPage() {

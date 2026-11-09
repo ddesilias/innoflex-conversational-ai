@@ -91,7 +91,7 @@
     white-space: nowrap;
   }
 }
-@media (max-width: 700px) {
+@media (max-width: 900px) {
   .inner {
     gap: 10px;
   }
@@ -189,6 +189,45 @@
     display: none;
   }
   .menuButton > span:last-child {
+    display: none;
+  }
+}
+@media (min-width: 701px) and (max-width: 1100px) {
+  .inner {
+    gap: 12px;
+  }
+  .navigation > a {
+    padding-left: 9px;
+    padding-right: 9px;
+    font-size: 12px;
+  }
+  .account {
+    max-width: 44px;
+  }
+  .account span {
+    max-width: 30px;
+  }
+  .account span:has(+ span) {
+    max-width: none;
+  }
+}
+@media (max-width: 420px) {
+  .brand > span > span > span:last-child {
+    display: block;
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .account button > span {
+    display: none;
+  }
+  .account button {
+    max-width: 100%;
+  }
+}
+@media (max-width: 380px) {
+  .brand > span > span > span:last-child {
     display: none;
   }
 }

@@ -28,3 +28,8 @@
   color: var(--brand-muted);
   margin-top: 3px;
 }
+.description {
+  font-size: 10px;
+  letter-spacing: 0.035em;
+  font-weight: 500;
+}

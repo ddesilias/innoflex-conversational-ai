@@ -18,7 +18,7 @@ export function SidebarToggle() {
       }}
     >
       <IconSidebar className="size-6" />
-      <span className="sr-only">Toggle Sidebar</span>
+      <span className="sr-only">Afficher ou masquer l’historique IA</span>
     </Button>
   )
 }

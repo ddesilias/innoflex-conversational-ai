@@ -51,10 +51,10 @@ export function SidebarActions({
               onClick={() => setShareDialogOpen(true)}
             >
               <IconShare />
-              <span className="sr-only">Share</span>
+              <span className="sr-only">Partager</span>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Share chat</TooltipContent>
+          <TooltipContent>Partager la conversation</TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -65,10 +65,10 @@ export function SidebarActions({
               onClick={() => setDeleteDialogOpen(true)}
             >
               <IconTrash />
-              <span className="sr-only">Delete</span>
+              <span className="sr-only">Supprimer</span>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Delete chat</TooltipContent>
+          <TooltipContent>Supprimer la conversation</TooltipContent>
         </Tooltip>
       </div>
       <ChatShareDialog
@@ -81,15 +81,14 @@ export function SidebarActions({
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>Supprimer cette conversation ?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete your chat message and remove your
-              data from our servers.
+              Cette conversation IA sera supprimée de votre historique.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isRemovePending}>
-              Cancel
+              Annuler
             </AlertDialogCancel>
             <AlertDialogAction
               disabled={isRemovePending}
@@ -115,7 +114,7 @@ export function SidebarActions({
               }}
             >
               {isRemovePending && <IconSpinner className="mr-2 animate-spin" />}
-              Delete
+              Supprimer
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

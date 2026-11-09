@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation'
 export default function LoginForm({
   returnTo = '/'
 }: {
-  returnTo?: '/' | '/trading-journal'
+  returnTo?: '/' | '/trading-journal' | '/messages'
 }) {
   const router = useRouter()
   const [result, dispatch] = useActionState(authenticate, undefined)
@@ -38,7 +38,7 @@ export default function LoginForm({
         <h1 className="mb-3 text-2xl font-bold">
           {returnTo === '/trading-journal'
             ? 'Retrouvez votre journal de trading'
-            : 'Retrouvez votre assistant personnel'}
+            : 'Retrouvez votre espace Trading & Investissement'}
         </h1>
         <div className="w-full">
           <div>
@@ -93,11 +93,7 @@ export default function LoginForm({
       </div>
 
       <Link
-        href={
-          returnTo === '/trading-journal'
-            ? '/signup?next=/trading-journal'
-            : '/signup'
-        }
+        href={returnTo !== '/' ? `/signup?next=${returnTo}` : '/signup'}
         className="flex flex-row gap-1 text-sm text-zinc-400"
       >
         Pas encore de compte ?{' '}

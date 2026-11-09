@@ -8,7 +8,7 @@ export function ProductLanding() {
     <div className={styles.landing}>
       <section className={styles.introduction} aria-labelledby="product-title">
         <div>
-          <p className={styles.productName}>INNOFLEX SI / JOURNAL DE TRADING</p>
+          <p className={styles.productName}>INNOFLEX Trading & Investissement / JOURNAL DE TRADING</p>
           <h1 id="product-title">
             Préparez vos séances.
             <br />
@@ -188,7 +188,7 @@ export function ProductLanding() {
       </section>
       <footer className={styles.footer}>
         <div>
-          <Link href="/presentation" aria-label="INNOFLEX SI — Présentation">
+          <Link href="/presentation" aria-label="INNOFLEX Trading & Investissement — Présentation">
             <BrandLockup />
           </Link>
           <p>Un produit INNOFLEX ÉQUIPE</p>

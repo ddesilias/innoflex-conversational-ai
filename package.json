@@ -108,6 +108,7 @@
     "eslint-plugin-tailwindcss": "^3.14.0",
     "eslint-plugin-unused-imports": "^3.2.0",
     "postcss": "^8.5.32",
+    "postcss-import": "15.1.0",
     "prettier": "^3.2.4",
     "prettier-plugin-tailwindcss": "^0.6.6",
     "prisma": "^5.16.1",

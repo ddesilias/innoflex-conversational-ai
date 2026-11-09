@@ -29,7 +29,7 @@ Vert, ambre et rouge sont réservés aux états métier/santé avec un libellé 
 
 ## Marque et produit
 
-INNOFLEX est la marque commune. INNOFLEX SI est le nom affiché de l’assistant personnel ; le nom n’implique aucune certification ou capacité de superintelligence. Le nouveau symbole N en SVG est une création distincte adaptée aux petites interfaces, sans halo lumineux. Les variantes produit doivent réutiliser ce symbole, la palette et la typographie. Garder un espace libre équivalent à un quart de la hauteur du symbole ; ne pas l’étirer ou lui ajouter une ombre.
+INNOFLEX est la marque commune. INNOFLEX Trading & Investissement est le nom de cette application. Son assistant IA et sa messagerie privée sont des espaces distincts. Le nouveau symbole N en SVG est une création distincte adaptée aux petites interfaces, sans halo lumineux. Les variantes produit doivent réutiliser ce symbole, la palette et la typographie. Garder un espace libre équivalent à un quart de la hauteur du symbole ; ne pas l’étirer ou lui ajouter une ombre.
 
 La typographie d’interface reste Geist Sans ; Geist Mono sert aux valeurs techniques. Les fonds restent calmes, les boutons sobres, et les exemples sont clairement identifiés. Aucun témoignage, compteur client, badge de conformité ou promesse commerciale inventé.
 
@@ -38,6 +38,6 @@ La typographie d’interface reste Geist Sans ; Geist Mono sert aux valeurs tech
 - `tokens.json` : palette et références structurées.
 - `../styles/brand.css` : variables CSS partagées.
 - `../public/innoflex-mark.svg` : symbole commun.
-- `../components/brand-lockup.tsx` : signature INNOFLEX SI.
+- `../components/brand-lockup.tsx` : signature INNOFLEX Trading & Investissement.
 
-La première application est le pilote SI. Les autres dépôts n’ont pas encore été harmonisés : leur adoption doit conserver les contrastes, états d’erreur et couleurs de monitoring. Les noms techniques et les URLs existants ne sont pas une preuve de déploiement de cette identité sur tout le portefeuille.
+La première application est le pilote Trading & Investissement. Les autres dépôts n’ont pas encore été harmonisés : leur adoption doit conserver les contrastes, états d’erreur et couleurs de monitoring. Les noms techniques et les URLs existants ne sont pas une preuve de déploiement de cette identité sur tout le portefeuille.

@@ -21,7 +21,7 @@ export async function ensureTestCustomer(
   if (intent.createdAt > now || now - intent.createdAt >= 23 * 60 * 60_000) {
     throw new Error('Customer creation requires reconciliation')
   }
-  const customer = await stripe.customers.create({ metadata: { userId, service: 'innoflex-conversational-ai' } },
+  const customer = await stripe.customers.create({ metadata: { userId, service: 'innoflex-trading-investissement' } },
     { idempotencyKey: `innoflex-customer:${intent.id}` })
   if (customer.livemode || customer.metadata.userId !== userId) throw new Error('Unexpected customer scope')
   await store.bind(userId, customer.id)

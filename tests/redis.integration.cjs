@@ -262,3 +262,31 @@ test('cycle collection limits and malformed indexes cannot leave partial writes'
  await assert.rejects(evaluate(saveTradingCycleScript,['test:g20:no-partial-write','test:g20:corrupt-index'],[0,'g20:{}','id','meta:{}']));
  assert.equal(await redis('EXISTS','test:g20:no-partial-write'),0);
 });
+
+test('private messages require invitation membership and keep AI and other accounts separate',async()=>{
+ function moduleFrom(file, dependencies={}){const output={};vm.runInNewContext(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,{exports:output,require:name=>name in dependencies?dependencies[name]:require(name),process:{env:{NODE_ENV:'development'}}});return output}
+ const accounts=moduleFrom('lib/accounts/keys.ts');
+ const store=moduleFrom('lib/messaging/store.ts',{'@/lib/accounts/keys':accounts});
+ function session(id){return moduleFrom('app/messages/actions.ts',{'@/auth':{auth:async()=>id?{user:{id}}:null},'@/lib/messaging/store':store,'@vercel/kv':{kv:{eval:evaluate,smembers:key=>redis('SMEMBERS',key)}}})}
+ const alice=session('message-alice'),bob=session('message-bob'),eve=session('message-eve');
+ const created=await alice.createPrivateRoom('Synthetic private discussion');assert.equal(created.ok,true);assert.equal(created.invitation.length,101);
+ const empty=await alice.loadPrivateRoom(created.id);assert.equal(empty.ok,true);assert.equal(empty.room.messages.length,0);
+ assert.equal((await eve.loadPrivateRoom(created.id)).ok,false);
+ assert.equal((await eve.sendPrivateMessage(created.id,'foreign',randomUUID())).ok,false);
+ assert.equal((await alice.joinPrivateRoom(created.invitation)).ok,false);
+ assert.equal((await bob.joinPrivateRoom(created.invitation)).ok,true);
+ assert.equal((await eve.joinPrivateRoom(created.invitation)).ok,false);
+ const nonce=randomUUID();assert.equal((await alice.sendPrivateMessage(created.id,'Synthetic message',nonce)).ok,true);assert.equal((await alice.sendPrivateMessage(created.id,'Synthetic message',nonce)).ok,true);
+ const read=await bob.loadPrivateRoom(created.id);assert.equal(read.room.messages.length,1);assert.equal(read.room.messages[0].text,'Synthetic message');assert.equal(read.room.messages[0].mine,false);assert.ok(!('author' in read.room.messages[0]));
+ assert.equal((await bob.sendPrivateMessage(created.id,'Synthetic reply',randomUUID())).ok,true);
+ assert.equal((await alice.loadPrivateRoom(created.id)).room.messages[1].mine,false);
+ assert.equal((await eve.listPrivateRooms()).rooms.length,0);
+ assert.equal((await bob.listPrivateRooms()).rooms.length,1);
+ await redis('SADD',store.memberIndex('message-eve'),created.id);assert.equal((await eve.listPrivateRooms()).rooms.length,0);
+ for(let i=0;i<205;i++)await redis('RPUSH',store.roomKey(created.id)+':messages',JSON.stringify({id:randomUUID(),author:'message-alice',text:'bounded-history-fixture',at:new Date().toISOString()}));
+ assert.equal((await bob.sendPrivateMessage(created.id,'After history fixture',randomUUID())).ok,true);assert.equal(await redis('LLEN',store.roomKey(created.id)+':messages'),200);
+ const expired=await alice.createPrivateRoom('Expiring invitation');const token=expired.invitation.split('.')[1];const digest=require('node:crypto').createHash('sha256').update(token).digest('hex');await redis('DEL',store.messagingPrefix()+'invite:'+digest);assert.equal((await eve.joinPrivateRoom(expired.invitation)).ok,false);
+ for(let i=0;i<9;i++)assert.equal((await alice.sendPrivateMessage(created.id,'rate test',randomUUID())).ok,true);
+ assert.equal((await alice.sendPrivateMessage(created.id,'blocked',randomUUID())).ok,false);
+ assert.equal((await session(null).listPrivateRooms()).ok,false);
+});

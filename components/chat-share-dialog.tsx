@@ -42,7 +42,7 @@ export function ChatShareDialog({
       url.pathname = chat.sharePath
       copyToClipboard(url.toString())
       onCopy()
-      toast.success('Share link copied to clipboard')
+      toast.success('Lien de partage copié')
     },
     [copyToClipboard, onCopy]
   )
@@ -51,9 +51,10 @@ export function ChatShareDialog({
     <Dialog {...props}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Share link to chat</DialogTitle>
+          <DialogTitle>Partager un lien vers la conversation</DialogTitle>
           <DialogDescription>
-            Anyone with the URL will be able to view the shared chat.
+            Toute personne disposant du lien pourra consulter cette conversation
+            IA partagée.
           </DialogDescription>
         </DialogHeader>
         <div className="p-4 space-y-1 text-sm border rounded-md">
@@ -82,10 +83,10 @@ export function ChatShareDialog({
             {isSharePending ? (
               <>
                 <IconSpinner className="mr-2 animate-spin" />
-                Copying...
+                Copie en cours…
               </>
             ) : (
-              <>Copy link</>
+              <>Copier le lien</>
             )}
           </Button>
         </DialogFooter>

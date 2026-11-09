@@ -37,19 +37,21 @@ export function ClearHistory({
       <AlertDialogTrigger asChild>
         <Button variant="ghost" disabled={!isEnabled || isPending}>
           {isPending && <IconSpinner className="mr-2" />}
-          Clear history
+          Effacer l’historique
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>
+            Effacer toutes les conversations IA ?
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete your chat history and remove your data
-            from our servers.
+            Vos conversations IA enregistrées seront supprimées de votre
+            historique.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>Annuler</AlertDialogCancel>
           <AlertDialogAction
             disabled={isPending}
             onClick={event => {
@@ -66,7 +68,7 @@ export function ClearHistory({
             }}
           >
             {isPending && <IconSpinner className="mr-2 animate-spin" />}
-            Delete
+            Supprimer
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

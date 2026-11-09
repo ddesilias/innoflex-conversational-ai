@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation'
 export default function SignupForm({
   returnTo = '/'
 }: {
-  returnTo?: '/' | '/trading-journal'
+  returnTo?: '/' | '/trading-journal' | '/messages'
 }) {
   const router = useRouter()
   const [result, dispatch] = useActionState(signup, undefined)
@@ -83,11 +83,7 @@ export default function SignupForm({
       </div>
 
       <Link
-        href={
-          returnTo === '/trading-journal'
-            ? '/login?next=/trading-journal'
-            : '/login'
-        }
+        href={returnTo !== '/' ? `/login?next=${returnTo}` : '/login'}
         className="flex flex-row gap-1 text-sm text-zinc-400"
       >
         Vous avez déjà un compte ?

@@ -59,7 +59,7 @@ export function ProductPreview() {
     <div className={styles.workspace}>
       <div className={styles.workspaceToolbar}>
         <span className={styles.workspaceTitle}>
-          INNOFLEX SI <span>/</span> Cycle de démonstration
+          INNOFLEX Trading & Investissement <span>/</span> Cycle de démonstration
         </span>
         <span className={styles.exampleBadge}>DONNÉES FICTIVES · CAD</span>
       </div>

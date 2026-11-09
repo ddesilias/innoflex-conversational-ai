@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "scanDate": "2026-11-08",
+  "scanDate": "2026-11-09",
   "scope": "production-dependencies",
   "tool": "pnpm audit --prod --json",
-  "dependencyFingerprint": "4c8d00375844385d6e0d0e30d178c43656793d474748bf74e1c2039cd94fdac8",
+  "dependencyFingerprint": "d0462f4a99e6b1c9725724da5f92f6f638621f63d94b9d0ce0ba20882f608088",
   "branch": "security/session-bound-chat-access",
   "vulnerabilities": {
     "info": 0,
@@ -11,13 +11,6 @@
     "moderate": 32,
     "high": 0,
     "critical": 0
-  },
-  "baselineVulnerabilities": {
-    "info": 0,
-    "low": 14,
-    "moderate": 90,
-    "high": 71,
-    "critical": 13
   },
   "advisories": [
     {
@@ -245,12 +238,11 @@
       "url": "https://github.com/advisories/GHSA-g3hv-75wg-m249"
     }
   ],
-  "limits": "Dependency alerts, not evidence of exploitation. Development branch only; production was not upgraded.",
-  "previousVulnerabilities": {
+  "baselineVulnerabilities": {
     "info": 0,
-    "low": 7,
-    "moderate": 42,
-    "high": 2,
-    "critical": 0
+    "low": 14,
+    "moderate": 90,
+    "high": 71,
+    "critical": 13
   }
 }

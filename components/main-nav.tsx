@@ -31,7 +31,16 @@ export default function MainNav({
       active: pathname === '/trading-journal'
     },
     ...(signedIn
-      ? [{ title: 'Assistant', href: '/', active: inAssistant }]
+      ? [
+          {
+            title: 'Messages privés',
+            href: '/messages',
+            active: pathname === '/messages'
+          }
+        ]
+      : []),
+    ...(signedIn
+      ? [{ title: 'Assistant IA', href: '/', active: inAssistant }]
       : [])
   ]
   return (
@@ -40,7 +49,7 @@ export default function MainNav({
         <Link
           href="/presentation"
           className={styles.brand}
-          aria-label="INNOFLEX SI — Présentation"
+          aria-label="INNOFLEX Trading & Investissement — Présentation"
         >
           <BrandLockup />
         </Link>

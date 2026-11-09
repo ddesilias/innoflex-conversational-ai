@@ -1,0 +1,286 @@
+.page {
+  max-width: 1240px;
+  width: 100%;
+  margin: auto;
+  padding: 40px;
+  color: #172554;
+}
+.heading > p {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: #52627a;
+}
+.heading h1 {
+  font-size: 34px;
+  letter-spacing: -1px;
+  font-weight: 600;
+  margin: 14px 0;
+}
+.heading > span {
+  font-size: 14px;
+  color: #52627a;
+  line-height: 1.7;
+}
+.heading a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: #1d4ed8;
+}
+.notice {
+  font-size: 13px;
+  background: #eef3ff;
+  border-left: 3px solid #2563eb;
+  padding: 14px 18px;
+  margin: 24px 0;
+}
+.workspace {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  border: 1px solid #dbe3f0;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 520px;
+}
+.sidebar {
+  padding: 20px;
+  border-right: 1px solid #dbe3f0;
+  background: #f8faff;
+  min-width: 0;
+}
+.listHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.page h2 {
+  font-size: 16px;
+  font-weight: 600;
+}
+.page button {
+  border: 1px solid #b8c5da;
+  border-radius: 5px;
+  font-size: 12px;
+  padding: 9px 12px;
+  min-height: 40px;
+  color: #172554;
+  background: white;
+}
+.page button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.page button:focus-visible,
+.page input:focus-visible,
+.page textarea:focus-visible {
+  outline: 3px solid #7c3aed;
+  outline-offset: 2px;
+}
+.sidebar ul {
+  list-style: none;
+  margin: 20px 0;
+}
+.sidebar li {
+  margin: 8px 0;
+}
+.sidebar li button {
+  width: 100%;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.sidebar li button[aria-pressed='true'] {
+  border-color: #2563eb;
+  background: #eef3ff;
+}
+.sidebar li small {
+  display: block;
+  font-size: 11px;
+  color: #52627a;
+  margin-top: 6px;
+}
+.sidebar details {
+  border-top: 1px solid #dbe3f0;
+  margin-top: 18px;
+  padding-top: 16px;
+}
+.sidebar summary {
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.page label {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  gap: 8px;
+}
+.page input,
+.page textarea {
+  border: 1px solid #b8c5da;
+  border-radius: 5px;
+  padding: 10px;
+  background: white;
+  color: #172554;
+  min-width: 0;
+  width: 100%;
+  font-size: 16px;
+}
+.sidebar form {
+  margin-top: 18px;
+}
+.sidebar form p,
+.invitation p {
+  font-size: 12px;
+  color: #52627a;
+  line-height: 1.6;
+  margin: 12px 0;
+}
+.sidebar form > button {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+.invitation {
+  margin: 18px 0;
+  padding: 14px;
+  border: 1px solid #cbd8f7;
+  border-radius: 6px;
+}
+.invitation strong {
+  font-size: 12px;
+  display: block;
+  margin-bottom: 10px;
+}
+.invitation textarea {
+  font-family: monospace;
+  font-size: 12px;
+  min-height: 90px;
+}
+.conversation {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.roomHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #dbe3f0;
+  gap: 12px;
+  padding-bottom: 18px;
+}
+.roomHeading p {
+  font-size: 12px;
+  color: #52627a;
+  margin-top: 7px;
+}
+.messages {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 24px 0;
+}
+.messages li {
+  max-width: 88%;
+  align-self: flex-start;
+  border: 1px solid #dbe3f0;
+  background: #f8faff;
+  border-radius: 8px;
+  padding: 14px;
+}
+.messages li[data-mine='true'] {
+  align-self: flex-end;
+  background: #eef3ff;
+  border-color: #cbd8f7;
+}
+.messages span {
+  font-size: 10px;
+  color: #52627a;
+}
+.messages p {
+  font-size: 14px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin-top: 8px;
+}
+.composer {
+  margin-top: auto;
+  padding-top: 20px;
+}
+.composer textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+.composer > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+.composer span {
+  font-size: 11px;
+  color: #52627a;
+}
+.composer button {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+.retention {
+  font-size: 11px;
+  color: #52627a;
+  line-height: 1.7;
+  border-top: 1px solid #dbe3f0;
+  margin-top: 24px;
+  padding-top: 16px;
+}
+.empty {
+  padding: 60px 20px;
+  text-align: center;
+  margin: auto;
+  max-width: 450px;
+}
+.empty p,
+.hint {
+  font-size: 13px;
+  color: #52627a;
+  line-height: 1.8;
+  margin: 16px 0;
+}
+.roomHeading h2 {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 800px) {
+  .page {
+    padding: 40px;
+  }
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    border-right: 0;
+    border-bottom: 1px solid #dbe3f0;
+  }
+  .conversation {
+    padding: 18px;
+  }
+  .empty {
+    padding: 30px 10px;
+  }
+  .roomHeading {
+    flex-wrap: wrap;
+  }
+  .heading h1 {
+    font-size: 29px;
+  }
+}
+
+@media (max-width: 720px) {
+  .page {
+    padding: 24px;
+  }
+}
