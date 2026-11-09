@@ -12,12 +12,13 @@ let container
 function load(file) {
   const output = {}
   vm.runInNewContext(ts.transpileModule(fs.readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText,
-    { exports: output, require: name => { if (name === 'server-only') return {}; if (name === 'node:crypto') return require('node:crypto'); if (name === './keys') return {}; if (name === './session') return {}; if (name === './attempts') return {}; if (name === './password') return {}; if (name === '@vercel/kv') return { kv: {} }; throw Error(name) } })
+    { exports: output, require: name => { if (name === 'server-only') return {}; if (name === 'node:crypto') return require('node:crypto'); if (name === '@/lib/security/read-body') return {}; if (name === './keys') return {}; if (name === './session') return {}; if (name === './attempts') return {}; if (name === './password') return {}; if (name === '@vercel/kv') return { kv: {} }; throw Error(name) } })
   return output
 }
 const { createAccountScript, upgradePasswordScript } = load('lib/accounts/store.ts')
 const { issueResetScript, completeResetScript } = load('lib/accounts/reset.ts')
 const { authAttemptScript } = load('lib/accounts/attempts.ts')
+const { recordDeliveryScript } = load('lib/email/events.ts')
 const { quotaScript } = load('lib/security/quota.ts')
 const { saveChatScript } = load('lib/security/save-chat.ts')
 const { bindCustomerScript } = load('lib/billing/customer-store.ts')
@@ -152,4 +153,22 @@ test('preview recovery cannot change a production account with the same email', 
   assert.equal(await evaluate(completeResetScript,[token,preview],['preview-user','shared@example.test','0','new-password','new-salt']),1);
   assert.equal(await redis('HGET',preview,'password'),'new-password');
   assert.equal(await redis('HGET',production,'password'),'prod-password');
+});
+
+test('delivery events increment once under retries and preserve the newest timestamp',async()=>{
+ const keys=['mail:seen:one','mail:day:preview','mail:last:preview'];
+ const results=await Promise.all(Array.from({length:6},()=>evaluate(recordDeliveryScript,keys,['delivered',100])));
+ assert.equal(results.filter(r=>r===1).length,1);
+ assert.equal(await redis('HGET',keys[1],'delivered'),'1');
+ await evaluate(recordDeliveryScript,['mail:seen:two',keys[1],keys[2]],['bounce',90]);
+ assert.equal(await redis('GET',keys[2]),'100');
+ assert.ok(await redis('TTL',keys[0])>0);
+});
+test('corrupt delivery counters never consume an event before a retry can succeed',async()=>{
+ const keys=['mail:seen:corrupt','mail:day:corrupt','mail:last:corrupt'];
+ await redis('SET',keys[1],'wrong-type');
+ await assert.rejects(evaluate(recordDeliveryScript,keys,['delivered',100]));
+ assert.equal(await redis('EXISTS',keys[0]),0);
+ await redis('DEL',keys[1]);
+ assert.equal(await evaluate(recordDeliveryScript,keys,['delivered',100]),1);
 });

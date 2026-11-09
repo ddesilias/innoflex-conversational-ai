@@ -51,7 +51,17 @@ Vérification en lecture seule dans la session SendGrid de l’utilisateur :
 - Une clé dédiée « Conversational AI » existe, avec accès Mail Send et restrictions sur les autres catégories consultées. Sa valeur n’a pas été affichée ni changée pendant cet audit.
 - La liste Dynamic Templates est vide. Le code actuel utilise du contenu `text/plain`, sans `template_id` ; l’absence de template ne bloque donc pas ce code.
 - Open Tracking et Click Tracking sont activés globalement. Le code des deux messages de récupération définit explicitement ces suivis à false, y compris les clics en texte brut. Subscription Tracking et Google Analytics Tracking sont désactivés globalement. Aucun réglage global n’a été modifié.
-- Aucun Event Webhook n’est configuré. Les livraisons, erreurs, rebonds et plaintes ne sont donc pas encore transmis à l’application ou au dashboard.
+- Lors de cet audit initial, aucun Event Webhook n’était configuré. Un brouillon signé a ensuite été préparé, comme décrit ci-dessous.
 - Le compte affiche Trial API & MC, avec une fin d’essai au 8 janvier 2027. La pérennité de l’offre et les limites doivent être revues avant ouverture commerciale.
 
 Cet audit confirme les réglages affichés et leur cohérence avec le code ; il ne confirme pas la réception en boîte de réception. Aucun e-mail réel n’a été envoyé, aucun secret changé et aucun enregistrement supprimé. Prochaines validations : parcours complet sur un compte de test, réception du lien et de la notification, puis remontée signée des événements de livraison.
+
+## Supervision signée des livraisons — préparation
+
+Un endpoint SendGrid « INNOFLEX Conversational AI - Preview » a été enregistré avec signature activée et réception **désactivée**. Il cible `/api/webhooks/sendgrid` sur l’alias de la branche Preview. Les événements sélectionnés sont processed, delivered, deferred, dropped, bounced et spam reports. La protection Vercel empêche encore SendGrid d’atteindre ce Preview ; aucun contournement n’a été partagé.
+
+`SENDGRID_EVENT_PUBLIC_KEY` contient la clé publique de vérification ECDSA P-256 et `SENDGRID_EVENTS_ENABLED=false` garde la collecte inactive. Le serveur vérifie la signature sur les octets bruts avant de lire les événements. Chaque message porte le produit et l’environnement ; les événements étrangers sont ignorés. Les compteurs journaliers UTC restent 30 jours, les empreintes de déduplication 31 jours. Aucune adresse, IP, raison de rebond ou contenu de message n’est conservé dans ces compteurs. Les reprises de SendGrid ne comptent chaque événement qu’une fois ; une panne de stockage répond 503 pour permettre une nouvelle tentative.
+
+`/api/monitoring/email` exige un `EMAIL_MONITORING_TOKEN` serveur distinct par environnement. Le dashboard garde ce jeton dans son fichier privé ignoré `monitoring.local.json`. Sans collecte activée, il affiche « collecte non raccordée » et des compteurs inconnus. Les nombres sont des événements de la journée, pas des utilisateurs uniques ni un taux de livraison. Un Preview protégé reste signalé comme accès requis.
+
+Validation : 80 tests applicatifs et 14 tests Redis passent, dont signature officielle SendGrid, modification du corps, isolation des environnements, doublons concurrents et reprise après compteur corrompu. Aucun e-mail réel n’a été envoyé. La réception réelle et l’activation externe restent à valider avant commercialisation.
