@@ -48,3 +48,11 @@ La clé SendGrid est détectée localement et le mode sandbox a répondu HTTP 20
 Les comptes et jetons de Local et Preview utilisent des préfixes séparés pour que les essais sur le Redis partagé ne puissent pas modifier les comptes de Production. Les comptes historiques de Production restent accessibles sous leurs anciennes clés. Il faut créer des comptes de test distincts, sans copie des comptes réels. La séparation des autres données de l’application reste à examiner.
 
 L’isolation et le raccordement portent la validation à **73 tests et 12 tests Redis**, avec TypeScript et compilation réussis. La récupération locale est activée sur les comptes du namespace `local` avec l’expéditeur fourni par l’utilisateur. Le test SendGrid reste un test sandbox sans livraison. La réception et le changement de mot de passe de bout en bout sur un compte de test restent à effectuer avant toute ouverture commerciale.
+
+## Nouveau Redis — validation locale réelle
+
+Une nouvelle base Upstash `innoflex-conversational-ai-pilot` a été créée sur le plan Free en us-east-1, avec TLS, persistance et éviction désactivée. Les anciennes configurations sont sauvegardées localement dans `.local-backups/`, exclu de Git et réservé à l’utilisateur. `.env.local` pointe sur la nouvelle base ; le fichier `.env` historique n’est pas la référence active pour ces deux paramètres.
+
+Le PING authentifié a répondu PONG. Un contrôle sur un compte jetable dans le namespace `local` a validé création, connexion, changement de mot de passe, refus de réutiliser le jeton, rejet de l’ancienne session et connexion avec le nouveau mot de passe. Ce compte et son jeton ont été supprimés après le test. Aucun e-mail réel n’a été envoyé et aucune ancienne donnée n’a été restaurée.
+
+Les variables Redis spécifiques à la branche Preview ont été préparées pour cette nouvelle base, avec le namespace `preprod`. La réception du lien SendGrid et le parcours utilisateur complet restent à valider. La configuration historique de Production n’a pas été modifiée.

@@ -39,3 +39,6 @@ yarn-error.log*
 
 # Separate local development artifacts from production builds
 .next-dev/
+
+# Private local configuration backups
+.local-backups/

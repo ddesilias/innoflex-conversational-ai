@@ -36,3 +36,7 @@ Références : [API Mail Send](https://www.twilio.com/docs/sendgrid/api-referenc
 L’expéditeur `dimitry.d@innoflexequipe.com`, l’origine `http://localhost:3101` et le namespace `local` sont configurés dans `.env.local`, sans clé dans Git. La récupération est activée pour les comptes locaux isolés. Une création de compte de test locale est nécessaire : les comptes de Production ne sont ni copiés ni utilisés.
 
 Une requête de validation SendGrid avec `sandbox_mode.enable=true` a répondu HTTP 200 sans livraison ; elle valide la forme de l’appel, pas la réception en boîte de réception. La configuration Preview est limitée à `security/session-bound-chat-access`, avec un secret de session propre et le namespace `preprod`. Production n’est pas activée par ces opérations.
+
+## Redis de remplacement raccordé en local
+
+Le blocage DNS de l’ancienne URL est levé pour le profil local : `.env.local` utilise la nouvelle base Upstash dédiée au pilote. Le PING et le parcours serveur de récupération ont été validés sur un compte jetable, supprimé ensuite. Cela ne valide pas encore la livraison SendGrid ni l’interface complète. Les anciennes valeurs restent dans la sauvegarde locale privée ; les comptes de Production n’ont pas été copiés ni modifiés.
