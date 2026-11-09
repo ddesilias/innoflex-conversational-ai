@@ -1,6 +1,6 @@
 # Récupération de compte — SendGrid
 
-Le code SendGrid et les formulaires sont préparés sur la branche de travail. Aucun envoi réel n’a été effectué. La clé locale a été détectée et une validation API sandbox a répondu HTTP 200, sans livraison. L’expéditeur déclaré par l’utilisateur est `dimitry.d@innoflexequipe.com`. La configuration Preview est limitée à la branche de travail et utilise un secret de session distinct. La réception réelle n’est pas encore validée.
+Le code SendGrid et les formulaires sont préparés sur la branche de travail. Aucun envoi réel n’a été effectué pendant les vérifications. La clé locale a été détectée et une validation API sandbox a répondu HTTP 200, sans livraison. L’expéditeur déclaré par l’utilisateur est `dimitry.d@innoflexequipe.com`. La configuration Preview est limitée à la branche de travail et utilise un secret de session distinct. La réception réelle n’est pas encore validée.
 
 ## Configuration par environnement
 
@@ -30,3 +30,9 @@ Références : [API Mail Send](https://www.twilio.com/docs/sendgrid/api-referenc
 ## Isolation des essais
 
 `ACCOUNT_STORAGE_NAMESPACE=local` en développement et `ACCOUNT_STORAGE_NAMESPACE=preprod` en Preview préfixent les clés des comptes et des jetons de récupération. Un Preview sans namespace refuse l’accès aux comptes. Les clés historiques de Production restent inchangées ; définir un namespace en Production est refusé pour éviter une migration implicite. Les utilisateurs de test doivent créer un compte distinct dans chaque environnement. Aucun compte existant n’est déplacé ni copié. Les autres données et les compteurs globaux partagent encore Redis ; cette isolation des comptes ne constitue pas une séparation complète de l’infrastructure.
+
+## Activation locale
+
+L’expéditeur `dimitry.d@innoflexequipe.com`, l’origine `http://localhost:3101` et le namespace `local` sont configurés dans `.env.local`, sans clé dans Git. La récupération est activée pour les comptes locaux isolés. Une création de compte de test locale est nécessaire : les comptes de Production ne sont ni copiés ni utilisés.
+
+Une requête de validation SendGrid avec `sandbox_mode.enable=true` a répondu HTTP 200 sans livraison ; elle valide la forme de l’appel, pas la réception en boîte de réception. La configuration Preview est limitée à `security/session-bound-chat-access`, avec un secret de session propre et le namespace `preprod`. Production n’est pas activée par ces opérations.
