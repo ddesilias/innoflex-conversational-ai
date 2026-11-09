@@ -40,3 +40,18 @@ Une requête de validation SendGrid avec `sandbox_mode.enable=true` a répondu H
 ## Redis de remplacement raccordé en local
 
 Le blocage DNS de l’ancienne URL est levé pour le profil local : `.env.local` utilise la nouvelle base Upstash dédiée au pilote. Le PING et le parcours serveur de récupération ont été validés sur un compte jetable, supprimé ensuite. Cela ne valide pas encore la livraison SendGrid ni l’interface complète. Les anciennes valeurs restent dans la sauvegarde locale privée ; les comptes de Production n’ont pas été copiés ni modifiés.
+
+## Audit du compte SendGrid — 8 novembre 2026
+
+Vérification en lecture seule dans la session SendGrid de l’utilisateur :
+
+- L’expéditeur `dimitry.d@innoflexequipe.com` est marqué Verified.
+- Le domaine `em9866.innoflexequipe.com` est marqué Verified ; ses CNAME de retour et DKIM `s1` / `s2` ainsi que le TXT DMARC sont marqués Verified. La politique DMARC affichée est `p=quarantine` avec alignement souple. Le domaine vérifié n’est pas coché comme domaine par défaut ; SendGrid indique qu’un domaine correspondant au FROM est utilisé en cas de correspondance.
+- Les anciennes tentatives `em3504.innoflexequipe.com` et `em5666.innoflexequipe.com` sont marquées Failed et restent conservées. Aucune entrée DNS ni authentification n’a été supprimée.
+- Une clé dédiée « Conversational AI » existe, avec accès Mail Send et restrictions sur les autres catégories consultées. Sa valeur n’a pas été affichée ni changée pendant cet audit.
+- La liste Dynamic Templates est vide. Le code actuel utilise du contenu `text/plain`, sans `template_id` ; l’absence de template ne bloque donc pas ce code.
+- Open Tracking et Click Tracking sont activés globalement. Le code des deux messages de récupération définit explicitement ces suivis à false, y compris les clics en texte brut. Subscription Tracking et Google Analytics Tracking sont désactivés globalement. Aucun réglage global n’a été modifié.
+- Aucun Event Webhook n’est configuré. Les livraisons, erreurs, rebonds et plaintes ne sont donc pas encore transmis à l’application ou au dashboard.
+- Le compte affiche Trial API & MC, avec une fin d’essai au 8 janvier 2027. La pérennité de l’offre et les limites doivent être revues avant ouverture commerciale.
+
+Cet audit confirme les réglages affichés et leur cohérence avec le code ; il ne confirme pas la réception en boîte de réception. Aucun e-mail réel n’a été envoyé, aucun secret changé et aucun enregistrement supprimé. Prochaines validations : parcours complet sur un compte de test, réception du lien et de la notification, puis remontée signée des événements de livraison.
