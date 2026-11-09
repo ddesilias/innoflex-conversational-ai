@@ -1,0 +1,28 @@
+# Récupération de compte — SendGrid
+
+Le code SendGrid et les formulaires sont préparés sur la branche de travail. Aucun envoi réel n’a été effectué. La configuration locale vérifiée ne contient pas les quatre paramètres nécessaires ; le service reste désactivé.
+
+## Configuration par environnement
+
+- `SENDGRID_API_KEY` : clé privée ayant uniquement la permission Mail Send, stockée comme secret serveur. Jamais de préfixe NEXT_PUBLIC ni de clé dans Git ou dans une conversation.
+- `SENDGRID_FROM_EMAIL` : adresse d’expédition authentifiée/vérifiée dans SendGrid. La présence de la variable ne certifie pas cette vérification.
+- `PASSWORD_RESET_ORIGIN` : origine exacte de l’application qui doit recevoir le lien, sans chemin, fragment, identifiants ou paramètres. HTTPS obligatoire, sauf localhost en développement. Ne dépend jamais d’un en-tête Host envoyé par un client.
+- `PASSWORD_RESET_ENABLED` : `false` par défaut. Activer avec `true` seulement lorsque l’expéditeur et les secrets de l’environnement sont prêts à être testés.
+
+En local, utiliser `.env.local` à partir de `.env.example` et redémarrer le serveur. Dans Vercel, configurer séparément Development et Preview ; une modification exige un nouveau déploiement. Garder Production désactivée jusqu’à validation du parcours en préproduction. L’origine du lien et le stockage Redis doivent appartenir au même environnement ; ne pas tester une réinitialisation sur les comptes réels de production.
+
+## Parcours et garanties
+
+`/forgot-password` demande l’adresse e-mail ; `/reset-password` reçoit le jeton dans le fragment `#token=…`. Ce fragment n’est pas transmis dans la requête HTTP initiale. Le navigateur le retire de la barre d’adresse après lecture ; le formulaire le soumet ensuite au serveur dans le corps de l’action. Aucun jeton ne doit être copié dans les journaux, une capture ou un outil d’analyse. Les pages demandent aux robots de ne pas les indexer et utilisent une politique de référent `no-referrer`.
+
+Une demande valide reçoit une réponse publique identique, avant toute recherche d’identité, pour les comptes existants et inconnus. Le traitement de fond utilise `after` de Next.js, applique les limites Redis, prépare le jeton et appelle l’API officielle SendGrid. Il n’effectue aucun envoi lorsqu’aucun compte ne correspond. Les erreurs ne journalisent qu’un code fixe, sans adresse, clé ni jeton. Les suivis de clics, d’ouverture et d’abonnement sont désactivés sur ces messages.
+
+Après changement atomique du mot de passe, la réponse confirme la modification et demande une connexion normale ; une notification sans mot de passe ni jeton est programmée. L’échec de cette notification ne transforme pas une modification déjà enregistrée en échec apparent. Les anciennes sessions et les autres liens sont invalidés par la version des identifiants.
+
+## Limites à vérifier avant activation
+
+Le HTTP 202 de SendGrid confirme l’acceptation de la requête, pas la livraison en boîte de réception. `after` poursuit le travail après la réponse dans la durée maximale de l’invocation ; ce n’est pas une file persistante avec reprise automatique. Les délais, suppressions, rebonds et erreurs de notification restent à raccorder à la supervision. Une demande peut être acceptée publiquement alors que son envoi échoue ; ce comportement évite de révéler l’existence d’un compte.
+
+Les tests utilisent des faux comptes et un fournisseur simulé. Ils vérifient configuration, format du lien, absence de suivi, réponses uniformes, erreurs sans secrets et cohérence d’un changement déjà enregistré. Les 11 tests Redis précédents couvrent expiration, usage unique et concurrence des jetons. La réception réelle du lien, sa complétion, l’invalidation d’une ancienne session et la réception de la notification doivent encore être testées sur un compte de préproduction prévu à cet effet.
+
+Références : [API Mail Send](https://www.twilio.com/docs/sendgrid/api-reference/mail-send/mail-send), [vérification d’un expéditeur](https://www.twilio.com/docs/sendgrid/ui/sending-email/sender-verification), [Next.js after](https://nextjs.org/docs/15/app/api-reference/functions/after), [OWASP récupération de mot de passe](https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html).

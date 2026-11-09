@@ -48,3 +48,9 @@ La création et l’authentification des comptes vérifient désormais des compt
 64 tests et 11 tests Redis valident désormais aussi la récupération serveur : jetons temporaires conservés par empreinte, consommation atomique, invalidation des liens précédents après changement et vérification des versions de session. TypeScript et compilation passent. La migration de stockage conserve la version historique ; une réinitialisation l’incrémente pour refuser les anciens JWT. Une lecture de compte impossible refuse la session.
 
 Ces modules ne sont pas exposés en actions publiques. Le service d’e-mails, l’expéditeur, les écrans et les validations du parcours complet restent à raccorder avant activation. Aucun envoi d’e-mail ni modification de compte réel effectué. Voir [les limites et le plan d’activation](../COMMERCIAL-READINESS.md).
+
+## Intégration SendGrid préparée
+
+Les formulaires de récupération et l’adaptateur Mail Send sont ajoutés, avec activation conditionnée par les paramètres serveur. Les requêtes connues et inconnues reçoivent la même réponse avant la recherche du compte ; les envois sont traités après réponse. Le jeton passe par un fragment d’URL puis par le corps du formulaire, jamais par un paramètre de requête initial ; le suivi de clics est désactivé. Une notification échouée ne masque pas une modification de mot de passe déjà validée.
+
+71 tests passent, en plus des 11 tests Redis inchangés, avec TypeScript et compilation. Aucun e-mail réel ni compte utilisateur modifié pendant cette étape. La réception et le parcours authentifié complet restent à valider ; voir [la configuration et les limites](../SENDGRID.md).

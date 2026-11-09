@@ -75,6 +75,7 @@ export default function LoginForm() {
           </div>
         </div>
         <LoginButton />
+        <Link href="/forgot-password" className="mb-4 block text-center text-sm underline">Mot de passe oublié ?</Link>
       </div>
 
       <Link
