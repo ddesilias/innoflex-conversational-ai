@@ -64,3 +64,14 @@ est remplacée par `/`, y compris les URL externes et chemins ambigus.
 Le formulaire « Retrouvez votre journal G20 » a été observé dans Chrome le
 9 novembre 2026. Aucune authentification réelle n’a été effectuée lors de cette
 vérification. Les 90 tests applicatifs passent, dont le contrôle des destinations.
+
+## Préproduction G20
+
+Le premier lot G20 est publié sur la branche `security/session-bound-chat-access`
+(commit `3da9a9d`). Le déploiement Vercel a atteint READY. La vérification HTTP
+a ensuite révélé que le fournisseur de menu masquait tout le contenu pendant
+l’initialisation du stockage navigateur. Ce blocage a été supprimé : le contenu
+est rendu immédiatement et une préférence corrompue ou un stockage indisponible
+ne bloque plus l’application. Trois tests ciblent ces situations.
+La validation réelle des comptes en préproduction reste en cours ; READY ne
+signifie pas que le parcours commercial complet est validé.

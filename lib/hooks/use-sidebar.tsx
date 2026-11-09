@@ -31,23 +31,26 @@ export function SidebarProvider({ children }: SidebarProviderProps) {
   const [isLoading, setLoading] = React.useState(true)
 
   React.useEffect(() => {
-    const value = localStorage.getItem(LOCAL_STORAGE_KEY)
-    if (value) {
-      setSidebarOpen(JSON.parse(value))
+    try {
+      const value = localStorage.getItem(LOCAL_STORAGE_KEY)
+      if (value === 'true' || value === 'false')
+        setSidebarOpen(value === 'true')
+    } catch {
+      // Storage can be unavailable in private browsing or browser policies.
+      // Keep the usable default rather than preventing the app from rendering.
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }, [])
 
   const toggleSidebar = () => {
-    setSidebarOpen(value => {
-      const newState = !value
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newState))
-      return newState
-    })
-  }
-
-  if (isLoading) {
-    return null
+    const next = !isSidebarOpen
+    setSidebarOpen(next)
+    try {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(next))
+    } catch {
+      // The menu still works for this tab when the preference cannot be saved.
+    }
   }
 
   return (
