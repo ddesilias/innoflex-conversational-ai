@@ -71,3 +71,9 @@ Validation : 80 tests applicatifs et 14 tests Redis passent, dont signature offi
 Le 8 novembre, l’utilisateur a autorisé le secret de contournement Vercel destiné à SendGrid. Un secret dédié a été créé et conservé uniquement dans une sauvegarde locale privée ignorée. Le serveur Preview a été redéployé avec `SENDGRID_EVENTS_ENABLED=true` ; un POST sans signature, après passage de la protection Vercel, répond bien `401 Invalid signature`. Cela confirme le refus des appels non signés, pas la réception d’un événement réel.
 
 L’approbation automatique du navigateur a ensuite refusé le collage du secret et l’activation de l’endpoint, demandant une confirmation spécifique à cette action. Vérification du formulaire : URL inchangée, endpoint désactivé, signature activée. Le secret n’a pas été transmis à SendGrid. La collecte fournisseur reste donc inactive ; les compteurs ne constituent pas encore une mesure de livraison réelle. Le dashboard local n’a pas reçu de contournement Vercel pour sa sonde Preview.
+
+### Activation confirmée
+
+Après nouvel accord explicite, l’URL privée a été enregistrée dans SendGrid et le tableau du fournisseur confirme endpoint Enabled et signature Enabled, avec confirmation de sauvegarde. La clé publique reste inchangée. Le serveur Preview refuse toujours un POST non signé avec HTTP 401. La lecture authentifiée des compteurs répond HTTP 200, environnement preview, configured true, compteurs et dernier événement inconnus : aucun événement de livraison réel n’a encore été observé. Aucun e-mail réel n’a été envoyé. Le transfert local temporaire du secret a été arrêté et son onglet fermé.
+
+La sonde automatique du dashboard local n’a pas encore de mécanisme d’accès au Preview protégé ; elle peut donc afficher une indisponibilité de lecture. Cela ne signifie pas une panne du webhook. Le test fournisseur signé puis le parcours réel de récupération restent à réaliser avant de conclure à une livraison opérationnelle.
