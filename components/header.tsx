@@ -26,13 +26,13 @@ function UserOrLogin({ session }: { session: Session | null }) {
         <Link
           href="/"
           aria-label="INNOFLEX — Accueil"
-          className="flex items-center gap-3 text-[#193d36]"
+          className="flex items-center gap-3 text-[#202529]"
         >
           <span
             aria-hidden="true"
-            className="flex size-9 items-center justify-center rounded-lg bg-[#193d36] text-lg font-semibold tracking-tighter text-white"
+            className="flex size-9 items-center justify-center rounded-lg bg-[#202529] text-lg font-semibold tracking-tighter text-white"
           >
-            if<span className="text-[#bbd0a9]">.</span>
+            if<span className="text-[#dd7753]">.</span>
           </span>
           <span className="text-xl font-semibold tracking-tight">
             innoflex
@@ -41,23 +41,23 @@ function UserOrLogin({ session }: { session: Session | null }) {
             </span>
           </span>
         </Link>
-        <div className="hidden items-center gap-7 text-xs text-[#52666d] md:flex">
-          <Link href="/#usages">Les usages</Link>
-          <Link href="/#fonctionnement">Comment ça marche</Link>
-          <Link href="/#confiance">Transparence</Link>
+        <div className="hidden items-center gap-7 text-xs text-[#626970] md:flex">
+          <Link href="/#usages">Usages</Link>
+          <Link href="/#fonctionnement">Prise en main</Link>
+          <Link href="/#confiance">À savoir</Link>
         </div>
         <div className="flex items-center gap-4 text-xs">
           <Link
             href="/login"
-            className="font-medium text-[#193d36] hover:underline"
+            className="font-medium text-[#202529] hover:underline"
           >
             Connexion
           </Link>
           <Link
             href="/signup"
-            className="hidden rounded-md border border-[#193d36] px-4 py-2 font-medium text-[#193d36] hover:bg-[#edf1e8] sm:block"
+            className="hidden rounded-md border border-[#202529] px-4 py-2 font-medium text-[#202529] hover:bg-[#f0f1ec] sm:block"
           >
-            Créer un compte ↗
+            Créer un compte
           </Link>
         </div>
       </nav>
@@ -100,7 +100,7 @@ export async function Header() {
     <header
       className={cn(
         'sticky top-0 z-50 flex h-16 w-full shrink-0 items-center justify-between border-b px-4',
-        session?.user ? 'bg-background' : 'border-[#e1e6dc] bg-[#fafbf8]'
+        session?.user ? 'bg-background' : 'border-[#dedfdb] bg-[#fcfcfa]'
       )}
     >
       <div className="flex w-full items-center">

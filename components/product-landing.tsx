@@ -1,307 +1,183 @@
 import Link from 'next/link'
+import { ProductPreview } from './product-preview'
 import styles from './product-landing.module.css'
-
-const uses = [
-  {
-    number: '01',
-    title: 'Trouver les mots justes',
-    description:
-      'Préparez un e-mail, reformulez une idée ou donnez une structure à votre prochain document.',
-    example: '« Aide-moi à rédiger une réponse claire à ce client. »',
-    icon: '↗'
-  },
-  {
-    number: '02',
-    title: 'Y voir plus clair',
-    description:
-      'Décomposez un sujet, explorez plusieurs pistes et posez les bonnes questions.',
-    example: '« Explique-moi ce sujet avec un exemple concret. »',
-    icon: '◎'
-  },
-  {
-    number: '03',
-    title: 'Passer à la prochaine étape',
-    description:
-      'Transformez une liste d’idées en priorités et préparez un plan adapté à vos contraintes.',
-    example: '« Aide-moi à organiser mes priorités de la semaine. »',
-    icon: '☷'
-  }
-]
 
 export function ProductLanding() {
   return (
     <div className={styles.landing}>
-      <section className={styles.hero} aria-labelledby="product-title">
-        <div className={styles.heroCopy}>
-          <span className={styles.eyebrow}>
-            <span /> INNOFLEX CONVERSATIONAL AI
-          </span>
+      <section className={styles.introduction} aria-labelledby="product-title">
+        <div>
+          <p className={styles.productName}>L’ASSISTANT PERSONNEL INNOFLEX</p>
           <h1 id="product-title">
-            Vos idées méritent
+            Un e-mail à écrire.
             <br />
-            une <em>suite.</em>
+            Une semaine à organiser.
+            <br />
+            Un sujet à comprendre.
           </h1>
-          <p className={styles.intro}>
-            Un assistant personnel pour écrire avec clarté, comprendre plus vite
-            et avancer avec un plan.
-          </p>
-          <div className={styles.actions}>
-            <Link className={styles.primary} href="/signup">
-              Créer mon espace <span aria-hidden="true">↗</span>
-            </Link>
-            <a className={styles.secondary} href="#usages">
-              Explorer les usages <span aria-hidden="true">↓</span>
-            </a>
-          </div>
-          <p className={styles.smallPrint}>
-            Pilote en préparation · Aucune carte demandée à l’inscription.
-          </p>
-          <div className={styles.heroNote}>
-            <span className={styles.noteIcon} aria-hidden="true">
-              i
-            </span>
-            <p>
-              Le service évolue avec soin. La disponibilité du chat IA dépend de
-              son activation ; les offres payantes ne sont pas encore ouvertes.
-            </p>
-          </div>
         </div>
-        <div className={styles.previewWrap}>
-          <div
-            className={styles.preview}
-            aria-label="Exemple illustratif de conversation, pas une réponse générée en direct"
-          >
-            <div className={styles.previewTop}>
-              <span className={styles.miniBrand}>
-                i<span>f</span>
-              </span>
-              <div>
-                <strong>Votre espace de réflexion</strong>
-                <span>Une idée. Une conversation. Un prochain pas.</span>
-              </div>
-              <span className={styles.previewDot} />
-            </div>
-            <div className={styles.previewBody}>
-              <span className={styles.dateLabel}>
-                UN PEU DE CLARTÉ POUR VOTRE JOURNÉE
-              </span>
-              <div className={styles.userBubble}>
-                J’ai plusieurs idées pour mon projet, mais je ne sais pas par où
-                commencer.
-              </div>
-              <div className={styles.assistantLabel}>
-                <span className={styles.spark} aria-hidden="true">
-                  ✳
-                </span>{' '}
-                INNOFLEX
-              </div>
-              <p className={styles.answer}>
-                Commençons par rendre la prochaine étape plus simple.
-              </p>
-              <div className={styles.plan}>
-                <div>
-                  <span>1</span>
-                  <p>
-                    <strong>Clarifier l’objectif</strong>Quel résultat
-                    voulez-vous obtenir en premier ?
-                  </p>
-                </div>
-                <div>
-                  <span>2</span>
-                  <p>
-                    <strong>Choisir une priorité</strong>Une action utile, à
-                    votre portée aujourd’hui.
-                  </p>
-                </div>
-                <div>
-                  <span>3</span>
-                  <p>
-                    <strong>Construire votre plan</strong>Des étapes concrètes,
-                    ajustées à vos contraintes.
-                  </p>
-                </div>
-              </div>
-              <div className={styles.exampleInput}>
-                <span>Et si on commençait par votre objectif ?</span>
-                <span aria-hidden="true">↑</span>
-              </div>
-              <p className={styles.exampleCaption}>
-                Aperçu illustratif · aucune requête IA en direct
-              </p>
-            </div>
-          </div>
-          <div className={styles.floatingNote}>
-            <span aria-hidden="true">↗</span>
-            <div>
-              Moins de dispersion.
-              <br />
-              <strong>Plus de direction.</strong>
-            </div>
-          </div>
+        <div className={styles.introAside}>
+          <p>
+            Vous apportez le contexte.
+            <br />
+            INNOFLEX vous aide à trouver une formulation, un plan ou une
+            explication qui vous sert.
+          </p>
+          <Link href="/signup" className={styles.primary}>
+            Créer mon espace <span aria-hidden="true">→</span>
+          </Link>
+          <span className={styles.registrationNote}>
+            L’inscription ne demande pas de carte bancaire.
+          </span>
+          <a className={styles.exploreLink} href="#apercu">
+            Regarder un exemple ↓
+          </a>
         </div>
       </section>
-      <div className={styles.principles}>
-        <span>UNE CONVERSATION, PLUSIEURS POSSIBILITÉS</span>
-        <p>
-          Rédiger <b>·</b> Comprendre <b>·</b> Organiser <b>·</b> Décider
-        </p>
-      </div>
+      <section
+        id="apercu"
+        className={styles.previewSection}
+        aria-label="Aperçu du fonctionnement"
+      >
+        <ProductPreview />
+        <div className={styles.previewFootnote}>
+          <p>
+            <strong>À essayer ici :</strong> choisissez un besoin, puis comparez
+            la demande et une proposition.
+          </p>
+          <span>Exemples préparés · pas de génération IA en direct</span>
+        </div>
+      </section>
       <section
         id="usages"
-        className={styles.section}
+        className={styles.useSection}
         aria-labelledby="uses-title"
       >
         <div className={styles.sectionHeading}>
-          <div>
-            <span className={styles.kicker}>À VOTRE RYTHME</span>
-            <h2 id="uses-title">
-              Un point de départ pour
-              <br />
-              ce qui compte aujourd’hui.
-            </h2>
-          </div>
-          <p>
-            Pas besoin d’un prompt parfait.
+          <span>LES USAGES</span>
+          <h2 id="uses-title">
+            Des choses précises,
             <br />
-            Commencez avec ce que vous avez en tête.
-          </p>
+            que vous faites déjà.
+          </h2>
         </div>
-        <div className={styles.useGrid}>
-          {uses.map(use => (
-            <article key={use.number} className={styles.useCard}>
-              <div className={styles.cardTop}>
-                <span>{use.number}</span>
-                <span aria-hidden="true">{use.icon}</span>
-              </div>
-              <h3>{use.title}</h3>
-              <p>{use.description}</p>
-              <blockquote>{use.example}</blockquote>
-            </article>
-          ))}
+        <div className={styles.useRows}>
+          <article>
+            <h3>Écrire un message</h3>
+            <p>
+              Une réponse à un client, une relance ou un message difficile à
+              formuler.
+            </p>
+            <span>Un brouillon à relire et adapter.</span>
+          </article>
+          <article>
+            <h3>Préparer sa semaine</h3>
+            <p>
+              Des tâches en vrac, des échéances et un temps limité pour tout
+              faire.
+            </p>
+            <span>Des priorités et un plan de travail.</span>
+          </article>
+          <article>
+            <h3>Comprendre un sujet</h3>
+            <p>
+              Un concept nouveau, un texte compliqué ou une question à
+              approfondir.
+            </p>
+            <span>Une explication avec des exemples.</span>
+          </article>
         </div>
       </section>
       <section
         id="fonctionnement"
-        className={styles.workflow}
-        aria-labelledby="workflow-title"
+        className={styles.practical}
+        aria-labelledby="practical-title"
       >
-        <div>
-          <span className={styles.kicker}>SIMPLE, DÈS LE DÉPART</span>
-          <h2 id="workflow-title">
-            Votre espace.
+        <div className={styles.practicalIntro}>
+          <span>PRISE EN MAIN</span>
+          <h2 id="practical-title">
+            Pas besoin de parler
             <br />
-            Votre façon d’avancer.
+            comme une machine.
           </h2>
           <p>
-            Un compte pour retrouver vos conversations et reprendre le fil de
-            vos idées.
+            Une demande ordinaire suffit. Ajoutez ce qui compte : à qui vous
+            écrivez, ce que vous connaissez déjà ou le temps dont vous disposez.
           </p>
-          <Link href="/signup" className={styles.textLink}>
-            Préparer mon espace <span aria-hidden="true">↗</span>
-          </Link>
         </div>
-        <ol>
-          <li>
-            <span>01</span>
-            <div>
-              <h3>Créez votre compte</h3>
-              <p>
-                Votre adresse e-mail et un mot de passe. Aucune carte bancaire à
-                cette étape.
-              </p>
-            </div>
-          </li>
-          <li>
-            <span>02</span>
-            <div>
-              <h3>Posez votre question</h3>
-              <p>
-                Une fois le chat activé, décrivez votre besoin et précisez le
-                contexte.
-              </p>
-            </div>
-          </li>
-          <li>
-            <span>03</span>
-            <div>
-              <h3>Gardez votre jugement</h3>
-              <p>
-                Affinez la réponse et vérifiez les informations importantes
-                avant de les utiliser.
-              </p>
-            </div>
-          </li>
-        </ol>
+        <div className={styles.requestExample}>
+          <span>UNE DEMANDE AVEC DU CONTEXTE</span>
+          <blockquote>
+            « Je dois répondre à un client qui attend sa livraison. Le colis
+            arrive jeudi. Je veux m’excuser, sans en faire trop. »
+          </blockquote>
+          <p>
+            Vous relisez la proposition, vous ajustez le ton, vous décidez de la
+            suite. L’assistant n’envoie pas le message à votre place.
+          </p>
+        </div>
       </section>
       <section
         id="confiance"
-        className={styles.section}
-        aria-labelledby="trust-title"
+        className={styles.details}
+        aria-labelledby="details-title"
       >
         <div className={styles.sectionHeading}>
-          <div>
-            <span className={styles.kicker}>
-              LA CONFIANCE COMMENCE PAR LA CLARTÉ
-            </span>
-            <h2 id="trust-title">
-              Savoir où vous mettez
-              <br />
-              vos idées.
-            </h2>
-          </div>
-          <a
-            href="mailto:dimitry.d@innoflexequipe.com"
-            className={styles.contact}
-          >
-            Une question ? Écrivez-nous ↗
-          </a>
+          <span>AVANT DE COMMENCER</span>
+          <h2 id="details-title">Ce qu’il faut savoir.</h2>
         </div>
-        <div className={styles.trustGrid}>
-          <article>
-            <span aria-hidden="true">↳</span>
-            <h3>Des conversations liées à votre compte</h3>
+        <div className={styles.detailList}>
+          <details open>
+            <summary>Où en est le service ?</summary>
             <p>
-              Votre historique personnel est accessible après connexion. Le
-              partage d’une conversation nécessite une action de votre part.
+              INNOFLEX Conversational AI est en phase pilote. Vous pouvez créer
+              un compte ; le chat dépend de son activation. Les offres payantes
+              ne sont pas ouvertes. Les tarifs et les conditions seront
+              présentés avant toute souscription.
             </p>
-          </article>
-          <article>
-            <span aria-hidden="true">○</span>
-            <h3>Un lancement transparent</h3>
+          </details>
+          <details>
+            <summary>Que deviennent mes conversations ?</summary>
             <p>
-              Le produit est en phase pilote. Les offres, tarifs et conditions
-              de souscription seront présentés avant toute ouverture
-              commerciale.
+              Les conversations sont enregistrées dans votre historique,
+              accessible après connexion. Le partage nécessite une action de
+              votre part. Lorsqu’un modèle IA est activé, les messages lui sont
+              transmis pour produire la réponse. Ne saisissez pas de mots de
+              passe, clés secrètes ou données sensibles.
             </p>
-          </article>
-          <article>
-            <span aria-hidden="true">↗</span>
-            <h3>Un contact identifié</h3>
+          </details>
+          <details>
+            <summary>Puis-je me fier à chaque réponse ?</summary>
             <p>
-              INNOFLEX ÉQUIPE porte le développement du service. Pour vos
-              questions ou demandes concernant vos données :{' '}
+              Une réponse IA peut être inexacte. Vérifiez les faits importants
+              et demandez conseil à un professionnel pour les décisions qui le
+              nécessitent. Une proposition est un point de travail, pas une
+              garantie de résultat.
+            </p>
+          </details>
+          <details>
+            <summary>À qui puis-je poser mes questions ?</summary>
+            <p>
+              Le service est développé par INNOFLEX ÉQUIPE. Pour une question,
+              un retour sur le pilote ou une demande concernant vos données :{' '}
               <a href="mailto:dimitry.d@innoflexequipe.com">
                 dimitry.d@innoflexequipe.com
               </a>
               .
             </p>
-          </article>
+          </details>
         </div>
-        <p className={styles.dataNote}>
-          Les messages soumis à l’assistant peuvent être transmis au fournisseur
-          IA pour produire une réponse. Évitez de partager des secrets ou des
-          informations sensibles. L’IA peut se tromper et ne remplace pas un
-          professionnel qualifié.
-        </p>
       </section>
       <footer className={styles.footer}>
-        <Link href="/" className={styles.footerBrand}>
-          innoflex<span> / conversational ai</span>
-        </Link>
-        <p>Une idée plus claire. Un prochain pas.</p>
         <div>
+          <Link href="/" className={styles.wordmark}>
+            innoflex<span>.</span>
+          </Link>
+          <p>Conversational AI · Un produit INNOFLEX ÉQUIPE</p>
+        </div>
+        <div className={styles.footerLinks}>
           <Link href="/login">Connexion</Link>
-          <a href="#confiance">Transparence</a>
+          <Link href="/signup">Inscription</Link>
           <a href="mailto:dimitry.d@innoflexequipe.com">Contact</a>
         </div>
         <small>© {new Date().getFullYear()} INNOFLEX ÉQUIPE</small>
