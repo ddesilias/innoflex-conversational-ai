@@ -12,10 +12,11 @@ let container
 function load(file) {
   const output = {}
   vm.runInNewContext(ts.transpileModule(fs.readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText,
-    { exports: output, require: name => { if (name === 'server-only') return {}; if (name === 'node:crypto') return require('node:crypto'); if (name === './attempts') return {}; if (name === './password') return {}; if (name === '@vercel/kv') return { kv: {} }; throw Error(name) } })
+    { exports: output, require: name => { if (name === 'server-only') return {}; if (name === 'node:crypto') return require('node:crypto'); if (name === './session') return {}; if (name === './attempts') return {}; if (name === './password') return {}; if (name === '@vercel/kv') return { kv: {} }; throw Error(name) } })
   return output
 }
 const { createAccountScript, upgradePasswordScript } = load('lib/accounts/store.ts')
+const { issueResetScript, completeResetScript } = load('lib/accounts/reset.ts')
 const { authAttemptScript } = load('lib/accounts/attempts.ts')
 const { quotaScript } = load('lib/security/quota.ts')
 const { saveChatScript } = load('lib/security/save-chat.ts')
@@ -113,4 +114,30 @@ test('global authentication budget blocks rotating identities and expires', asyn
   await redis('EXPIRE', global, -1);
   assert.equal((await consume('charlie'))[0], 1);
   assert.ok(await redis('TTL', global) > 0);
+});
+
+test('reset links expire and exactly one concurrent use changes the password and session version', async () => {
+  const user = 'user:reset@example.test', token = 'password-reset:example', other = 'password-reset:other';
+  await redis('HSET', user, 'id', 'alice', 'email', 'reset@example.test', 'password', 'old', 'salt', 'old-salt');
+  assert.equal(await evaluate(issueResetScript, [user, token], ['alice','reset@example.test','0']),1);
+  assert.equal(await evaluate(issueResetScript, [user, other], ['alice','reset@example.test','0']),1);
+  assert.ok(await redis('TTL', token) > 0);
+  assert.ok(await redis('TTL', token) <= 900);
+  const reset = key => evaluate(completeResetScript, [key,user], ['alice','reset@example.test','0','new','new-salt']);
+  const results = await Promise.all([reset(token),reset(token)]);
+  assert.equal(results.filter(result=>result===1).length,1);
+  assert.equal(await redis('GET', token),null);
+  assert.equal(await redis('HGET', user,'credentialVersion'),'1');
+  assert.equal(await redis('HGET', user,'password'),'new');
+  assert.equal(await reset(other),0);
+});
+test('expired or foreign reset links cannot modify an account', async () => {
+  const user='user:expired@example.test', token='password-reset:expired';
+  await redis('HSET',user,'id','alice','email','expired@example.test','password','old','salt','old');
+  assert.equal(await evaluate(issueResetScript,[user,token],['bob','expired@example.test','0']),0);
+  assert.equal(await evaluate(issueResetScript,[user,token],['alice','expired@example.test','0']),1);
+  assert.equal(await evaluate(completeResetScript,[token,user],['bob','expired@example.test','0','new','new']),0);
+  await redis('EXPIRE',token,-1);
+  assert.equal(await evaluate(completeResetScript,[token,user],['alice','expired@example.test','0','new','new']),0);
+  assert.equal(await redis('HGET',user,'password'),'old');
 });

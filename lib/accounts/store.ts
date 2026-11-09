@@ -1,4 +1,5 @@
 import 'server-only'
+import { credentialVersion } from './session'
 import { consumeAuthAttempt } from './attempts'
 import { kv } from '@vercel/kv'
 import { randomUUID } from 'node:crypto'
@@ -7,7 +8,7 @@ import { hashPassword, needsPasswordUpgrade, verifyPassword } from './password'
 
 export const createAccountScript = `
 if redis.call('EXISTS', KEYS[1]) == 1 then return 0 end
-redis.call('HSET', KEYS[1], 'id', ARGV[1], 'email', ARGV[2], 'password', ARGV[3], 'salt', ARGV[4])
+redis.call('HSET', KEYS[1], 'id', ARGV[1], 'email', ARGV[2], 'password', ARGV[3], 'salt', ARGV[4], 'credentialVersion', '0')
 return 1
 `
 export const upgradePasswordScript = `
@@ -39,5 +40,12 @@ export async function authenticateAccount(email: string, plaintext: string) {
       if (!current || current.id !== user.id || current.email !== email || !await verifyPassword(plaintext, current)) return null
     }
   }
-  return { id: user.id, email: user.email }
+  const version = credentialVersion(user.credentialVersion)
+  if (version === null) return null
+  return { id: user.id, email: user.email, credentialVersion: version }
+}
+
+export async function readSessionAccount(email: string) {
+  const account = await kv.hgetall<User>(`user:${email}`)
+  return account ? { id: account.id, email: account.email, credentialVersion: account.credentialVersion } : null
 }

@@ -27,11 +27,11 @@ return {1, 0}
 export async function consumeAuthAttempt(
   evaluate: (script: string, keys: string[], args: number[]) => Promise<unknown>,
   email: string,
-  kind: 'login' | 'signup'
+  kind: 'login' | 'signup' | 'reset-request' | 'reset-confirm'
 ) {
   if (typeof email !== 'string' || email.length > 254 || !email.trim()) throw new AuthAttemptError(503)
   const identity = createHash('sha256').update(email.trim().toLowerCase()).digest('hex')
-  const limits = kind === 'login' ? [10, 900, 100, 60] : [3, 3600, 20, 60]
+  const limits = kind === 'login' ? [10, 900, 100, 60] : kind === 'reset-confirm' ? [5, 900, 30, 60] : [3, 3600, 20, 60]
   let result: unknown
   try {
     result = await evaluate(authAttemptScript, [`auth-attempt:${kind}:${identity}`, `auth-attempt:${kind}:global`], limits)

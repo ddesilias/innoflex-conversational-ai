@@ -42,3 +42,9 @@ Cette étape porte la validation à 56 tests et 7 tests Redis isolés, avec Type
 ## Limitation des tentatives d’accès
 
 La création et l’authentification des comptes vérifient désormais des compteurs Redis atomiques par adresse et globaux avant la lecture du compte ou scrypt. Les parcours connexion et inscription ont leurs propres limites et expirations. Une indisponibilité de la protection bloque l’opération ; un refus ne prolonge pas le blocage. Les seuils initiaux et les limites restantes sont documentés dans [la préparation commerciale](../COMMERCIAL-READINESS.md). Les validations passent à 59 tests et 9 tests Redis isolés. Aucun essai sur un compte réel n’a été déclenché.
+
+## Récupération de compte — partie serveur préparée
+
+64 tests et 11 tests Redis valident désormais aussi la récupération serveur : jetons temporaires conservés par empreinte, consommation atomique, invalidation des liens précédents après changement et vérification des versions de session. TypeScript et compilation passent. La migration de stockage conserve la version historique ; une réinitialisation l’incrémente pour refuser les anciens JWT. Une lecture de compte impossible refuse la session.
+
+Ces modules ne sont pas exposés en actions publiques. Le service d’e-mails, l’expéditeur, les écrans et les validations du parcours complet restent à raccorder avant activation. Aucun envoi d’e-mail ni modification de compte réel effectué. Voir [les limites et le plan d’activation](../COMMERCIAL-READINESS.md).

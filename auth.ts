@@ -3,10 +3,21 @@ import Credentials from 'next-auth/providers/credentials'
 import { authConfig } from './auth.config'
 import { z } from 'zod'
 import { AuthAttemptError } from './lib/accounts/attempts'
-import { authenticateAccount } from './lib/accounts/store'
+import { sessionIsCurrent } from './lib/accounts/session'
+import { authenticateAccount, readSessionAccount } from './lib/accounts/store'
 
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
+  callbacks: {
+    ...authConfig.callbacks,
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id
+        token.credentialVersion = (user as { credentialVersion?: number }).credentialVersion ?? 0
+      }
+      return await sessionIsCurrent(readSessionAccount, token) ? token : null
+    }
+  },
   providers: [
     Credentials({
       async authorize(credentials) {
