@@ -1,0 +1,15 @@
+/* INNOFLEX identity v1. Shared brand colours; never use accents as health states. */
+:root {
+  --brand-navy: #0b1736;
+  --brand-blue: #2563eb;
+  --brand-blue-hover: #1d4ed8;
+  --brand-violet: #7c3aed;
+  --brand-cyan: #06b6d4;
+  --brand-paper: #f8faff;
+  --brand-white: #ffffff;
+  --brand-text: #172554;
+  --brand-muted: #52627a;
+  --brand-border: #dbe3f0;
+  --brand-tint: #eef3ff;
+  --brand-gradient: linear-gradient(120deg, #2563eb, #7c3aed 65%, #06b6d4);
+}

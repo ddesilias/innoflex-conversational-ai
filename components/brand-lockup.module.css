@@ -1,0 +1,30 @@
+.lockup {
+  display: inline-flex;
+  gap: 11px;
+  align-items: center;
+  color: var(--brand-navy);
+  white-space: nowrap;
+}
+.lockup img {
+  flex-shrink: 0;
+}
+.name {
+  display: block;
+  font-size: 17px;
+  letter-spacing: -0.035em;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.name > span {
+  color: var(--brand-blue);
+  font-weight: 550;
+  letter-spacing: -0.04em;
+}
+.description {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.025em;
+  font-weight: 400;
+  color: var(--brand-muted);
+  margin-top: 3px;
+}

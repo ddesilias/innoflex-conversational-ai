@@ -13,8 +13,8 @@ export const metadata = {
     ? new URL(`https://${process.env.VERCEL_URL}`)
     : undefined,
   title: {
-    default: 'INNOFLEX Conversational AI — Assistant IA',
-    template: '%s | INNOFLEX Conversational AI'
+    default: 'INNOFLEX SI — Assistant personnel',
+    template: '%s | INNOFLEX SI'
   },
   description: 'Assistant personnel INNOFLEX pour rédiger, comprendre, apprendre et organiser vos idées.',
   icons: {

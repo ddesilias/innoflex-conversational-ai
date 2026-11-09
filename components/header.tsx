@@ -1,5 +1,6 @@
 import * as React from 'react'
 import Link from 'next/link'
+import { BrandLockup } from './brand-lockup'
 
 import { cn } from '@/lib/utils'
 import { auth } from '@/auth'
@@ -26,22 +27,11 @@ function UserOrLogin({ session }: { session: Session | null }) {
         <Link
           href="/"
           aria-label="INNOFLEX — Accueil"
-          className="flex items-center gap-3 text-[#202529]"
+          className="flex items-center gap-3 text-[#0b1736]"
         >
-          <span
-            aria-hidden="true"
-            className="flex size-9 items-center justify-center rounded-lg bg-[#202529] text-lg font-semibold tracking-tighter text-white"
-          >
-            if<span className="text-[#dd7753]">.</span>
-          </span>
-          <span className="text-xl font-semibold tracking-tight">
-            innoflex
-            <span className="mt-0.5 block text-[8px] font-medium tracking-[0.18em]">
-              CONVERSATIONAL AI
-            </span>
-          </span>
+          <BrandLockup />
         </Link>
-        <div className="hidden items-center gap-7 text-xs text-[#626970] md:flex">
+        <div className="hidden items-center gap-7 text-xs text-[#52627a] md:flex">
           <Link href="/#usages">Usages</Link>
           <Link href="/#fonctionnement">Prise en main</Link>
           <Link href="/#confiance">À savoir</Link>
@@ -49,13 +39,13 @@ function UserOrLogin({ session }: { session: Session | null }) {
         <div className="flex items-center gap-4 text-xs">
           <Link
             href="/login"
-            className="font-medium text-[#202529] hover:underline"
+            className="font-medium text-[#0b1736] hover:underline"
           >
             Connexion
           </Link>
           <Link
             href="/signup"
-            className="hidden rounded-md border border-[#202529] px-4 py-2 font-medium text-[#202529] hover:bg-[#f0f1ec] sm:block"
+            className="hidden rounded-md border border-[#0b1736] px-4 py-2 font-medium text-[#0b1736] hover:bg-[#eef3ff] sm:block"
           >
             Créer un compte
           </Link>
@@ -100,7 +90,7 @@ export async function Header() {
     <header
       className={cn(
         'sticky top-0 z-50 flex h-16 w-full shrink-0 items-center justify-between border-b px-4',
-        session?.user ? 'bg-background' : 'border-[#dedfdb] bg-[#fcfcfa]'
+        session?.user ? 'bg-background' : 'border-[#dbe3f0] bg-[#f8faff]'
       )}
     >
       <div className="flex w-full items-center">

@@ -1,9 +1,9 @@
 .landing {
-  --ink: #202529;
-  --muted: #626970;
-  --accent: #b74929;
-  --line: #dedfdb;
-  --paper: #fcfcfa;
+  --ink: var(--brand-navy);
+  --muted: var(--brand-muted);
+  --accent: var(--brand-blue);
+  --line: var(--brand-border);
+  --paper: var(--brand-paper);
   background: var(--paper);
   color: var(--ink);
   width: 100%;
@@ -37,12 +37,12 @@
 .introAside > p {
   font-size: 15px;
   line-height: 1.8;
-  color: #4d555b;
+  color: var(--brand-muted);
   margin-bottom: 22px;
   max-width: 330px;
 }
 .primary {
-  background: var(--ink);
+  background: var(--brand-blue);
   color: #fff;
   display: inline-flex;
   gap: 40px;
@@ -53,7 +53,7 @@
   border-radius: 4px;
 }
 .primary:hover {
-  background: #3d4449;
+  background: var(--brand-blue-hover);
 }
 .registrationNote {
   display: block;
@@ -77,19 +77,19 @@
   scroll-margin-top: 90px;
 }
 .workspace {
-  border: 1px solid #c9ccc9;
+  border: 1px solid var(--brand-border);
   border-radius: 6px;
   overflow: hidden;
   background: #fff;
-  box-shadow: 0 12px 30px #20252906;
+  box-shadow: 0 12px 30px #0b173608;
 }
 .workspaceToolbar {
-  background: #f2f3ef;
+  background: var(--brand-tint);
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 14px 21px;
-  border-bottom: 1px solid #d5d8d2;
+  border-bottom: 1px solid var(--brand-border);
   gap: 16px;
 }
 .workspaceTitle {
@@ -99,14 +99,14 @@
 }
 .workspaceTitle > span {
   margin: 0 9px;
-  color: #9da39d;
+  color: #8293ae;
   font-weight: 400;
 }
 .exampleBadge {
   font-size: 8px;
   letter-spacing: 0.09em;
-  color: #677065;
-  border: 1px solid #c9cfc4;
+  color: var(--brand-muted);
+  border: 1px solid #cbd8f7;
   padding: 4px 7px;
   border-radius: 3px;
 }
@@ -117,15 +117,15 @@
 }
 .workspaceRail {
   padding: 28px 17px;
-  background: #f6f7f3;
-  border-right: 1px solid #dfe2dc;
+  background: #f6f8ff;
+  border-right: 1px solid var(--brand-border);
   display: flex;
   flex-direction: column;
 }
 .railTitle {
   font-size: 8px;
   letter-spacing: 0.07em;
-  color: #65705f;
+  color: var(--brand-muted);
   padding: 0 7px;
   margin-bottom: 17px;
 }
@@ -141,14 +141,14 @@
   text-align: left;
   border-radius: 3px;
   font-size: 11px;
-  color: #4e5750;
+  color: var(--brand-muted);
   border: 1px solid transparent;
   line-height: 1.5;
   cursor: pointer;
 }
 .scenarioButtons button > span:first-child {
   font-size: 8px;
-  color: #747e6d;
+  color: var(--brand-muted);
   font-variant-numeric: tabular-nums;
 }
 .scenarioButtons button > span:last-child {
@@ -156,12 +156,12 @@
   color: transparent;
 }
 .scenarioButtons button:hover {
-  background: #ecefe7;
+  background: var(--brand-tint);
 }
 .scenarioButtons button[aria-pressed='true'] {
-  border-color: #d8dcd2;
+  border-color: #cbd8f7;
   background: #fff;
-  color: #232b22;
+  color: var(--brand-text);
 }
 .scenarioButtons button[aria-pressed='true'] > span:last-child {
   color: var(--accent);
@@ -169,7 +169,7 @@
 .workspaceRail > p {
   font-size: 10px;
   line-height: 1.8;
-  color: #6c7466;
+  color: var(--brand-muted);
   margin: 35px 7px 0;
   max-width: 170px;
 }
@@ -200,22 +200,22 @@
 }
 .documentType {
   font-size: 8px;
-  color: #858b80;
+  color: var(--brand-muted);
   font-family: var(--font-geist-mono), monospace;
 }
 .context {
-  border-left: 2px solid #c3c9bc;
+  border-left: 2px solid #b6c9ee;
   padding-left: 13px;
   margin: 22px 0;
 }
 .context > span {
   font-size: 8px;
-  color: #737b6d;
+  color: var(--brand-muted);
   letter-spacing: 0.08em;
 }
 .context > p {
   font-size: 12px;
-  color: #596153;
+  color: var(--brand-muted);
   line-height: 1.8;
   max-width: 620px;
   margin-top: 6px;
@@ -223,17 +223,17 @@
 .documentTabs {
   display: flex;
   gap: 20px;
-  border-bottom: 1px solid #e7e9e2;
+  border-bottom: 1px solid var(--brand-border);
 }
 .documentTabs button {
   font-size: 10px;
-  color: #79816f;
+  color: var(--brand-muted);
   padding: 0 0 9px;
   cursor: pointer;
   border-bottom: 2px solid transparent;
 }
 .documentTabs button[aria-pressed='true'] {
-  color: #2b3327;
+  color: var(--brand-text);
   border-bottom-color: var(--accent);
   font-weight: 600;
 }
@@ -251,9 +251,9 @@
 .editorNote {
   display: flex;
   gap: 10px;
-  border-top: 1px solid #e7e9e2;
+  border-top: 1px solid var(--brand-border);
   padding-top: 12px;
-  color: #747c6b;
+  color: var(--brand-muted);
 }
 .editorNote > span {
   color: var(--accent);
@@ -277,7 +277,7 @@
 }
 .previewFootnote strong {
   font-weight: 550;
-  color: #424a40;
+  color: var(--brand-text);
 }
 .previewFootnote > span {
   text-align: right;
@@ -332,19 +332,19 @@
 .useRows p {
   font-size: 13px;
   line-height: 1.8;
-  color: #525a60;
+  color: var(--brand-muted);
 }
 .useRows article > span {
   grid-column: 2;
   font-size: 11px;
-  color: #848972;
+  color: var(--brand-muted);
   line-height: 1.6;
 }
 .practical {
   margin: 0 auto;
   max-width: 1240px;
   padding: 65px 48px;
-  background: #f0f1ec;
+  background: var(--brand-tint);
   display: grid;
   grid-template-columns: 1fr 1.5fr;
   gap: 85px;
@@ -362,7 +362,7 @@
 }
 .requestExample > span {
   font-size: 9px;
-  color: #747b69;
+  color: var(--brand-muted);
   letter-spacing: 0.1em;
 }
 .requestExample blockquote {
@@ -375,7 +375,7 @@
 .requestExample > p {
   font-size: 11px;
   line-height: 1.9;
-  color: #737b69;
+  color: var(--brand-muted);
   margin-top: 26px;
   max-width: 440px;
 }
@@ -404,7 +404,7 @@
 .detailList summary::after {
   content: '+';
   font-size: 18px;
-  color: #6e7762;
+  color: var(--brand-muted);
   font-weight: 400;
 }
 .detailList details[open] summary::after {
@@ -454,7 +454,7 @@
 .footer small {
   flex-basis: 100%;
   font-size: 9px;
-  color: #818779;
+  color: var(--brand-muted);
   border-top: 1px solid var(--line);
   padding-top: 17px;
 }
@@ -567,7 +567,7 @@
   .workspaceRail {
     padding: 14px;
     border-right: 0;
-    border-bottom: 1px solid #dfe2dc;
+    border-bottom: 1px solid var(--brand-border);
   }
   .railTitle {
     font-size: 8px;
@@ -692,4 +692,26 @@
   .footer > div > p {
     font-size: 8px;
   }
+}
+
+/* The studio accent is confined to the product frame, not body text. */
+.workspace {
+  position: relative;
+}
+.workspace::before {
+  content: '';
+  display: block;
+  height: 3px;
+  background: var(--brand-gradient);
+}
+.documentHeading > div > span {
+  color: var(--brand-violet);
+}
+.exampleBadge {
+  color: #5b21b6;
+  background: #f4f0ff;
+  border-color: #ddd4fc;
+}
+.scenarioButtons button[aria-pressed='true'] {
+  box-shadow: inset 2px 0 var(--brand-blue);
 }

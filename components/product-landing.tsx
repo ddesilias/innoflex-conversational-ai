@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { BrandLockup } from './brand-lockup'
 import { ProductPreview } from './product-preview'
 import styles from './product-landing.module.css'
 
@@ -7,7 +8,9 @@ export function ProductLanding() {
     <div className={styles.landing}>
       <section className={styles.introduction} aria-labelledby="product-title">
         <div>
-          <p className={styles.productName}>L’ASSISTANT PERSONNEL INNOFLEX</p>
+          <p className={styles.productName}>
+            INNOFLEX SI · ASSISTANT PERSONNEL
+          </p>
           <h1 id="product-title">
             Un e-mail à écrire.
             <br />
@@ -130,10 +133,10 @@ export function ProductLanding() {
           <details open>
             <summary>Où en est le service ?</summary>
             <p>
-              INNOFLEX Conversational AI est en phase pilote. Vous pouvez créer
-              un compte ; le chat dépend de son activation. Les offres payantes
-              ne sont pas ouvertes. Les tarifs et les conditions seront
-              présentés avant toute souscription.
+              INNOFLEX SI est en phase pilote. Vous pouvez créer un compte ; le
+              chat dépend de son activation. Les offres payantes ne sont pas
+              ouvertes. Les tarifs et les conditions seront présentés avant
+              toute souscription.
             </p>
           </details>
           <details>
@@ -170,10 +173,10 @@ export function ProductLanding() {
       </section>
       <footer className={styles.footer}>
         <div>
-          <Link href="/" className={styles.wordmark}>
-            innoflex<span>.</span>
+          <Link href="/" aria-label="INNOFLEX SI — Accueil">
+            <BrandLockup />
           </Link>
-          <p>Conversational AI · Un produit INNOFLEX ÉQUIPE</p>
+          <p>Un produit INNOFLEX ÉQUIPE</p>
         </div>
         <div className={styles.footerLinks}>
           <Link href="/login">Connexion</Link>
