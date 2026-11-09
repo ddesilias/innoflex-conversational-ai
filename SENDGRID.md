@@ -65,3 +65,9 @@ Un endpoint SendGrid « INNOFLEX Conversational AI - Preview » a été enregist
 `/api/monitoring/email` exige un `EMAIL_MONITORING_TOKEN` serveur distinct par environnement. Le dashboard garde ce jeton dans son fichier privé ignoré `monitoring.local.json`. Sans collecte activée, il affiche « collecte non raccordée » et des compteurs inconnus. Les nombres sont des événements de la journée, pas des utilisateurs uniques ni un taux de livraison. Un Preview protégé reste signalé comme accès requis.
 
 Validation : 80 tests applicatifs et 14 tests Redis passent, dont signature officielle SendGrid, modification du corps, isolation des environnements, doublons concurrents et reprise après compteur corrompu. Aucun e-mail réel n’a été envoyé. La réception réelle et l’activation externe restent à valider avant commercialisation.
+
+### Raccordement externe en attente de confirmation précise
+
+Le 8 novembre, l’utilisateur a autorisé le secret de contournement Vercel destiné à SendGrid. Un secret dédié a été créé et conservé uniquement dans une sauvegarde locale privée ignorée. Le serveur Preview a été redéployé avec `SENDGRID_EVENTS_ENABLED=true` ; un POST sans signature, après passage de la protection Vercel, répond bien `401 Invalid signature`. Cela confirme le refus des appels non signés, pas la réception d’un événement réel.
+
+L’approbation automatique du navigateur a ensuite refusé le collage du secret et l’activation de l’endpoint, demandant une confirmation spécifique à cette action. Vérification du formulaire : URL inchangée, endpoint désactivé, signature activée. Le secret n’a pas été transmis à SendGrid. La collecte fournisseur reste donc inactive ; les compteurs ne constituent pas encore une mesure de livraison réelle. Le dashboard local n’a pas reçu de contournement Vercel pour sa sonde Preview.
