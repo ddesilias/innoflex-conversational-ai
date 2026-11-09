@@ -15,3 +15,5 @@ Références : documentation embarquée dans node_modules/ai/docs et node_module
 ## Orientation du pilote
 
 Le lancement vise un assistant personnel généraliste : rédaction, explications, organisation et préparation de décisions. Le chat texte est l’entrée principale. Les deux entrées serveur partagent les mêmes consignes et aucun outil boursier n’est proposé au modèle. Les anciens historiques restent lisibles ; les anciennes cartes d’achat indiquent explicitement que la démonstration est désactivée et ne modifient plus l’historique. Aucun accès au calendrier, rappel ou action externe n’est annoncé.
+
+Le serveur de développement écrit dans `.next-dev`, séparément des builds de production `.next`. Cette séparation évite que les compilations de validation remplacent des modules chargés par le serveur local en cours d’exécution.
