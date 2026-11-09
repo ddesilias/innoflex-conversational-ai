@@ -11,7 +11,7 @@ function load(file, mocks) {
   vm.runInNewContext(js, { exports, require: name => {
     if (!(name in mocks)) throw new Error(`Unexpected import: ${name}`)
     return mocks[name]
-  }, Response, process: { env: {} }, console })
+  }, Response, process: { env: { VERCEL_ENV: 'production' } }, console })
   return exports
 }
 function actions(user, owner = 'bob') {
@@ -21,7 +21,7 @@ function actions(user, owner = 'bob') {
     if (owner && owner !== args[0]) return 0
     writes.push([keys[0], { path: args[4] }]); return 1
   } }
-  return { api: load('app/actions.ts', { 'next/cache': {}, 'next/navigation': {}, '@vercel/kv': { kv }, '@/lib/security/save-chat': load('lib/security/save-chat.ts', {}), '@/auth': { auth: async () => user ? { user: { id: user } } : null } }), reads, writes }
+  return { api: load('app/actions.ts', { 'next/cache': {}, 'next/navigation': {}, '@vercel/kv': { kv }, '@/lib/chat/keys': load('lib/chat/keys.ts', {'@/lib/accounts/keys': load('lib/accounts/keys.ts',{})}), '@/lib/security/chat-mutations': load('lib/security/chat-mutations.ts',{}), '@/lib/security/save-chat': load('lib/security/save-chat.ts', {}), '@/auth': { auth: async () => user ? { user: { id: user } } : null } }), reads, writes }
 }
 test('anonymous and forged identities cannot read private chats', async () => {
   for (const user of [null, 'alice']) {

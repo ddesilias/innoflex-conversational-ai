@@ -18,6 +18,7 @@ function load(file) {
 const { createAccountScript, upgradePasswordScript } = load('lib/accounts/store.ts')
 const { issueResetScript, completeResetScript } = load('lib/accounts/reset.ts')
 const { authAttemptScript } = load('lib/accounts/attempts.ts')
+const { removeChatScript, shareChatScript } = load('lib/security/chat-mutations.ts')
 const { recordDeliveryScript } = load('lib/email/events.ts')
 const { quotaScript } = load('lib/security/quota.ts')
 const { saveChatScript } = load('lib/security/save-chat.ts')
@@ -171,4 +172,23 @@ test('corrupt delivery counters never consume an event before a retry can succee
  assert.equal(await redis('EXISTS',keys[0]),0);
  await redis('DEL',keys[1]);
  assert.equal(await evaluate(recordDeliveryScript,keys,['delivered',100]),1);
+});
+
+test('isolated histories with identical IDs survive a Preview clear and sharing cannot overwrite messages', async()=>{
+ const production='chat:shared-id',preview='chat-env:preview:preprod:chat:shared-id',local='chat-env:local:local:chat:shared-id';
+ for(const key of [production,preview,local])await redis('HSET',key,'userId','alice','id','shared-id','messages','latest');
+ const index='chat-env:preview:preprod:user:chat:alice';await redis('ZADD',index,1,preview,2,production);
+ assert.equal(await evaluate(shareChatScript,[preview],['bob','/share/shared-id']),0);
+ assert.equal(await evaluate(shareChatScript,[preview],['alice','/share/shared-id']),1);
+ assert.equal(await redis('HGET',preview,'messages'),'latest');
+ assert.equal(await evaluate(removeChatScript,[preview,index],['bob']),0);
+ assert.equal(await evaluate(removeChatScript,[preview,index],['alice']),1);
+ assert.equal(await redis('EXISTS',preview),0);
+ assert.equal(await redis('EXISTS',production,local),2);
+ assert.equal(await redis('ZSCORE',index,preview),null);
+});
+test('removing a conversation cannot delete it when its index has an invalid type',async()=>{
+ await redis('HSET','chat:invalid-index','userId','alice');await redis('SET','chat:index-wrong-type','corrupt');
+ await assert.rejects(evaluate(removeChatScript,['chat:invalid-index','chat:index-wrong-type'],['alice']));
+ assert.equal(await redis('HGET','chat:invalid-index','userId'),'alice');
 });

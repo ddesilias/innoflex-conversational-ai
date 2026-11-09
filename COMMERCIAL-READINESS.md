@@ -5,10 +5,10 @@ Le pilote n’est pas encore prêt à être commercialisé. Les correctifs sont 
 | Parcours | État constaté | Validation restant à réaliser |
 | --- | --- | --- |
 | Création de compte et connexion | Stockage scrypt asynchrone, minimum 12 caractères pour les nouvelles inscriptions, fonctions de stockage réservées au serveur, création atomique, limites Redis avant les opérations coûteuses | Parcours réel en préproduction, protection réseau complémentaire, vérification d’adresse, envoi des liens et interface de récupération |
-| Récupération de compte | Jetons temporaires, limites, révocation des sessions, formulaires et intégration SendGrid préparés ; configuration obligatoire avant activation | Expéditeur vérifié, clé serveur, validation de réception et du parcours de bout en bout |
+| Récupération de compte | Jetons temporaires, limites, révocation des sessions, formulaires et intégration SendGrid préparés ; configuration obligatoire avant activation | Expéditeur et clé Preview vérifiés, un e-mail de test livré et supervisé ; parcours de récupération complet encore à tester |
 | Comptes existants | Vérification SHA-256 historique, migration scrypt après connexion réussie avec comparaison atomique | Essai sur un compte de test ancien ; aucune réécriture massive des comptes |
 | Conversation | Chat texte et consignes d’assistant personnel, démonstration boursière désactivée | Finir la migration RSC vers AI SDK UI, interruption, reprise et erreurs de streaming |
-| Historique et données | Contrôles d’appartenance et conservation des historiques anciens | Parcours export/suppression, validation d’isolation avec deux utilisateurs réels |
+| Historique et données | Contrôles d’appartenance, clés de conversations isolées par environnement, suppression et partage atomiques | Export, essai utilisateur de suppression et validation avec deux comptes Preview |
 | Consommation IA | Quotas serveur atomiques ; modèles configurés côté serveur | Parcours réel, mesures de coût et de latence, configuration distincte par environnement |
 | Paiement | Intégration Stripe de test préparée, webhooks et rapprochement testés avec simulations | Configurer et valider Checkout, portail, résiliation et droits en mode test ; définir l’offre et les prix |
 | Exploitation | Catalogue, liens et contrôles HTTP par environnement dans le dashboard local | Contrôles fonctionnels, erreurs corrélées à une version, alertes et procédure de support |
@@ -56,3 +56,13 @@ Une nouvelle base Upstash `innoflex-conversational-ai-pilot` a été créée sur
 Le PING authentifié a répondu PONG. Un contrôle sur un compte jetable dans le namespace `local` a validé création, connexion, changement de mot de passe, refus de réutiliser le jeton, rejet de l’ancienne session et connexion avec le nouveau mot de passe. Ce compte et son jeton ont été supprimés après le test. Aucun e-mail réel n’a été envoyé et aucune ancienne donnée n’a été restaurée.
 
 Les variables Redis spécifiques à la branche Preview ont été préparées pour cette nouvelle base, avec le namespace `preprod`. La réception du lien SendGrid et le parcours utilisateur complet restent à valider. La configuration historique de Production n’a pas été modifiée.
+
+## État courant — isolation des conversations et livraison Preview
+
+Cette section remplace les anciens constats de configuration absente ci-dessus : SendGrid est configuré en Local et sur la branche Preview ; un e-mail réel unique a été envoyé avec autorisation et ses événements signed processed=1 / delivered=1 sont visibles dans le dashboard. Le parcours complet de récupération dans l’interface reste à tester. Production reste inchangée.
+
+Les conversations Local et Preview utilisent désormais des clés propres à leur environnement et au namespace des comptes, y compris pour les historiques et liens partagés. Les clés historiques de Production restent identiques. Il n’y a ni repli vers les clés communes en Preview, ni copie ou suppression automatique. Un inventaire en lecture seule de la nouvelle base pilote a trouvé zéro ancienne clé de conversation avant activation. Toute ancienne donnée sur une autre base est conservée et exige un examen distinct avant migration.
+
+Les index d’historique ne donnent jamais une autorisation : une référence étrangère est ignorée avant lecture, les résultats sont filtrés par propriétaire et identifiant, et chaque suppression revérifie le propriétaire atomiquement dans Redis. Le partage ne réécrit plus une copie ancienne des messages ; il ne modifie que le chemin de partage. Un index Redis de type incorrect bloque la suppression sans effacer la conversation.
+
+Validation actuelle : **82 tests applicatifs et 16 tests Redis isolés**. TypeScript et compilation de production réussis pour cette étape. Les essais ne modifient aucun compte réel et ne font aucun appel IA payant. Restent prioritaires : migration du chat RSC vers AI SDK UI, parcours utilisateur complet en Preview, export et effacement des données, vérification d’adresse, puis paiements Stripe de test et observabilité fonctionnelle. Les quotas IA et certains autres modules ne sont pas encore une séparation complète de l’infrastructure.
