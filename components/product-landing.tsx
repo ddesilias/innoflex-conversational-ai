@@ -29,7 +29,7 @@ export function ProductLanding() {
           <span className={styles.registrationNote}>
             Accès pilote · aucun paiement demandé.
             <br />
-            Un compte permet d’enregistrer et de retrouver vos cycles.
+            Connectez-vous pour accéder au journal et retrouver vos cycles.
           </span>
           <a className={styles.exploreLink} href="#apercu">
             Explorer une séance de démonstration ↓

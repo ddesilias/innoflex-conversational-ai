@@ -9,7 +9,11 @@ import { IconSpinner } from './ui/icons'
 import { getMessageFromCode } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 
-export default function SignupForm() {
+export default function SignupForm({
+  returnTo = '/'
+}: {
+  returnTo?: '/' | '/trading-journal'
+}) {
   const router = useRouter()
   const [result, dispatch] = useActionState(signup, undefined)
 
@@ -19,10 +23,11 @@ export default function SignupForm() {
         toast.error(getMessageFromCode(result.resultCode))
       } else {
         toast.success(getMessageFromCode(result.resultCode))
+        router.replace(returnTo)
         router.refresh()
       }
     }
-  }, [result, router])
+  }, [result, router, returnTo])
 
   return (
     <form
@@ -77,7 +82,14 @@ export default function SignupForm() {
         <LoginButton />
       </div>
 
-      <Link href="/login" className="flex flex-row gap-1 text-sm text-zinc-400">
+      <Link
+        href={
+          returnTo === '/trading-journal'
+            ? '/login?next=/trading-journal'
+            : '/login'
+        }
+        className="flex flex-row gap-1 text-sm text-zinc-400"
+      >
         Vous avez déjà un compte ?
         <div className="font-semibold underline">Se connecter</div>
       </Link>

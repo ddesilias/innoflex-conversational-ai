@@ -133,3 +133,19 @@ commun, présence des filtres, recherche sans correspondance affichant 0/1,
 retour à la revue et courbe accessible décrivant le cumul exact. Aucune écriture
 sur le compte ni appel IA n’a été effectué dans ce contrôle. 99 tests applicatifs
 passent et la compilation réussit. La validation graphique mobile reste ouverte.
+
+## Accès public et espace connecté
+
+La présentation et son aperçu fictif restent publics. Le journal exige désormais
+une identité de session valide au niveau de sa page serveur, avant de rendre
+l’espace de travail. Les actions de lecture et de sauvegarde continuent de
+contrôler séparément la session et les clés de propriétaire/environnement.
+La connexion et la création de compte préservent la destination autorisée du
+journal. Les URL externes ne sont pas admises comme destination de retour.
+
+Vérification locale sans cookies : `/trading-journal` répond 307 vers
+`/login?next=/trading-journal`, sans rendre le bouton de sauvegarde ni le journal ;
+`/presentation` répond 200 avec la présentation. 101 tests applicatifs et la
+compilation réussissent. Les tests distinguent sessions absentes, incomplètes et
+identité authentifiée. Le parcours de création réelle d’un nouveau compte et
+l’envoi de récupération restent à valider de bout en bout.

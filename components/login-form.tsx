@@ -93,7 +93,11 @@ export default function LoginForm({
       </div>
 
       <Link
-        href="/signup"
+        href={
+          returnTo === '/trading-journal'
+            ? '/signup?next=/trading-journal'
+            : '/signup'
+        }
         className="flex flex-row gap-1 text-sm text-zinc-400"
       >
         Pas encore de compte ?{' '}

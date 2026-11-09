@@ -16,12 +16,7 @@ export const authConfig = {
       if (isLoggedIn) {
         if (isOnLoginPage || isOnSignupPage) {
           return Response.redirect(
-            new URL(
-              isOnLoginPage
-                ? loginReturnPath(nextUrl.searchParams.get('next'))
-                : '/',
-              nextUrl
-            )
+            new URL(loginReturnPath(nextUrl.searchParams.get('next')), nextUrl)
           )
         }
       }
