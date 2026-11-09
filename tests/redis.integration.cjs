@@ -12,7 +12,7 @@ let container
 function load(file) {
   const output = {}
   vm.runInNewContext(ts.transpileModule(fs.readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText,
-    { exports: output, require: name => { if (name === 'server-only') return {}; if (name === 'node:crypto') return require('node:crypto'); if (name === '@/lib/security/read-body') return {}; if (name === './keys') return {}; if (name === './session') return {}; if (name === './attempts') return {}; if (name === './password') return {}; if (name === '@vercel/kv') return { kv: {} }; throw Error(name) } })
+    { exports: output, require: name => { if (name === '@/lib/accounts/keys') return {}; if (name === 'server-only') return {}; if (name === 'node:crypto') return require('node:crypto'); if (name === '@/lib/security/read-body') return {}; if (name === './keys') return {}; if (name === './session') return {}; if (name === './attempts') return {}; if (name === './password') return {}; if (name === '@vercel/kv') return { kv: {} }; throw Error(name) } })
   return output
 }
 const { createAccountScript, upgradePasswordScript } = load('lib/accounts/store.ts')
@@ -21,6 +21,7 @@ const { authAttemptScript } = load('lib/accounts/attempts.ts')
 const { removeChatScript, shareChatScript } = load('lib/security/chat-mutations.ts')
 const { recordDeliveryScript } = load('lib/email/events.ts')
 const { quotaScript } = load('lib/security/quota.ts')
+const { saveTradingDraftScript } = load('lib/trading/storage.ts')
 const { saveChatScript } = load('lib/security/save-chat.ts')
 const { bindCustomerScript } = load('lib/billing/customer-store.ts')
 const { commitBillingScript } = load('lib/billing/store.ts')
@@ -191,4 +192,49 @@ test('removing a conversation cannot delete it when its index has an invalid typ
  await redis('HSET','chat:invalid-index','userId','alice');await redis('SET','chat:index-wrong-type','corrupt');
  await assert.rejects(evaluate(removeChatScript,['chat:invalid-index','chat:index-wrong-type'],['alice']));
  assert.equal(await redis('HGET','chat:invalid-index','userId'),'alice');
+});
+
+ test('trading draft updates are atomic and stale tabs cannot overwrite a newer cycle', async () => {
+ const key='test:trading:owner-a';
+ assert.equal(await evaluate(saveTradingDraftScript,[key],[0,'g20:first']),1);
+ assert.equal(await evaluate(saveTradingDraftScript,[key],[0,'g20:stale']),0);
+ assert.equal(await redis('HGET',key,'draft'),'g20:first');
+ assert.equal(await evaluate(saveTradingDraftScript,[key],[1,'g20:second']),2);
+ assert.equal(await redis('HGET',key,'draft'),'g20:second');
+ assert.equal(await redis('EXISTS','test:trading:owner-b'),0);
+ });
+
+test('G20 server actions round-trip a saved cycle across sessions and reject other identities, stale saves and invalid input', async () => {
+ function moduleFrom(file, requireModule) {
+  const output={};
+  vm.runInNewContext(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,{exports:output,require:requireModule,Buffer,process:{env:{NODE_ENV:'development'}}});
+  return output;
+ }
+ const accountKeys=moduleFrom('lib/accounts/keys.ts');
+ const storage=moduleFrom('lib/trading/storage.ts',()=>accountKeys);
+ const review=moduleFrom('lib/trading/review.ts');
+ const key=id=>storage.tradingDraftKey(id,{NODE_ENV:'development',ACCOUNT_STORAGE_NAMESPACE:'test-g20'});
+ function session(userId) {
+  return moduleFrom('app/trading-journal/actions.ts',name=>{
+   if(name==='@/auth')return {auth:async()=>userId?{user:{id:userId}}:null};
+   if(name==='@/lib/trading/review')return review;
+   if(name==='@/lib/trading/storage')return {...storage,tradingDraftKey:key};
+   if(name==='@vercel/kv')return {kv:{eval:evaluate,hgetall:async key=>{const value=await redis('HGETALL',key);return Object.keys(value).length?value:null}}};
+   throw Error(name);
+  });
+ }
+ const draft={version:1,cycle:'Synthetic cycle',mode:'Backtest',currency:'CAD',plan:{method:'Test',limits:'Test',avoid:''},trades:[{id:'test-1',date:'2026-11-08',asset:'TEST',mode:'Backtest',status:'Clôturée',pnl:2550,lesson:'Synthetic observation'}]};
+ const alice=session('g20-alice');
+ assert.equal((await alice.saveTradingDraft(JSON.stringify(draft),0)).revision,1);
+ const reconnected=session('g20-alice');
+ const restored=await reconnected.loadTradingDraft();
+ assert.equal(restored.ok,true); assert.equal(restored.revision,1);
+ assert.equal(JSON.stringify(restored.draft),JSON.stringify(draft));
+ assert.equal((await session('g20-bob').loadTradingDraft()).draft,null);
+ assert.equal((await session(null).loadTradingDraft()).ok,false);
+ assert.equal((await reconnected.saveTradingDraft('{}',1)).ok,false);
+ assert.equal((await reconnected.saveTradingDraft(JSON.stringify({...draft,cycle:'Stale'}),0)).ok,false);
+ assert.equal((await reconnected.loadTradingDraft()).draft.cycle,'Synthetic cycle');
+ assert.equal((await reconnected.saveTradingDraft(JSON.stringify({...draft,cycle:'Updated'}),1)).revision,2);
+ assert.equal((await session('g20-alice').loadTradingDraft()).draft.cycle,'Updated');
 });

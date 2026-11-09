@@ -1,6 +1,6 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useActionState, useEffect, useRef, useState } from 'react'
+import { useFormStatus } from 'react-dom'
 import Link from 'next/link'
 import {
   requestPasswordReset,
@@ -43,7 +43,7 @@ export function RecoveryForm({
 }) {
   const [token, setToken] = useState('')
   const tokenRead = useRef(false)
-  const [state, dispatch] = useFormState(
+  const [state, dispatch] = useActionState(
     reset ? confirmPasswordReset : requestPasswordReset,
     undefined
   )

@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from 'next-auth'
+import { loginReturnPath } from './lib/accounts/return-path'
 
 export const authConfig = {
   secret: process.env.AUTH_SECRET,
@@ -14,7 +15,14 @@ export const authConfig = {
 
       if (isLoggedIn) {
         if (isOnLoginPage || isOnSignupPage) {
-          return Response.redirect(new URL('/', nextUrl))
+          return Response.redirect(
+            new URL(
+              isOnLoginPage
+                ? loginReturnPath(nextUrl.searchParams.get('next'))
+                : '/',
+              nextUrl
+            )
+          )
         }
       }
 

@@ -5,14 +5,11 @@ export default function MainNav() {
     <>
       <nav className="ml-4 flex sm:justify-center space-x-4">
         {[
-          ['Assistant personnel', '/']
+          ['Assistant personnel', '/'],
+          ['Atelier G20', '/trading-journal']
         ].map(([title, url]) => (
           <Button variant="ghost" key={url}>
-            <Link
-              href={url}
-            >
-              {title}
-            </Link>
+            <Link href={url}>{title}</Link>
           </Button>
         ))}
       </nav>

@@ -1,17 +1,21 @@
 'use client'
 
-import { useFormState, useFormStatus } from 'react-dom'
+import { useFormStatus } from 'react-dom'
 import { authenticate } from '@/app/login/actions'
 import Link from 'next/link'
-import { useEffect } from 'react'
+import { useActionState, useEffect } from 'react'
 import { toast } from 'sonner'
 import { IconSpinner } from './ui/icons'
 import { getMessageFromCode } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 
-export default function LoginForm() {
+export default function LoginForm({
+  returnTo = '/'
+}: {
+  returnTo?: '/' | '/trading-journal'
+}) {
   const router = useRouter()
-  const [result, dispatch] = useFormState(authenticate, undefined)
+  const [result, dispatch] = useActionState(authenticate, undefined)
 
   useEffect(() => {
     if (result) {
@@ -19,10 +23,11 @@ export default function LoginForm() {
         toast.error(getMessageFromCode(result.resultCode))
       } else {
         toast.success(getMessageFromCode(result.resultCode))
+        router.replace(returnTo)
         router.refresh()
       }
     }
-  }, [result, router])
+  }, [result, router, returnTo])
 
   return (
     <form
@@ -30,7 +35,11 @@ export default function LoginForm() {
       className="flex flex-col items-center gap-4 space-y-3"
     >
       <div className="w-full flex-1 rounded-lg border bg-white px-6 pb-4 pt-8 shadow-md  md:w-96 dark:bg-zinc-950">
-        <h1 className="mb-3 text-2xl font-bold">Retrouvez votre assistant personnel</h1>
+        <h1 className="mb-3 text-2xl font-bold">
+          {returnTo === '/trading-journal'
+            ? 'Retrouvez votre journal G20'
+            : 'Retrouvez votre assistant personnel'}
+        </h1>
         <div className="w-full">
           <div>
             <label
@@ -75,14 +84,20 @@ export default function LoginForm() {
           </div>
         </div>
         <LoginButton />
-        <Link href="/forgot-password" className="mb-4 block text-center text-sm underline">Mot de passe oublié ?</Link>
+        <Link
+          href="/forgot-password"
+          className="mb-4 block text-center text-sm underline"
+        >
+          Mot de passe oublié ?
+        </Link>
       </div>
 
       <Link
         href="/signup"
         className="flex flex-row gap-1 text-sm text-zinc-400"
       >
-        Pas encore de compte ? <div className="font-semibold underline">Créer un compte</div>
+        Pas encore de compte ?{' '}
+        <div className="font-semibold underline">Créer un compte</div>
       </Link>
     </form>
   )
