@@ -21,7 +21,7 @@ const { authAttemptScript } = load('lib/accounts/attempts.ts')
 const { removeChatScript, shareChatScript } = load('lib/security/chat-mutations.ts')
 const { recordDeliveryScript } = load('lib/email/events.ts')
 const { quotaScript } = load('lib/security/quota.ts')
-const { saveTradingDraftScript } = load('lib/trading/storage.ts')
+const { saveTradingDraftScript, saveTradingCycleScript } = load('lib/trading/storage.ts')
 const { saveChatScript } = load('lib/security/save-chat.ts')
 const { bindCustomerScript } = load('lib/billing/customer-store.ts')
 const { commitBillingScript } = load('lib/billing/store.ts')
@@ -237,4 +237,28 @@ test('G20 server actions round-trip a saved cycle across sessions and reject oth
  assert.equal((await reconnected.loadTradingDraft()).draft.cycle,'Synthetic cycle');
  assert.equal((await reconnected.saveTradingDraft(JSON.stringify({...draft,cycle:'Updated'}),1)).revision,2);
  assert.equal((await session('g20-alice').loadTradingDraft()).draft.cycle,'Updated');
+ const otherCycle='11111111-1111-4111-8111-111111111111';
+ assert.equal((await reconnected.saveTradingDraft(JSON.stringify({...draft,cycle:'Second cycle'}),0,otherCycle)).revision,1);
+ assert.equal((await reconnected.loadTradingDraft()).draft.cycle,'Updated');
+ assert.equal((await reconnected.loadTradingDraft(otherCycle)).draft.cycle,'Second cycle');
+ assert.equal((await reconnected.listTradingCycles()).cycles.length,2);
+ assert.equal((await session('g20-bob').listTradingCycles()).cycles.length,0);
+ assert.equal((await session('g20-bob').loadTradingDraft(otherCycle)).draft,null);
+ assert.equal((await reconnected.loadTradingDraft('../g20-bob')).ok,false);
+ // Simulate the first release: a saved legacy cycle with no index entry.
+ await redis('HDEL',storage.tradingCycleIndexKey('g20-alice',{NODE_ENV:'development'}),'default');
+ assert.equal((await reconnected.listTradingCycles()).cycles.length,2);
+
+});
+
+
+test('cycle collection limits and malformed indexes cannot leave partial writes',async()=>{
+ const index='test:g20:bounded-index';
+ for(let i=0;i<50;i++)await redis('HSET',index,'cycle-'+i,'meta:{}');
+ assert.equal(await evaluate(saveTradingCycleScript,['test:g20:new',index],[0,'g20:{}','new','meta:{}']),-1);
+ assert.equal(await redis('EXISTS','test:g20:new'),0);
+ assert.equal(await evaluate(saveTradingCycleScript,['test:g20:existing',index],[0,'g20:{}','cycle-0','meta:{}']),1);
+ await redis('SET','test:g20:corrupt-index','wrong');
+ await assert.rejects(evaluate(saveTradingCycleScript,['test:g20:no-partial-write','test:g20:corrupt-index'],[0,'g20:{}','id','meta:{}']));
+ assert.equal(await redis('EXISTS','test:g20:no-partial-write'),0);
 });

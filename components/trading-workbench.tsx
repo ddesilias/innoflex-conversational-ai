@@ -13,6 +13,7 @@ import {
 } from '@/lib/trading/review'
 import styles from './trading-workbench.module.css'
 import {
+  listTradingCycles,
   loadTradingDraft,
   saveTradingDraft
 } from '@/app/trading-journal/actions'
@@ -20,10 +21,17 @@ import {
 export default function TradingWorkbench() {
   const [tab, setTab] = useState('Plan')
   const [revision, setRevision] = useState(0)
+  const [activeCycleId, setActiveCycleId] = useState('default')
+  const [selectedCycleId, setSelectedCycleId] = useState('default')
+  const [loadedCycleId, setLoadedCycleId] = useState<string | null>(null)
+  const [cycles, setCycles] = useState<
+    { id: string; name: string; updatedAt: string }[]
+  >([])
+  const [confirmNew, setConfirmNew] = useState(false)
   const [busy, setBusy] = useState(false)
   const [savedSnapshot, setSavedSnapshot] = useState<string | null>(null)
   const [storageMessage, setStorageMessage] = useState(
-    'Un seul cycle de travail sauvegardé par compte et par environnement. Enregistrement manuel.'
+    'Tes cycles restent séparés par compte et par environnement. Enregistrement manuel.'
   )
   const [loadedRevision, setLoadedRevision] = useState<number | null>(null)
   const [cycle, setCycle] = useState('Mon premier cycle')
@@ -51,11 +59,13 @@ export default function TradingWorkbench() {
     })
     setBusy(true)
     try {
-      const result = await saveTradingDraft(snapshot, revision)
+      const result = await saveTradingDraft(snapshot, revision, activeCycleId)
       setStorageMessage(result.message)
       if (result.ok && result.revision) {
         setRevision(result.revision)
         setSavedSnapshot(snapshot)
+        const listing = await listTradingCycles()
+        if (listing.ok) setCycles(listing.cycles)
       }
     } catch {
       setStorageMessage(
@@ -69,8 +79,9 @@ export default function TradingWorkbench() {
     setBusy(true)
     setPendingImport(null)
     setLoadedRevision(null)
+    setLoadedCycleId(null)
     try {
-      const result = await loadTradingDraft()
+      const result = await loadTradingDraft(selectedCycleId)
       if (!result.ok) {
         setStorageMessage(result.message)
         return
@@ -83,6 +94,7 @@ export default function TradingWorkbench() {
       }
       setPendingImport(result.draft)
       setLoadedRevision(result.revision)
+      setLoadedCycleId(selectedCycleId)
       setImportMessage(
         'Cycle du compte récupéré. Confirme son chargement ci-dessous.'
       )
@@ -99,6 +111,7 @@ export default function TradingWorkbench() {
     if (!file) return
     setPendingImport(null)
     setLoadedRevision(null)
+    setLoadedCycleId(null)
     try {
       if (file.size > 2_000_000)
         throw new Error('Fichier trop volumineux (2 Mo maximum).')
@@ -114,6 +127,7 @@ export default function TradingWorkbench() {
     if (!pendingImport) return
     if (loadedRevision !== null) {
       setRevision(loadedRevision)
+      if (loadedCycleId) setActiveCycleId(loadedCycleId)
       setSavedSnapshot(JSON.stringify(pendingImport))
     }
     setLoadedRevision(null)
@@ -128,6 +142,45 @@ export default function TradingWorkbench() {
     setPendingImport(null)
     setImportMessage('Cycle importé dans cet onglet.')
     setError('')
+  }
+  async function refreshCycles() {
+    setBusy(true)
+    try {
+      const result = await listTradingCycles()
+      if (result.ok) {
+        setCycles(result.cycles)
+        setStorageMessage(
+          `${result.cycles.length} cycle(s) enregistré(s). Sélectionne un cycle puis charge-le.`
+        )
+      } else setStorageMessage(result.message)
+    } catch {
+      setStorageMessage('Liste indisponible. Ton brouillon reste intact.')
+    } finally {
+      setBusy(false)
+    }
+  }
+  function startNewCycle() {
+    const id = crypto.randomUUID()
+    setActiveCycleId(id)
+    setSelectedCycleId(id)
+    setRevision(0)
+    setSavedSnapshot(null)
+    setCycle('Nouveau cycle')
+    setPlan({ method: '', limits: '', avoid: '' })
+    setTrades([])
+    setMode('Backtest')
+    setCurrency('CAD')
+    setWeek('')
+    setTab('Plan')
+    setPendingImport(null)
+    setLoadedRevision(null)
+    setLoadedCycleId(null)
+    setConfirmNew(false)
+    setError('')
+    setImportMessage('')
+    setStorageMessage(
+      'Nouveau brouillon. Tes cycles enregistrés restent disponibles ; enregistre celui-ci pour le conserver.'
+    )
   }
   const money = (cents: number | null) =>
     cents === null
@@ -223,6 +276,63 @@ export default function TradingWorkbench() {
         exporte-le avant de quitter. Aucun appel IA ni ordre de marché.
       </aside>
       <section className={styles.panel} aria-label="Sauvegarde du cycle">
+        <label>
+          Cycles enregistrés
+          <select
+            disabled={busy || editing !== null}
+            value={selectedCycleId}
+            onChange={e => setSelectedCycleId(e.target.value)}
+          >
+            {!cycles.some(c => c.id === selectedCycleId) ? (
+              <option value={selectedCycleId}>
+                {selectedCycleId === 'default'
+                  ? 'Premier cycle / ancien journal'
+                  : 'Brouillon actuel'}
+              </option>
+            ) : null}
+            {cycles.map(c => (
+              <option key={c.id} value={c.id}>
+                {c.name || 'Cycle sans nom'}
+                {c.id === activeCycleId ? ' · cycle affiché' : ''}
+              </option>
+            ))}
+          </select>
+        </label>
+        <p>
+          La sélection prépare un chargement. « Enregistrer » sauvegarde le
+          cycle actuellement affiché : {cycle || 'Cycle sans nom'}.
+        </p>
+        <button
+          className={styles.secondary}
+          disabled={busy || editing !== null}
+          onClick={refreshCycles}
+        >
+          Actualiser mes cycles
+        </button>{' '}
+        <button
+          className={styles.secondary}
+          disabled={busy || editing !== null}
+          onClick={() => setConfirmNew(true)}
+        >
+          Nouveau cycle
+        </button>
+        {confirmNew ? (
+          <div role="group" aria-label="Confirmer un nouveau cycle">
+            <p>
+              Le brouillon affiché sera remplacé. Enregistre-le ou exporte-le
+              avant de continuer. Tes cycles déjà enregistrés seront conservés.
+            </p>
+            <button disabled={busy || editing !== null} onClick={startNewCycle}>
+              Créer un nouveau brouillon
+            </button>{' '}
+            <button
+              className={styles.secondary}
+              onClick={() => setConfirmNew(false)}
+            >
+              Annuler
+            </button>
+          </div>
+        ) : null}
         <p role="status">
           {savedSnapshot !== null &&
           savedSnapshot ===
@@ -295,7 +405,7 @@ export default function TradingWorkbench() {
           </select>
         </label>
         <button
-          disabled={editing !== null}
+          disabled={busy || editing !== null}
           className={styles.secondary}
           onClick={download}
         >
@@ -307,7 +417,7 @@ export default function TradingWorkbench() {
           Reprendre un export G20 (JSON, 2 Mo maximum)
           <input
             type="file"
-            disabled={editing !== null}
+            disabled={busy || editing !== null}
             accept=".json,application/json"
             onChange={e => {
               void readImport(e.target.files?.[0])
@@ -324,7 +434,7 @@ export default function TradingWorkbench() {
               cycle remplacera le brouillon actuel. Exporte-le d’abord si tu
               souhaites le garder.
             </p>
-            <button disabled={editing !== null} onClick={applyImport}>
+            <button disabled={busy || editing !== null} onClick={applyImport}>
               Remplacer par ce cycle
             </button>{' '}
             <button
@@ -531,14 +641,14 @@ export default function TradingWorkbench() {
                               block: 'start'
                             })
                         }}
-                        disabled={editing !== null}
+                        disabled={busy || editing !== null}
                         aria-label={`Modifier ${t.asset} du ${t.date}`}
                       >
                         Modifier / clôturer
                       </button>{' '}
                       <button
                         className={styles.secondary}
-                        disabled={editing !== null}
+                        disabled={busy || editing !== null}
                         aria-label={`Supprimer ${t.asset} du ${t.date}`}
                         onClick={() =>
                           setTrades(current =>
@@ -631,7 +741,7 @@ export default function TradingWorkbench() {
               Aucune conclusion automatique n’est inventée.
             </p>
           )}
-          <button disabled={editing !== null} onClick={download}>
+          <button disabled={busy || editing !== null} onClick={download}>
             Exporter le cycle et son plan
           </button>
         </section>

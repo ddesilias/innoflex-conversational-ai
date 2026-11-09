@@ -21,3 +21,11 @@ test('server actions refuse anonymous access before any storage call',async()=>{
  assert.equal((await actions.loadTradingDraft()).ok,false);
  assert.equal((await actions.saveTradingDraft('{}',0)).ok,false);
 });
+
+test('cycle identities cannot escape their account or collide with the legacy journal',()=>{
+ const env={NODE_ENV:'development'},id='11111111-1111-4111-8111-111111111111';
+ assert.equal(api.tradingCycleKey('alice','default',env),api.tradingDraftKey('alice',env));
+ assert.notEqual(api.tradingCycleKey('alice',id,env),api.tradingCycleKey('bob',id,env));
+ assert.notEqual(api.tradingCycleKey('alice',id,env),api.tradingDraftKey('alice',env));
+ for(const value of ['../bob','------------------------------------','',null])assert.throws(()=>api.tradingCycleKey('alice',value,env));
+});

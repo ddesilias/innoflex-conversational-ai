@@ -7,7 +7,7 @@ Aucune recommandation d’allocation, aucun ordre, aucun appel IA.
 
 ## Sauvegarde manuelle
 
-Un cycle de travail par compte et par environnement, stocké dans Redis.
+Jusqu’à 50 cycles par compte et par environnement, stockés dans Redis. Chaque cycle possède sa propre révision. Le premier journal reste lisible sans migration destructive. La liste est chargée à la demande ; créer un nouveau brouillon et charger un autre cycle demandent confirmation.
 Les actions serveur authentifient la session à chaque lecture/écriture et
 construisent la clé depuis cette identité. Le client ne choisit pas le propriétaire.
 Les clés séparent production, préproduction et local. La validation normalise
@@ -20,8 +20,7 @@ avant de recharger. Une panne de stockage reste visible et ne simule pas un succ
 ## Limites restantes avant commercialisation
 
 - Vérifier la sauvegarde et la récupération connectées dans le navigateur et en Preview.
-- Ajouter plusieurs cycles et suppression
-  du cycle du compte et politique de rétention explicite.
+- Ajouter la suppression récupérable des cycles et une politique de rétention explicite.
 - Ajouter les champs de préparation, confirmations et émotions progressivement.
 - Vérifier le rendu mobile, les interactions clavier et les changements d’onglet.
 - Les sources privées et formations tierces ne sont pas incluses dans le produit.
@@ -75,3 +74,14 @@ est rendu immédiatement et une préférence corrompue ou un stockage indisponib
 ne bloque plus l’application. Trois tests ciblent ces situations.
 La validation réelle des comptes en préproduction reste en cours ; READY ne
 signifie pas que le parcours commercial complet est validé.
+
+## Plusieurs cycles
+
+La création d’un nouveau brouillon ne remplace pas un cycle déjà enregistré.
+Le choix dans la liste prépare un chargement ; seule la confirmation remplace
+le brouillon visible. L’enregistrement vise le cycle affiché, pas la simple
+sélection dans la liste. La compatibilité du premier journal sans index est
+conservée. La mise à jour de l’index et du cycle est atomique avec contrôle de
+révision. Un index invalide ou la limite de 50 cycles ne laisse aucune écriture
+partielle. Les tests Redis couvrent deux cycles, leur relecture, l’isolement des
+comptes, la compatibilité du journal initial et la limite de collection.
