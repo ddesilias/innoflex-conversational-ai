@@ -18,9 +18,8 @@ export const metadata = {
   },
   description: 'Assistant personnel INNOFLEX pour rédiger, comprendre, apprendre et organiser vos idées.',
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon-16x16.png',
-    apple: '/apple-touch-icon.png'
+    icon: '/innoflex-mark.svg',
+    shortcut: '/innoflex-mark.svg'
   }
 }
 
