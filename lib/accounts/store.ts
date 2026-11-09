@@ -1,4 +1,5 @@
 import 'server-only'
+import { accountStorageKey } from './keys'
 import { credentialVersion } from './session'
 import { consumeAuthAttempt } from './attempts'
 import { kv } from '@vercel/kv'
@@ -22,21 +23,21 @@ return 1
 export async function createAccount(email: string, plaintext: string): Promise<boolean> {
   await consumeAuthAttempt((script, keys, args) => kv.eval(script, keys, args), email, 'signup')
   const credential = await hashPassword(plaintext)
-  return Number(await kv.eval(createAccountScript, [`user:${email}`],
+  return Number(await kv.eval(createAccountScript, [accountStorageKey(email)],
     [randomUUID(), email, credential.password, credential.salt])) === 1
 }
 export async function authenticateAccount(email: string, plaintext: string) {
   await consumeAuthAttempt((script, keys, args) => kv.eval(script, keys, args), email, 'login')
-  const user = await kv.hgetall<User>(`user:${email}`)
+  const user = await kv.hgetall<User>(accountStorageKey(email))
   if (!user || !user.id || user.email !== email || !await verifyPassword(plaintext, user)) return null
   if (needsPasswordUpgrade(user.password)) {
     const credential = await hashPassword(plaintext)
-    const upgraded = await kv.eval(upgradePasswordScript, [`user:${email}`],
+    const upgraded = await kv.eval(upgradePasswordScript, [accountStorageKey(email)],
       [user.id, user.password, user.salt, credential.password, credential.salt])
     // A concurrent login can migrate the same credential. Re-check the current
     // record so a concurrent credential change cannot authenticate stale data.
     if (Number(upgraded) !== 1) {
-      const current = await kv.hgetall<User>(`user:${email}`)
+      const current = await kv.hgetall<User>(accountStorageKey(email))
       if (!current || current.id !== user.id || current.email !== email || !await verifyPassword(plaintext, current)) return null
     }
   }
@@ -46,6 +47,6 @@ export async function authenticateAccount(email: string, plaintext: string) {
 }
 
 export async function readSessionAccount(email: string) {
-  const account = await kv.hgetall<User>(`user:${email}`)
+  const account = await kv.hgetall<User>(accountStorageKey(email))
   return account ? { id: account.id, email: account.email, credentialVersion: account.credentialVersion } : null
 }

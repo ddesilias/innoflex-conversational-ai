@@ -15,6 +15,7 @@ function load(file, mocks = {}) {
   } })
   return exports
 }
+const keys = { accountStorageKey: email => `user:${email}` }
 const session = load('lib/accounts/session.ts')
 const password = load('lib/accounts/password.ts')
 const plaintext = 'a long personal password'
@@ -39,7 +40,7 @@ test('legacy hashes remain verifiable and require migration; malformed records f
   await assert.rejects(password.hashPassword('x'.repeat(257)))
 })
 function accounts(kv) {
-  return load('lib/accounts/store.ts', { 'server-only': {}, '@vercel/kv': { kv }, './session': session, './attempts': { consumeAuthAttempt: async () => {} }, './password': password })
+  return load('lib/accounts/store.ts', { './keys': keys, 'server-only': {}, '@vercel/kv': { kv }, './session': session, './attempts': { consumeAuthAttempt: async () => {} }, './password': password })
 }
 test('successful legacy login migrates credentials and returns no stored password', async () => {
   const old = { id: 'alice', email: 'alice@example.com', salt: 'old', password: crypto.createHash('sha256').update(plaintext + 'old').digest('hex') }
@@ -80,7 +81,7 @@ test('account creation hashes before persistence and does not expose credentials
 test('denied attempts prevent account reads, hashing, and writes', async () => {
   let work = 0;
   const api = load('lib/accounts/store.ts', {
-    'server-only': {}, '@vercel/kv': {kv:{hgetall:async()=>{work++},eval:async()=>{work++}}},
+    './keys': keys, 'server-only': {}, '@vercel/kv': {kv:{hgetall:async()=>{work++},eval:async()=>{work++}}},
     './session': session, './attempts': {consumeAuthAttempt:async()=>{throw Error('blocked')}},
     './password': {hashPassword:async()=>{work++},verifyPassword:async()=>{work++}}
   });

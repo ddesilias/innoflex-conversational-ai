@@ -15,7 +15,7 @@ Le pilote n’est pas encore prêt à être commercialisé. Les correctifs sont 
 
 ## Validation de cette étape
 
-71 tests unitaires/comportementaux, 11 tests sur Redis isolé, TypeScript et compilation réussis. Les tests couvrent le nouveau stockage, les mots de passe incorrects, les comptes anciens, les courses de migration et les inscriptions concurrentes. Le manifeste des actions serveur généré ne référence plus `getUser` ou `createUser`.
+73 tests unitaires/comportementaux, 12 tests sur Redis isolé, TypeScript et compilation réussis. Les tests couvrent le nouveau stockage, les mots de passe incorrects, les comptes anciens, les courses de migration et les inscriptions concurrentes. Le manifeste des actions serveur généré ne référence plus `getUser` ou `createUser`.
 
 Aucun compte réel migré, aucune donnée client modifiée, aucun paiement ni appel IA payant effectué. La protection de base contre les tentatives répétées est préparée. La récupération de compte et le parcours de conversation stable en préproduction restent prioritaires.
 
@@ -40,3 +40,9 @@ Référence : [OWASP — récupération de mot de passe](https://cheatsheetserie
 ## Raccordement SendGrid
 
 SendGrid a été choisi par l’utilisateur. Les écrans et les actions de récupération sont désormais préparés et protégés par une configuration serveur complète ; sans elle, ils affichent un état indisponible et n’accèdent ni aux comptes ni à l’envoi. Une demande valide reçoit sa réponse avant la recherche d’identité et l’envoi via `after`. Les erreurs de notification après un changement enregistré ne renvoient pas un faux échec de modification. Aucun secret ni expéditeur n’est présumé configuré. Voir [SENDGRID.md](SENDGRID.md) pour l’activation et les limites de livraison. L’envoi réel reste désactivé localement.
+
+## Configuration SendGrid et isolation des comptes de test
+
+La clé SendGrid est détectée localement et le mode sandbox a répondu HTTP 200, sans livraison d’e-mail. L’expéditeur déclaré est `dimitry.d@innoflexequipe.com`. La clé et un AUTH_SECRET distinct sont configurés pour la branche Preview. Les paramètres d’expéditeur, d’origine et de namespace sont préparés pour cette branche.
+
+Les comptes et jetons de Local et Preview utilisent des préfixes séparés pour que les essais sur le Redis partagé ne puissent pas modifier les comptes de Production. Les comptes historiques de Production restent accessibles sous leurs anciennes clés. Il faut créer des comptes de test distincts, sans copie des comptes réels. La séparation des autres données de l’application reste à examiner.

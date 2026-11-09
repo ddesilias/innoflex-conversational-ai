@@ -26,13 +26,19 @@ return 1
 type ResetRecord = { userId: string; email: string; credentialVersion?: unknown }
 type Account = { id: string; email: string; credentialVersion?: unknown }
 export interface ResetDependencies {
+  accountKey?: (email: string) => string
+  resetKey?: (digest: string) => string
   evaluate: (script: string, keys: string[], args: string[]) => Promise<unknown>
   readAccount: (email: string) => Promise<Account | null>
   readReset: (key: string) => Promise<ResetRecord | null>
   limit: (identity: string, kind: 'reset-request' | 'reset-confirm') => Promise<void>
   hash: (plaintext: string) => Promise<{ password: string; salt: string }>
 }
-const tokenKey = (token: string) => 'password-reset:' + createHash('sha256').update(token).digest('hex')
+const tokenKey = (deps: ResetDependencies, token: string) => {
+  const digest = createHash('sha256').update(token).digest('hex')
+  return deps.resetKey ? deps.resetKey(digest) : 'password-reset:' + digest
+}
+const accountKey = (deps: ResetDependencies, email: string) => deps.accountKey ? deps.accountKey(email) : `user:${email}`
 // Internal server-only operation. The token must go to an approved delivery
 // adapter, never a public action response or a log. No delivery is enabled yet.
 export async function preparePasswordReset(deps: ResetDependencies, email: string) {
@@ -43,20 +49,20 @@ export async function preparePasswordReset(deps: ResetDependencies, email: strin
   const version = credentialVersion(account.credentialVersion)
   if (version === null || version >= 999_999_999) throw Error('Account recovery unavailable')
   const token = randomBytes(32).toString('hex')
-  const stored = await deps.evaluate(issueResetScript, [`user:${email}`, tokenKey(token)], [account.id, email, String(version)])
+  const stored = await deps.evaluate(issueResetScript, [accountKey(deps, email), tokenKey(deps, token)], [account.id, email, String(version)])
   if (Number(stored) !== 1) throw Error('Account recovery unavailable')
   return { token, email }
 }
 export async function completePasswordReset(deps: ResetDependencies, token: string, password: string, confirmation: string) {
   if (typeof token !== 'string' || !/^[a-f0-9]{64}$/.test(token) || !validPassword(password, 12) || password !== confirmation) return false
   await deps.limit(token, 'reset-confirm')
-  const key = tokenKey(token)
+  const key = tokenKey(deps, token)
   const record = await deps.readReset(key)
   if (!record || typeof record.userId !== 'string' || !record.userId || typeof record.email !== 'string' || record.email.length > 254) return false
   const version = credentialVersion(record.credentialVersion)
   if (version === null || version >= 999_999_999) return false
   const credential = await deps.hash(password)
-  const result = await deps.evaluate(completeResetScript, [key, `user:${record.email}`],
+  const result = await deps.evaluate(completeResetScript, [key, accountKey(deps, record.email)],
     [record.userId, record.email, String(version), credential.password, credential.salt])
   return Number(result) === 1
 }

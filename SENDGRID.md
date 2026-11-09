@@ -1,6 +1,6 @@
 # Récupération de compte — SendGrid
 
-Le code SendGrid et les formulaires sont préparés sur la branche de travail. Aucun envoi réel n’a été effectué. La configuration locale vérifiée ne contient pas les quatre paramètres nécessaires ; le service reste désactivé.
+Le code SendGrid et les formulaires sont préparés sur la branche de travail. Aucun envoi réel n’a été effectué. La clé locale a été détectée et une validation API sandbox a répondu HTTP 200, sans livraison. L’expéditeur déclaré par l’utilisateur est `dimitry.d@innoflexequipe.com`. La configuration Preview est limitée à la branche de travail et utilise un secret de session distinct. La réception réelle n’est pas encore validée.
 
 ## Configuration par environnement
 
@@ -26,3 +26,7 @@ Le HTTP 202 de SendGrid confirme l’acceptation de la requête, pas la livraiso
 Les tests utilisent des faux comptes et un fournisseur simulé. Ils vérifient configuration, format du lien, absence de suivi, réponses uniformes, erreurs sans secrets et cohérence d’un changement déjà enregistré. Les 11 tests Redis précédents couvrent expiration, usage unique et concurrence des jetons. La réception réelle du lien, sa complétion, l’invalidation d’une ancienne session et la réception de la notification doivent encore être testées sur un compte de préproduction prévu à cet effet.
 
 Références : [API Mail Send](https://www.twilio.com/docs/sendgrid/api-reference/mail-send/mail-send), [vérification d’un expéditeur](https://www.twilio.com/docs/sendgrid/ui/sending-email/sender-verification), [Next.js after](https://nextjs.org/docs/15/app/api-reference/functions/after), [OWASP récupération de mot de passe](https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html).
+
+## Isolation des essais
+
+`ACCOUNT_STORAGE_NAMESPACE=local` en développement et `ACCOUNT_STORAGE_NAMESPACE=preprod` en Preview préfixent les clés des comptes et des jetons de récupération. Un Preview sans namespace refuse l’accès aux comptes. Les clés historiques de Production restent inchangées ; définir un namespace en Production est refusé pour éviter une migration implicite. Les utilisateurs de test doivent créer un compte distinct dans chaque environnement. Aucun compte existant n’est déplacé ni copié. Les autres données et les compteurs globaux partagent encore Redis ; cette isolation des comptes ne constitue pas une séparation complète de l’infrastructure.

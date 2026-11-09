@@ -1,4 +1,5 @@
 import 'server-only'
+import { accountNamespace } from './keys'
 
 export interface RecoveryMailConfig {
   apiKey: string
@@ -9,6 +10,7 @@ const emailPattern = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/
 export function recoveryMailConfig(
   env: NodeJS.ProcessEnv = process.env
 ): RecoveryMailConfig {
+  accountNamespace(env)
   if (env.PASSWORD_RESET_ENABLED !== 'true') throw Error('Recovery unavailable')
   const apiKey = env.SENDGRID_API_KEY || ''
   const from = env.SENDGRID_FROM_EMAIL || ''

@@ -9,7 +9,8 @@ function load(file,mocks={}) {
  {exports,URL,URLSearchParams,AbortSignal,process:{env:{}},require:name=>{if(name==='server-only')return {};if(Object.hasOwn(mocks,name))return mocks[name];throw Error(name)}})
  return exports
 }
-const mail=load('lib/accounts/sendgrid.ts')
+const keys=load('lib/accounts/keys.ts')
+const mail=load('lib/accounts/sendgrid.ts',{'./keys':keys})
 const service=load('lib/accounts/recovery-service.ts')
 const env={PASSWORD_RESET_ENABLED:'true',SENDGRID_API_KEY:'SG.fake.test',SENDGRID_FROM_EMAIL:'account@example.test',PASSWORD_RESET_ORIGIN:'https://assistant.example.test'}
 const config=mail.recoveryMailConfig(env)

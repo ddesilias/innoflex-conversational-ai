@@ -12,7 +12,7 @@ let container
 function load(file) {
   const output = {}
   vm.runInNewContext(ts.transpileModule(fs.readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText,
-    { exports: output, require: name => { if (name === 'server-only') return {}; if (name === 'node:crypto') return require('node:crypto'); if (name === './session') return {}; if (name === './attempts') return {}; if (name === './password') return {}; if (name === '@vercel/kv') return { kv: {} }; throw Error(name) } })
+    { exports: output, require: name => { if (name === 'server-only') return {}; if (name === 'node:crypto') return require('node:crypto'); if (name === './keys') return {}; if (name === './session') return {}; if (name === './attempts') return {}; if (name === './password') return {}; if (name === '@vercel/kv') return { kv: {} }; throw Error(name) } })
   return output
 }
 const { createAccountScript, upgradePasswordScript } = load('lib/accounts/store.ts')
@@ -140,4 +140,16 @@ test('expired or foreign reset links cannot modify an account', async () => {
   await redis('EXPIRE',token,-1);
   assert.equal(await evaluate(completeResetScript,[token,user],['alice','expired@example.test','0','new','new']),0);
   assert.equal(await redis('HGET',user,'password'),'old');
+});
+
+test('preview recovery cannot change a production account with the same email', async () => {
+  const production='user:shared@example.test', preview='account-env:preprod:user:shared@example.test', token='account-env:preprod:password-reset:cross-env';
+  assert.equal(await evaluate(createAccountScript,[production],['production-user','shared@example.test','prod-password','prod-salt']),1);
+  assert.equal(await evaluate(createAccountScript,[preview],['preview-user','shared@example.test','preview-password','preview-salt']),1);
+  assert.equal(await evaluate(issueResetScript,[preview,token],['preview-user','shared@example.test','0']),1);
+  assert.equal(await evaluate(completeResetScript,[token,production],['preview-user','shared@example.test','0','new-password','new-salt']),0);
+  assert.equal(await redis('HGET',production,'password'),'prod-password');
+  assert.equal(await evaluate(completeResetScript,[token,preview],['preview-user','shared@example.test','0','new-password','new-salt']),1);
+  assert.equal(await redis('HGET',preview,'password'),'new-password');
+  assert.equal(await redis('HGET',production,'password'),'prod-password');
 });

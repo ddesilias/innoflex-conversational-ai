@@ -1,4 +1,5 @@
 import 'server-only'
+import { accountStorageKey, resetStorageKey } from './keys'
 import { kv } from '@vercel/kv'
 import { hashPassword } from './password'
 import { consumeAuthAttempt } from './attempts'
@@ -9,8 +10,9 @@ import {
 } from './reset'
 
 const dependencies: ResetDependencies = {
+  accountKey: accountStorageKey, resetKey: resetStorageKey,
   evaluate: (script, keys, args) => kv.eval(script, keys, args),
-  readAccount: email => kv.hgetall(`user:${email}`),
+  readAccount: email => kv.hgetall(accountStorageKey(email)),
   readReset: key => kv.hgetall(key),
   limit: (identity, kind) =>
     consumeAuthAttempt(
