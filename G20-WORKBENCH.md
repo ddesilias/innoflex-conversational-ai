@@ -110,3 +110,26 @@ Contrôle Chrome local : étapes de démonstration, somme de l’exemple 150 CAD
 un écart sur trois opérations évaluées, accès au journal et présence des champs
 métier. 96 tests applicatifs passent. La capture visuelle native a échoué par
 expiration du délai ; aucun contrôle graphique mobile n’est donc revendiqué.
+
+## Navigation commune et espace de travail
+
+Le journal utilise le header global : son ancien header local est supprimé.
+Le header présente la même marque et les mêmes destinations sur les pages
+produit, journal et assistant, avec un lien courant identifié. Les commandes
+mobiles/desktop de l’historique ne sont rendues que pour l’assistant connecté.
+Le menu mobile regroupe la même navigation, sans second jeu de destinations.
+Les marges des pages produit et journal sont harmonisées par breakpoint.
+Les libellés publics utilisent « Journal de trading », indépendant du modèle G20.
+
+La référence TradingView a servi à privilégier des conventions de travail :
+barre d’instrument, recherche, filtres d’état et résultats chiffrés. Aucun flux de
+marché ni graphique boursier n’est intégré. La courbe représente le cumul des
+résultats nets déclarés, sur les opérations clôturées et renseignées, classées par
+la date d’opération saisie. Son origine zéro n’est pas une valeur de portefeuille.
+Le calcul est testé sans modifier l’ordre original du journal.
+
+Contrôle Chrome local avec une opération fictive à 100 CAD : accès par le header
+commun, présence des filtres, recherche sans correspondance affichant 0/1,
+retour à la revue et courbe accessible décrivant le cumul exact. Aucune écriture
+sur le compte ni appel IA n’a été effectué dans ce contrôle. 99 tests applicatifs
+passent et la compilation réussit. La validation graphique mobile reste ouverte.

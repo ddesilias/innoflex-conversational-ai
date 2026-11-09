@@ -12,6 +12,7 @@ import {
   type Trade
 } from '@/lib/trading/review'
 import styles from './trading-workbench.module.css'
+import { TradingPerformance } from './trading-performance'
 import {
   listTradingCycles,
   loadTradingDraft,
@@ -44,9 +45,24 @@ export default function TradingWorkbench() {
   const [formVersion, setFormVersion] = useState(0)
   const [journalMessage, setJournalMessage] = useState('')
   const [week, setWeek] = useState('')
+  const [assetFilter, setAssetFilter] = useState('')
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('Toutes')
   const [pendingImport, setPendingImport] = useState<CycleDraft | null>(null)
   const [importMessage, setImportMessage] = useState('')
-  const reviewRows = filterReviewWeek(trades, week)
+  const assetRows = assetFilter
+    ? trades.filter(t => t.asset === assetFilter)
+    : trades
+  const reviewRows = filterReviewWeek(assetRows, week)
+  const journalRows = assetRows.filter(
+    t =>
+      (statusFilter === 'Toutes' || t.status === statusFilter) &&
+      `${t.asset} ${t.setup || ''} ${t.lesson}`
+        .toLocaleLowerCase('fr')
+        .includes(search.trim().toLocaleLowerCase('fr'))
+  )
+  const assets = Array.from(new Set(trades.map(t => t.asset))).sort()
+  const journalSummary = reviewTrades(assetRows)
   const report = reviewTrades(reviewRows)
   async function saveToAccount() {
     const snapshot = JSON.stringify({
@@ -139,6 +155,9 @@ export default function TradingWorkbench() {
     setPlan(pendingImport.plan)
     setTrades(pendingImport.trades)
     setWeek('')
+    setAssetFilter('')
+    setSearch('')
+    setStatusFilter('Toutes')
     setPendingImport(null)
     setImportMessage('Cycle importé dans cet onglet.')
     setError('')
@@ -171,6 +190,9 @@ export default function TradingWorkbench() {
     setMode('Backtest')
     setCurrency('CAD')
     setWeek('')
+    setAssetFilter('')
+    setSearch('')
+    setStatusFilter('Toutes')
     setTab('Plan')
     setPendingImport(null)
     setLoadedRevision(null)
@@ -261,19 +283,12 @@ export default function TradingWorkbench() {
     )
     const a = document.createElement('a')
     a.href = url
-    a.download = 'innoflex-g20.json'
+    a.download = 'innoflex-cycle.json'
     a.click()
     URL.revokeObjectURL(url)
   }
   return (
-    <main className={styles.shell}>
-      <header className={styles.header}>
-        <Link href="/" className={styles.brand}>
-          INNOFLEX <span>SI</span>
-        </Link>
-        <span>Journal G20 · Accès pilote</span>
-        <Link href="/presentation">Présentation du produit</Link>
-      </header>
+    <div className={styles.shell}>
       <div className={styles.intro}>
         <p className={styles.eyebrow}>PRÉPARER / DOCUMENTER / APPRENDRE</p>
         <h1>Votre journal de décisions.</h1>
@@ -455,7 +470,7 @@ export default function TradingWorkbench() {
         <summary>Importer un fichier ou confirmer un chargement</summary>
         <section className={styles.panel} aria-label="Reprendre un cycle">
           <label>
-            Reprendre un export G20 (JSON, 2 Mo maximum)
+            Importer un cycle (JSON, 2 Mo maximum)
             <input
               type="file"
               disabled={busy || editing !== null}
@@ -491,7 +506,30 @@ export default function TradingWorkbench() {
           ) : null}
         </section>
       </details>
-      <nav className={styles.tabs} aria-label="Étapes G20">
+      <div className={styles.terminalToolbar} aria-label="Instruments du cycle">
+        <div>
+          <span className={styles.marketLabel}>ESPACE DE TRAVAIL</span>
+          <strong>
+            {mode} / {currency}
+          </strong>
+        </div>
+        <label>
+          Instrument
+          <select
+            value={assetFilter}
+            onChange={e => setAssetFilter(e.target.value)}
+          >
+            <option value="">Tous les instruments</option>
+            {assets.map(asset => (
+              <option key={asset}>{asset}</option>
+            ))}
+          </select>
+        </label>
+        <span className={styles.recordCount}>
+          {assetRows.length} opération(s) · saisies manuelles
+        </span>
+      </div>
+      <nav className={styles.tabs} aria-label="Étapes du journal">
         {['Plan', 'Journal', 'Revue'].map((name, index) => (
           <button
             key={name}
@@ -524,12 +562,12 @@ export default function TradingWorkbench() {
               {
                 key: 'limits',
                 title: 'Limites de la session',
-                hint: 'Quelles règles de risque et d’arrêt souhaites-tu respecter ?'
+                hint: 'Quelles règles de risque et d’arrêt souhaitez-vous respecter ?'
               },
               {
                 key: 'avoid',
                 title: 'Conditions pour ne pas intervenir',
-                hint: 'Quels contextes ou états personnels te conduisent à attendre ?'
+                hint: 'Quels contextes ou états personnels vous conduisent à attendre ?'
               }
             ] as const
           ).map(field => (
@@ -557,8 +595,19 @@ export default function TradingWorkbench() {
             02 / OBSERVER SANS RÉÉCRIRE L’HISTOIRE
           </p>
           <h2>
-            {editing ? 'Modifier une opération' : 'Documentez une opération.'}
+            {editing ? 'Modifier une opération' : 'Journal des opérations'}
           </h2>
+          <div className={styles.sessionStrip}>
+            <span>
+              Réalisé <strong>{money(journalSummary.netCents)}</strong>
+            </span>
+            <span>
+              Ouvertes <strong>{journalSummary.open}</strong>
+            </span>
+            <span>
+              Clôturées renseignées <strong>{journalSummary.closed}</strong>
+            </span>
+          </div>
           <p role="status">{journalMessage}</p>
           {editing ? (
             <p>
@@ -690,6 +739,31 @@ export default function TradingWorkbench() {
               </button>
             ) : null}
           </form>
+          <div className={styles.journalFilters}>
+            <label>
+              Rechercher dans le journal
+              <input
+                type="search"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Actif, contexte, observation…"
+              />
+            </label>
+            <label>
+              État
+              <select
+                value={statusFilter}
+                onChange={e => setStatusFilter(e.target.value)}
+              >
+                <option>Toutes</option>
+                <option>Ouverte</option>
+                <option>Clôturée</option>
+              </select>
+            </label>
+            <span>
+              {journalRows.length} / {trades.length} opération(s) affichée(s)
+            </span>
+          </div>
           <div className={styles.tableWrap}>
             <table>
               <caption>
@@ -706,7 +780,7 @@ export default function TradingWorkbench() {
                 </tr>
               </thead>
               <tbody>
-                {trades.map(t => (
+                {journalRows.map(t => (
                   <tr key={t.id}>
                     <td>{t.date}</td>
                     <td>{t.asset}</td>
@@ -727,10 +801,10 @@ export default function TradingWorkbench() {
                     </td>
                     <td>
                       {t.lesson || '—'}
-                      {t.setup ? (
+                      {t.setup || t.emotionBefore || t.emotionAfter ? (
                         <details>
                           <summary>Contexte et état personnel</summary>
-                          <p>{t.setup}</p>
+                          <p>{t.setup || 'Contexte non renseigné'}</p>
                           <p>
                             Avant : {t.emotionBefore || 'Non renseigné'} · Après
                             : {t.emotionAfter || 'Non renseigné'}
@@ -777,6 +851,13 @@ export default function TradingWorkbench() {
                 ))}
               </tbody>
             </table>
+            {!journalRows.length ? (
+              <p>
+                {trades.length
+                  ? 'Aucune opération ne correspond aux filtres.'
+                  : ''}
+              </p>
+            ) : null}
             {!trades.length ? (
               <p>
                 Votre journal est prêt. Ajoutez une première opération ou
@@ -807,8 +888,8 @@ export default function TradingWorkbench() {
             {week
               ? `Période de sept jours à partir du ${week}`
               : 'Cycle complet'}{' '}
-            · {mode} · {currency}. Le filtre utilise la date d’opération saisie,
-            pas une date de clôture.
+            · {mode} · {currency} · {assetFilter || 'Tous les instruments'}. Le
+            filtre utilise la date d’opération saisie, pas une date de clôture.
           </p>
           <div className={styles.metrics}>
             <article>
@@ -838,6 +919,7 @@ export default function TradingWorkbench() {
             dans les calculs. Les résultats nuls comptent parmi les clôturées.
             Ce total monétaire n’est pas un rendement de portefeuille.
           </p>
+          <TradingPerformance trades={reviewRows} currency={currency} />
           <h3>Discipline de la période</h3>
           <p>
             {report.planDocumented
@@ -886,6 +968,6 @@ export default function TradingWorkbench() {
           </button>
         </section>
       ) : null}
-    </main>
+    </div>
   )
 }

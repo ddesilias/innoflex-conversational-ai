@@ -95,3 +95,8 @@ test('extended journal fields round-trip while legacy exports stay compatible',(
  const restored=api.parseCycleDraft(JSON.stringify(draft));assert.equal(restored.trades[0].setup,'Confirmation');assert.equal(restored.trades[0].planFollowed,'Non');
  for(const patch of [{direction:'Auto-buy'},{planFollowed:'Guaranteed'},{setup:'x'.repeat(1001)},{emotionBefore:123}])assert.throws(()=>api.parseCycleDraft(JSON.stringify({...draft,trades:[{...draft.trades[0],...patch}]})));
 });
+
+test('realized curve is ordered by trade date and excludes open or unknown results',()=>{
+ const rows=[{date:'2026-11-03',status:'Clôturée',pnl:-100},{date:'2026-11-01',status:'Ouverte',pnl:900},{date:'2026-11-02',status:'Clôturée',pnl:300},{date:'2026-11-04',status:'Clôturée',pnl:null}];
+ const points=api.realizedSeries(rows);assert.equal(points.length,2);assert.equal(points[0].date,'2026-11-02');assert.equal(points[0].cents,300);assert.equal(points[1].cents,200);assert.equal(rows[0].date,'2026-11-03');
+});

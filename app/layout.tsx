@@ -13,10 +13,11 @@ export const metadata = {
     ? new URL(`https://${process.env.VERCEL_URL}`)
     : undefined,
   title: {
-    default: 'INNOFLEX SI — Assistant personnel',
+    default: 'INNOFLEX SI — Espace de trading',
     template: '%s | INNOFLEX SI'
   },
-  description: 'Assistant personnel INNOFLEX pour rédiger, comprendre, apprendre et organiser vos idées.',
+  description:
+    'Un espace de trading pour préparer vos séances, documenter vos décisions et revoir votre pratique.',
   icons: {
     icon: '/innoflex-mark.svg',
     shortcut: '/innoflex-mark.svg'

@@ -72,7 +72,7 @@ export function validTradeDate(value: unknown): value is string {
 export function parseCycleDraft(text: string): CycleDraft {
   const fail = () => {
     throw new Error(
-      'Fichier G20 invalide ou incompatible. Aucun changement effectué.'
+      'Fichier de cycle invalide ou incompatible. Aucun changement effectué.'
     )
   }
   if (text.length > 2_000_000) return fail()
@@ -159,4 +159,16 @@ export function filterReviewWeek(trades: Trade[], start: string): Trade[] {
   end.setUTCDate(end.getUTCDate() + 6)
   const last = end.toISOString().slice(0, 10)
   return trades.filter(t => t.date >= start && t.date <= last)
+}
+
+export function realizedSeries(trades: Trade[]) {
+  let total = 0
+  return trades
+    .filter(
+      t =>
+        t.status === 'Clôturée' && t.pnl !== null && Number.isSafeInteger(t.pnl)
+    )
+    .slice()
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .map(t => ({ date: t.date, cents: (total += t.pnl!) }))
 }

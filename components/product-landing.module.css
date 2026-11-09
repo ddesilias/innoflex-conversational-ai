@@ -12,7 +12,7 @@
 .introduction {
   max-width: 1240px;
   margin: auto;
-  padding: 74px 48px 52px;
+  padding: 74px 40px 52px;
   display: grid;
   grid-template-columns: 1.65fr 1fr;
   gap: 70px;
@@ -23,7 +23,7 @@
   letter-spacing: 0.12em;
   font-weight: 600;
   color: var(--muted);
-  margin-bottom: 22px;
+  margin-bottom: 24px;
 }
 .introduction h1 {
   font-size: clamp(36px, 4.3vw, 58px);
@@ -38,7 +38,7 @@
   font-size: 15px;
   line-height: 1.8;
   color: var(--brand-muted);
-  margin-bottom: 22px;
+  margin-bottom: 24px;
   max-width: 330px;
 }
 .primary {
@@ -72,7 +72,7 @@
 }
 .previewSection {
   max-width: 1240px;
-  padding: 0 48px 56px;
+  padding: 0 40px 56px;
   margin: auto;
   scroll-margin-top: 90px;
 }
@@ -174,7 +174,7 @@
   max-width: 170px;
 }
 .document {
-  padding: 26px 38px 22px;
+  padding: 26px 38px 24px;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -206,7 +206,7 @@
 .context {
   border-left: 2px solid #b6c9ee;
   padding-left: 13px;
-  margin: 22px 0;
+  margin: 24px 0;
 }
 .context > span {
   font-size: 8px;
@@ -287,7 +287,7 @@
 .useSection,
 .details {
   max-width: 1240px;
-  padding: 65px 48px;
+  padding: 65px 40px;
   margin: auto;
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -343,7 +343,7 @@
 .practical {
   margin: 0 auto;
   max-width: 1240px;
-  padding: 65px 48px;
+  padding: 65px 40px;
   background: var(--brand-tint);
   display: grid;
   grid-template-columns: 1fr 1.5fr;
@@ -354,7 +354,7 @@
   font-size: 13px;
   line-height: 1.9;
   color: var(--muted);
-  margin-top: 22px;
+  margin-top: 24px;
   max-width: 350px;
 }
 .requestExample {
@@ -518,7 +518,7 @@
 @media (max-width: 720px) {
   .introduction {
     grid-template-columns: 1fr;
-    padding: 36px 22px 32px;
+    padding: 36px 24px 32px;
     gap: 25px;
   }
   .productName {
@@ -637,7 +637,7 @@
   .details {
     grid-template-columns: 1fr;
     gap: 30px;
-    padding: 40px 22px;
+    padding: 40px 24px;
   }
   .sectionHeading h2,
   .practical h2 {
@@ -647,7 +647,7 @@
   .useRows article {
     grid-template-columns: 1fr;
     gap: 8px;
-    padding: 22px 0;
+    padding: 24px 0;
   }
   .useRows article > span {
     grid-column: auto;
@@ -661,14 +661,14 @@
   .practical {
     grid-template-columns: 1fr;
     gap: 29px;
-    padding: 37px 22px;
+    padding: 37px 24px;
   }
   .practicalIntro > p {
     max-width: none;
     margin-top: 16px;
   }
   .requestExample blockquote {
-    font-size: 22px;
+    font-size: 24px;
     margin-top: 16px;
   }
   .requestExample > p {
@@ -681,9 +681,9 @@
     font-size: 14px;
   }
   .footer {
-    margin: 0 22px;
+    margin: 0 24px;
     padding: 25px 0;
-    gap: 22px;
+    gap: 24px;
   }
   .footerLinks {
     gap: 18px;
@@ -757,7 +757,7 @@
 .demoContent {
   flex: 1;
   min-height: 270px;
-  padding: 22px 0;
+  padding: 24px 0;
 }
 .demoTableWrap {
   overflow-x: auto;
@@ -864,7 +864,7 @@
   color: var(--muted);
 }
 .reviewNote {
-  padding: 22px 0;
+  padding: 24px 0;
 }
 .reviewNote p {
   font-size: 16px;
@@ -882,7 +882,7 @@
 }
 @media (max-width: 640px) {
   .document {
-    padding: 22px 18px;
+    padding: 24px 18px;
   }
   .documentHeading {
     align-items: flex-start;
@@ -914,5 +914,31 @@
   }
   .introduction h1 {
     font-size: 36px;
+  }
+}
+@media (min-width: 721px) and (max-width: 1000px) {
+  .introduction {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+  .previewSection {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+  .useSection,
+  .details,
+  .practical {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+  .footer {
+    margin-left: 40px;
+    margin-right: 40px;
+  }
+}
+@media (max-width: 720px) {
+  .previewSection {
+    padding-left: 24px;
+    padding-right: 24px;
   }
 }
