@@ -16,7 +16,7 @@
   display: grid;
   grid-template-columns: 1.65fr 1fr;
   gap: 70px;
-  align-items: end;
+  align-items: flex-end;
 }
 .productName {
   font-size: 10px;
@@ -714,4 +714,205 @@
 }
 .scenarioButtons button[aria-pressed='true'] {
   box-shadow: inset 2px 0 var(--brand-blue);
+}
+
+/* Product examples share the journal's restrained, legible visual language. */
+.productName {
+  font-size: 12px;
+  color: var(--brand-violet);
+}
+.workspaceTitle {
+  font-size: 12px;
+}
+.exampleBadge {
+  font-size: 10px;
+}
+.railTitle {
+  font-size: 10px;
+}
+.scenarioButtons button {
+  font-size: 13px;
+  padding: 14px 10px;
+}
+.scenarioButtons button > span:first-child {
+  font-size: 11px;
+}
+.workspaceRail > p {
+  font-size: 12px;
+}
+.workspaceRail > .exploreLink {
+  margin: 20px 7px 0;
+  font-size: 12px;
+}
+.documentHeading > div > span {
+  font-size: 10px;
+}
+.documentType {
+  font-size: 10px;
+}
+.editorNote p {
+  font-size: 12px;
+  line-height: 1.7;
+}
+.demoContent {
+  flex: 1;
+  min-height: 270px;
+  padding: 22px 0;
+}
+.demoTableWrap {
+  overflow-x: auto;
+}
+.demoTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+.demoTable caption {
+  text-align: left;
+  font-size: 11px;
+  color: var(--muted);
+  padding-bottom: 16px;
+}
+.demoTable th {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  font-weight: 600;
+}
+.demoTable th,
+.demoTable td {
+  padding: 14px 8px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+.demoTable td:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.demoTable strong {
+  font-weight: 600;
+  font-size: 12px;
+}
+.demoTable small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+.demoTable .positive {
+  color: #166534;
+}
+.demoTable .negative {
+  color: #9f1239;
+}
+.deviation,
+.neutral {
+  font-size: 11px;
+  padding: 4px 7px;
+  border-radius: 4px;
+  display: inline-block;
+  white-space: nowrap;
+}
+.deviation {
+  color: #92400e;
+  background: #fff5dc;
+}
+.neutral {
+  color: #52627a;
+  background: #f1f5f9;
+}
+.planPreview section {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+.planPreview span,
+.reviewNote > span {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.planPreview p {
+  font-size: 14px;
+  line-height: 1.7;
+  margin-top: 8px;
+}
+.reviewMetrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.reviewMetrics article {
+  padding: 18px;
+  background: #f6f8ff;
+  border-top: 2px solid var(--brand-blue);
+}
+.reviewMetrics span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.reviewMetrics strong {
+  display: block;
+  font-size: 30px;
+  margin: 10px 0;
+  font-weight: 550;
+  letter-spacing: -1px;
+}
+.reviewMetrics small {
+  font-size: 11px;
+  color: var(--muted);
+}
+.reviewNote {
+  padding: 22px 0;
+}
+.reviewNote p {
+  font-size: 16px;
+  margin: 12px 0;
+  line-height: 1.6;
+}
+.reviewNote small {
+  font-size: 11px;
+  color: var(--muted);
+}
+.landing a:focus-visible,
+.landing button:focus-visible {
+  outline: 3px solid var(--brand-violet);
+  outline-offset: 4px;
+}
+@media (max-width: 640px) {
+  .document {
+    padding: 22px 18px;
+  }
+  .documentHeading {
+    align-items: flex-start;
+  }
+  .documentType {
+    display: none;
+  }
+  .demoTable th,
+  .demoTable td {
+    padding: 12px 4px;
+  }
+  .demoTable {
+    font-size: 12px;
+  }
+  .reviewMetrics {
+    gap: 8px;
+  }
+  .reviewMetrics article {
+    padding: 12px;
+  }
+  .reviewMetrics strong {
+    font-size: 25px;
+  }
+  .workspaceTitle {
+    font-size: 10px;
+  }
+  .exampleBadge {
+    font-size: 9px;
+  }
+  .introduction h1 {
+    font-size: 36px;
+  }
 }

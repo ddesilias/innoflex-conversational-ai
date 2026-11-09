@@ -85,3 +85,13 @@ test('weekly review includes seven calendar days across a year boundary', () => 
   assert.equal(api.filterReviewWeek(rows, '').length, 3)
   assert.equal(api.filterReviewWeek(rows, '2026-02-30').length, 0)
 })
+
+test('discipline review counts declared evaluations without inferring missing values',()=>{
+ const rows=[{status:'Clôturée',pnl:100,planFollowed:'Non'},{status:'Ouverte',pnl:null,planFollowed:'Oui'},{status:'Clôturée',pnl:0}];
+ const r=api.reviewTrades(rows);assert.equal(r.planDocumented,2);assert.equal(r.planDeviations,1);assert.equal(r.closed,2);
+});
+test('extended journal fields round-trip while legacy exports stay compatible',()=>{
+ const draft={version:1,cycle:'Test',mode:'Backtest',currency:'CAD',plan:{method:'',limits:'',avoid:''},trades:[{id:'1',date:'2026-11-09',asset:'TEST',mode:'Backtest',status:'Clôturée',pnl:0,lesson:'Review',direction:'Long',setup:'Confirmation',emotionBefore:'Calme',emotionAfter:'À revoir',planFollowed:'Non'}]};
+ const restored=api.parseCycleDraft(JSON.stringify(draft));assert.equal(restored.trades[0].setup,'Confirmation');assert.equal(restored.trades[0].planFollowed,'Non');
+ for(const patch of [{direction:'Auto-buy'},{planFollowed:'Guaranteed'},{setup:'x'.repeat(1001)},{emotionBefore:123}])assert.throws(()=>api.parseCycleDraft(JSON.stringify({...draft,trades:[{...draft.trades[0],...patch}]})));
+});

@@ -1,131 +1,220 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
+import { reviewTrades, type Trade } from '@/lib/trading/review'
 import styles from './product-landing.module.css'
 
-const examples = [
+const sample: Trade[] = [
   {
-    id: 'message',
-    name: 'Écrire un message',
-    category: 'RÉDACTION',
-    title: 'Répondre à un client',
-    context:
-      'Le colis de mon client est en retard. Il sera livré jeudi. Je veux lui répondre avec un ton simple et professionnel.',
-    draft:
-      'Bonjour, la livraison a pris du retard. Votre colis devrait arriver jeudi. Désolé pour le délai.',
-    result:
-      'Bonjour,\n\nJe vous présente mes excuses pour le retard de livraison. Votre colis est maintenant prévu pour jeudi.\n\nMerci de votre patience. Je reste disponible si vous avez une question.\n\nBonne journée,',
-    note: 'Une date précise, des excuses simples et une ouverture pour le client.'
+    id: 'a',
+    date: '2026-11-02',
+    asset: 'EXEMPLE A',
+    mode: 'Backtest',
+    status: 'Clôturée',
+    pnl: -15000,
+    lesson: 'Entrée avant la confirmation prévue.',
+    planFollowed: 'Non'
   },
   {
-    id: 'planning',
-    name: 'Organiser ma semaine',
-    category: 'ORGANISATION',
-    title: 'Choisir les premières actions',
-    context:
-      'Cette semaine, je dois envoyer un devis avant mardi, préparer une présentation pour vendredi et ranger mes dossiers. J’ai deux heures disponibles par jour.',
-    draft:
-      'Envoyer le devis. Faire la présentation. Ranger les dossiers. Répondre aux messages.',
-    result:
-      'Lundi — Finaliser le devis et l’envoyer.\nMardi — Définir le plan de la présentation.\nMercredi — Préparer les diapositives principales.\nJeudi — Relire et répéter la présentation.\nVendredi — Présenter, puis ranger les dossiers.\n\nChaque jour : réserver un court créneau pour les messages et garder une marge pour les imprévus.',
-    note: 'L’échéance la plus proche passe en premier. Le rangement attend que la présentation soit prête.'
+    id: 'b',
+    date: '2026-11-03',
+    asset: 'EXEMPLE B',
+    mode: 'Backtest',
+    status: 'Clôturée',
+    pnl: 30000,
+    lesson: 'Conditions du plan documentées avant l’entrée.',
+    planFollowed: 'Oui'
   },
   {
-    id: 'explanation',
-    name: 'Comprendre un sujet',
-    category: 'EXPLICATION',
-    title: 'Comprendre une API',
-    context:
-      'Je découvre le développement web. Explique-moi ce qu’est une API, sans jargon, avec un exemple que je peux visualiser.',
-    draft:
-      'Une API est une interface de programmation qui permet à deux logiciels de communiquer.',
-    result:
-      'Une API est une façon organisée de demander quelque chose à un logiciel.\n\nImaginez une application météo. Elle demande la température de Montréal à un service météo. Le service lui répond avec une valeur, par exemple 12 °C. L’application affiche ensuite cette information.\n\nL’API définit comment poser la question et sous quelle forme la réponse revient.',
-    note: 'Une définition courte, un exemple et la distinction entre le service et l’application.'
+    id: 'c',
+    date: '2026-11-04',
+    asset: 'EXEMPLE C',
+    mode: 'Backtest',
+    status: 'Clôturée',
+    pnl: 0,
+    lesson: 'Résultat nul après frais.',
+    planFollowed: 'Oui'
+  },
+  {
+    id: 'd',
+    date: '2026-11-05',
+    asset: 'EXEMPLE D',
+    mode: 'Backtest',
+    status: 'Ouverte',
+    pnl: null,
+    lesson: ''
   }
-] as const
+]
+const stages = ['Préparer la séance', 'Tenir le journal', 'Revoir la semaine']
+const report = reviewTrades(sample)
+const money = (value: number) =>
+  new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD' }).format(
+    value / 100
+  )
 
 export function ProductPreview() {
-  const [selected, setSelected] = useState(0)
-  const [view, setView] = useState<'draft' | 'result'>('result')
-  const example = examples[selected]
+  const [stage, setStage] = useState(1)
   return (
     <div className={styles.workspace}>
       <div className={styles.workspaceToolbar}>
         <span className={styles.workspaceTitle}>
-          INNOFLEX <span>/</span> Espace de travail
+          INNOFLEX SI <span>/</span> Cycle de démonstration
         </span>
-        <span className={styles.exampleBadge}>EXEMPLE INTERACTIF</span>
+        <span className={styles.exampleBadge}>DONNÉES FICTIVES · CAD</span>
       </div>
       <div className={styles.workspaceBody}>
         <div className={styles.workspaceRail}>
-          <span className={styles.railTitle}>QUE VOULEZ-VOUS PRÉPARER ?</span>
+          <span className={styles.railTitle}>LE FIL DE VOTRE SÉANCE</span>
           <div className={styles.scenarioButtons}>
-            {examples.map((item, index) => (
+            {stages.map((name, index) => (
               <button
-                key={item.id}
-                type="button"
-                aria-pressed={selected === index}
-                onClick={() => {
-                  setSelected(index)
-                  setView('result')
-                }}
+                key={name}
+                aria-pressed={stage === index}
+                onClick={() => setStage(index)}
               >
                 <span>{String(index + 1).padStart(2, '0')}</span>
-                {item.name}
+                {name}
                 <span aria-hidden="true">→</span>
               </button>
             ))}
           </div>
           <p>
-            Ces exemples sont écrits à l’avance. Aucune donnée n’est envoyée à
-            un service IA.
+            Cet aperçu utilise des exemples préparés. Vos propres opérations
+            restent dans votre journal.
           </p>
+          <Link href="/trading-journal" className={styles.exploreLink}>
+            Ouvrir mon espace ↗
+          </Link>
         </div>
         <div className={styles.document}>
           <div className={styles.documentHeading}>
             <div>
-              <span>{example.category}</span>
-              <h2>{example.title}</h2>
+              <span>BACKTEST / CYCLE 01</span>
+              <h2>
+                {stage === 0
+                  ? 'Un plan explicite avant la séance.'
+                  : stage === 1
+                    ? 'Les décisions, avec leur contexte.'
+                    : 'Une semaine, relue avec méthode.'}
+              </h2>
             </div>
-            <span className={styles.documentType}>APERÇU</span>
+            <span className={styles.documentType}>DÉMONSTRATION</span>
           </div>
-          <div className={styles.context}>
-            <span>LA DEMANDE</span>
-            <p>{example.context}</p>
-          </div>
-          <div
-            className={styles.documentTabs}
-            aria-label="Version de l’exemple"
-          >
-            <button
-              type="button"
-              aria-pressed={view === 'draft'}
-              onClick={() => setView('draft')}
-            >
-              Point de départ
-            </button>
-            <button
-              type="button"
-              aria-pressed={view === 'result'}
-              onClick={() => setView('result')}
-            >
-              Proposition
-            </button>
-          </div>
-          <div
-            className={styles.documentText}
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            <p>{view === 'result' ? example.result : example.draft}</p>
+          <div className={styles.demoContent} aria-live="polite">
+            {stage === 0 ? (
+              <div className={styles.planPreview}>
+                <section>
+                  <span>CONFIRMATIONS ATTENDUES</span>
+                  <p>
+                    Noter les conditions prévues par ma méthode avant toute
+                    entrée.
+                  </p>
+                </section>
+                <section>
+                  <span>CONDITIONS D’ARRÊT</span>
+                  <p>
+                    Définir mes limites de séance et les situations où je
+                    préfère attendre.
+                  </p>
+                </section>
+                <section>
+                  <span>POINT DE REVUE</span>
+                  <p>
+                    Comparer mes décisions aux règles écrites avant la séance.
+                  </p>
+                </section>
+              </div>
+            ) : null}
+            {stage === 1 ? (
+              <div className={styles.demoTableWrap}>
+                <table className={styles.demoTable}>
+                  <caption>
+                    Quatre opérations fictives · montants nets saisis
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th>Opération</th>
+                      <th>Plan</th>
+                      <th>Résultat net</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sample.map(t => (
+                      <tr key={t.id}>
+                        <td>
+                          <strong>{t.asset}</strong>
+                          <small>
+                            {t.date} · {t.status}
+                          </small>
+                        </td>
+                        <td>
+                          <span
+                            className={
+                              t.planFollowed === 'Non'
+                                ? styles.deviation
+                                : styles.neutral
+                            }
+                          >
+                            {t.planFollowed === 'Non'
+                              ? 'Écart déclaré'
+                              : t.planFollowed === 'Oui'
+                                ? 'Respecté'
+                                : 'À évaluer'}
+                          </span>
+                        </td>
+                        <td
+                          className={
+                            t.pnl !== null && t.pnl > 0
+                              ? styles.positive
+                              : t.pnl !== null && t.pnl < 0
+                                ? styles.negative
+                                : undefined
+                          }
+                        >
+                          {t.pnl === null ? 'Non réalisé' : money(t.pnl)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : null}
+            {stage === 2 ? (
+              <>
+                <div className={styles.reviewMetrics}>
+                  <article>
+                    <span>Total net réalisé</span>
+                    <strong>{money(report.netCents!)}</strong>
+                    <small>{report.closed} clôturées renseignées</small>
+                  </article>
+                  <article>
+                    <span>Écart au plan</span>
+                    <strong>
+                      {report.planDeviations} / {report.planDocumented}
+                    </strong>
+                    <small>opérations évaluées</small>
+                  </article>
+                </div>
+                <div className={styles.reviewNote}>
+                  <span>À REPRENDRE DANS LA PROCHAINE SÉANCE</span>
+                  <p>{sample[0].lesson}</p>
+                  <small>
+                    Observation saisie dans l’exemple A. Aucune interprétation
+                    IA.
+                  </small>
+                </div>
+              </>
+            ) : null}
           </div>
           <div className={styles.editorNote}>
             <span aria-hidden="true">↳</span>
             <p>
-              {view === 'result'
-                ? example.note
-                : 'Le point de départ est volontairement bref. Comparez-le à la proposition pour voir ce qui change.'}
+              {stage === 0
+                ? 'Le plan est défini par le trader. Aucune allocation ni limite de risque n’est recommandée par cet aperçu.'
+                : stage === 1
+                  ? 'Une position ouverte reste distincte des résultats réalisés. Un montant inconnu ne devient pas zéro.'
+                  : 'Le total présenté est une somme monétaire, pas un rendement de portefeuille. L’exemple ne préjuge d’aucun résultat futur.'}
             </p>
           </div>
         </div>

@@ -182,6 +182,11 @@ export default function TradingWorkbench() {
       'Nouveau brouillon. Tes cycles enregistrés restent disponibles ; enregistre celui-ci pour le conserver.'
     )
   }
+  const isSaved =
+    savedSnapshot !== null &&
+    savedSnapshot ===
+      JSON.stringify({ version: 1, cycle, mode, currency, plan, trades }) &&
+    editing === null
   const money = (cents: number | null) =>
     cents === null
       ? 'À renseigner'
@@ -217,7 +222,14 @@ export default function TradingWorkbench() {
       mode,
       status,
       pnl,
-      lesson: String(values.get('lesson')).trim()
+      lesson: String(values.get('lesson')).trim(),
+      direction: String(values.get('direction') || '') as Trade['direction'],
+      setup: String(values.get('setup') || '').trim(),
+      emotionBefore: String(values.get('emotionBefore') || '').trim(),
+      emotionAfter: String(values.get('emotionAfter') || '').trim(),
+      planFollowed: String(
+        values.get('planFollowed') || ''
+      ) as Trade['planFollowed']
     }
     setTrades(current =>
       editing
@@ -259,119 +271,143 @@ export default function TradingWorkbench() {
         <Link href="/" className={styles.brand}>
           INNOFLEX <span>SI</span>
         </Link>
-        <span>Atelier G20 · Prototype</span>
-        <Link href="/">Retour à l’assistant</Link>
+        <span>Journal G20 · Accès pilote</span>
+        <Link href="/presentation">Présentation du produit</Link>
       </header>
       <div className={styles.intro}>
         <p className={styles.eyebrow}>PRÉPARER / DOCUMENTER / APPRENDRE</p>
-        <h1>Chaque opération mérite une revue.</h1>
+        <h1>Votre journal de décisions.</h1>
         <p>
-          Un plan explicite. Un journal précis. Des conclusions fondées sur tes
-          observations.
+          Préparez votre séance, consignez vos décisions et retrouvez les écarts
+          à votre plan.
         </p>
       </div>
       <aside className={styles.notice}>
-        Brouillon dans cet onglet uniquement : un rechargement efface les
-        saisies non enregistrées. Enregistre ton cycle sur ton compte ou
-        exporte-le avant de quitter. Aucun appel IA ni ordre de marché.
+        Enregistrez votre cycle avant de quitter pour retrouver vos saisies.
+        Vous pouvez aussi conserver une copie avec l’export du journal.
       </aside>
-      <section className={styles.panel} aria-label="Sauvegarde du cycle">
-        <label>
-          Cycles enregistrés
-          <select
-            disabled={busy || editing !== null}
-            value={selectedCycleId}
-            onChange={e => setSelectedCycleId(e.target.value)}
-          >
-            {!cycles.some(c => c.id === selectedCycleId) ? (
-              <option value={selectedCycleId}>
-                {selectedCycleId === 'default'
-                  ? 'Premier cycle / ancien journal'
-                  : 'Brouillon actuel'}
-              </option>
-            ) : null}
-            {cycles.map(c => (
-              <option key={c.id} value={c.id}>
-                {c.name || 'Cycle sans nom'}
-                {c.id === activeCycleId ? ' · cycle affiché' : ''}
-              </option>
-            ))}
-          </select>
-        </label>
-        <p>
-          La sélection prépare un chargement. « Enregistrer » sauvegarde le
-          cycle actuellement affiché : {cycle || 'Cycle sans nom'}.
-        </p>
-        <button
-          className={styles.secondary}
-          disabled={busy || editing !== null}
-          onClick={refreshCycles}
-        >
-          Actualiser mes cycles
-        </button>{' '}
-        <button
-          className={styles.secondary}
-          disabled={busy || editing !== null}
-          onClick={() => setConfirmNew(true)}
-        >
-          Nouveau cycle
-        </button>
-        {confirmNew ? (
-          <div role="group" aria-label="Confirmer un nouveau cycle">
-            <p>
-              Le brouillon affiché sera remplacé. Enregistre-le ou exporte-le
-              avant de continuer. Tes cycles déjà enregistrés seront conservés.
-            </p>
-            <button disabled={busy || editing !== null} onClick={startNewCycle}>
-              Créer un nouveau brouillon
-            </button>{' '}
-            <button
-              className={styles.secondary}
-              onClick={() => setConfirmNew(false)}
-            >
-              Annuler
-            </button>
-          </div>
-        ) : null}
-        <p role="status">
-          {savedSnapshot !== null &&
-          savedSnapshot ===
-            JSON.stringify({
-              version: 1,
-              cycle,
-              mode,
-              currency,
-              plan,
-              trades
-            }) &&
-          editing === null
-            ? '✓ Brouillon identique à la dernière sauvegarde chargée ou effectuée dans cet onglet.'
-            : '● Brouillon non enregistré ou sauvegarde non vérifiée dans cet onglet.'}
-        </p>
+      <div className={styles.actionBar} aria-label="Cycle en cours">
+        <div>
+          <span>
+            CYCLE EN COURS · {mode} · {currency}
+          </span>
+          <strong>{cycle || 'Cycle sans nom'}</strong>
+          <small role="status">
+            {busy
+              ? 'Traitement en cours…'
+              : isSaved
+                ? 'Sauvegarde à jour dans cet onglet'
+                : 'Modifications à enregistrer'}
+          </small>
+        </div>
         <button disabled={busy || editing !== null} onClick={saveToAccount}>
-          Enregistrer sur mon compte
-        </button>{' '}
-        <button
-          className={styles.secondary}
-          disabled={busy || editing !== null}
-          onClick={loadFromAccount}
-        >
-          Retrouver mon cycle enregistré
+          {busy ? 'Traitement…' : 'Enregistrer le cycle'}
         </button>
-        <p role="status">{busy ? 'Opération en cours…' : storageMessage}</p>
-        <p>
-          <Link
-            href="/login?next=/trading-journal"
-            target="_blank"
-            rel="noopener noreferrer"
+      </div>
+      <p role="status" className={styles.saveFeedback}>
+        {storageMessage}
+      </p>
+      <details className={styles.cycleManager}>
+        <summary>Mes cycles · ouvrir ou créer un cycle</summary>
+        <section className={styles.panel} aria-label="Sauvegarde du cycle">
+          <label>
+            Cycles enregistrés
+            <select
+              disabled={busy || editing !== null}
+              value={selectedCycleId}
+              onChange={e => setSelectedCycleId(e.target.value)}
+            >
+              {!cycles.some(c => c.id === selectedCycleId) ? (
+                <option value={selectedCycleId}>
+                  {selectedCycleId === 'default'
+                    ? 'Premier cycle / ancien journal'
+                    : 'Brouillon actuel'}
+                </option>
+              ) : null}
+              {cycles.map(c => (
+                <option key={c.id} value={c.id}>
+                  {c.name || 'Cycle sans nom'}
+                  {c.id === activeCycleId ? ' · cycle affiché' : ''}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p>
+            La sélection prépare un chargement. « Enregistrer » sauvegarde le
+            cycle actuellement affiché : {cycle || 'Cycle sans nom'}.
+          </p>
+          <button
+            className={styles.secondary}
+            disabled={busy || editing !== null}
+            onClick={refreshCycles}
           >
-            Se connecter dans un nouvel onglet
-          </Link>{' '}
-          · Le fichier exporté reste une copie locale indépendante. Après
-          connexion, reviens à cet onglet pour enregistrer ton brouillon sans le
-          recharger.
-        </p>
-      </section>
+            Actualiser mes cycles
+          </button>{' '}
+          <button
+            className={styles.secondary}
+            disabled={busy || editing !== null}
+            onClick={() => setConfirmNew(true)}
+          >
+            Nouveau cycle
+          </button>
+          {confirmNew ? (
+            <div role="group" aria-label="Confirmer un nouveau cycle">
+              <p>
+                Le brouillon affiché sera remplacé. Enregistre-le ou exporte-le
+                avant de continuer. Tes cycles déjà enregistrés seront
+                conservés.
+              </p>
+              <button
+                disabled={busy || editing !== null}
+                onClick={startNewCycle}
+              >
+                Créer un nouveau brouillon
+              </button>{' '}
+              <button
+                className={styles.secondary}
+                onClick={() => setConfirmNew(false)}
+              >
+                Annuler
+              </button>
+            </div>
+          ) : null}
+          <p role="status">
+            {savedSnapshot !== null &&
+            savedSnapshot ===
+              JSON.stringify({
+                version: 1,
+                cycle,
+                mode,
+                currency,
+                plan,
+                trades
+              }) &&
+            editing === null
+              ? '✓ Brouillon identique à la dernière sauvegarde chargée ou effectuée dans cet onglet.'
+              : '● Brouillon non enregistré ou sauvegarde non vérifiée dans cet onglet.'}
+          </p>
+          <button
+            className={styles.secondary}
+            disabled={busy || editing !== null}
+            onClick={loadFromAccount}
+          >
+            Retrouver mon cycle enregistré
+          </button>
+          <p role="status">{busy ? 'Opération en cours…' : storageMessage}</p>
+          <p>
+            <Link
+              href="/login?next=/trading-journal"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Se connecter dans un nouvel onglet
+            </Link>{' '}
+            · Le fichier exporté reste une copie locale indépendante. Après
+            connexion, reviens à cet onglet pour enregistrer ton brouillon sans
+            le recharger.
+          </p>
+        </section>
+      </details>
       <section className={styles.context} aria-label="Contexte du cycle">
         <label>
           Cycle
@@ -412,51 +448,60 @@ export default function TradingWorkbench() {
           Exporter le brouillon
         </button>
       </section>
-      <section className={styles.panel} aria-label="Reprendre un cycle">
-        <label>
-          Reprendre un export G20 (JSON, 2 Mo maximum)
-          <input
-            type="file"
-            disabled={busy || editing !== null}
-            accept=".json,application/json"
-            onChange={e => {
-              void readImport(e.target.files?.[0])
-              e.target.value = ''
-            }}
-          />
-        </label>
-        <p role="status">{importMessage}</p>
-        {pendingImport ? (
-          <div>
-            <p>
-              « {pendingImport.cycle} » · {pendingImport.trades.length}{' '}
-              opérations · {pendingImport.mode} · {pendingImport.currency}. Ce
-              cycle remplacera le brouillon actuel. Exporte-le d’abord si tu
-              souhaites le garder.
-            </p>
-            <button disabled={busy || editing !== null} onClick={applyImport}>
-              Remplacer par ce cycle
-            </button>{' '}
-            <button
-              className={styles.secondary}
-              onClick={() => {
-                setPendingImport(null)
-                setImportMessage('Import annulé. Brouillon conservé.')
+      <details
+        className={styles.cycleManager}
+        open={pendingImport ? true : undefined}
+      >
+        <summary>Importer un fichier ou confirmer un chargement</summary>
+        <section className={styles.panel} aria-label="Reprendre un cycle">
+          <label>
+            Reprendre un export G20 (JSON, 2 Mo maximum)
+            <input
+              type="file"
+              disabled={busy || editing !== null}
+              accept=".json,application/json"
+              onChange={e => {
+                void readImport(e.target.files?.[0])
+                e.target.value = ''
               }}
-            >
-              Annuler
-            </button>
-          </div>
-        ) : null}
-      </section>
+            />
+          </label>
+          <p role="status">{importMessage}</p>
+          {pendingImport ? (
+            <div>
+              <p>
+                « {pendingImport.cycle} » · {pendingImport.trades.length}{' '}
+                opérations · {pendingImport.mode} · {pendingImport.currency}. Ce
+                cycle remplacera le brouillon actuel. Exporte-le d’abord si tu
+                souhaites le garder.
+              </p>
+              <button disabled={busy || editing !== null} onClick={applyImport}>
+                Remplacer par ce cycle
+              </button>{' '}
+              <button
+                className={styles.secondary}
+                onClick={() => {
+                  setPendingImport(null)
+                  setImportMessage('Import annulé. Brouillon conservé.')
+                }}
+              >
+                Annuler
+              </button>
+            </div>
+          ) : null}
+        </section>
+      </details>
       <nav className={styles.tabs} aria-label="Étapes G20">
-        {['Plan', 'Journal', 'Revue'].map(name => (
+        {['Plan', 'Journal', 'Revue'].map((name, index) => (
           <button
             key={name}
             disabled={editing !== null && name !== 'Journal'}
             aria-current={tab === name ? 'page' : undefined}
             onClick={() => setTab(name)}
           >
+            <span aria-hidden="true">
+              {String(index + 1).padStart(2, '0')} /{' '}
+            </span>
             {name}
           </button>
         ))}
@@ -464,10 +509,10 @@ export default function TradingWorkbench() {
       {tab === 'Plan' ? (
         <section className={styles.panel}>
           <p className={styles.eyebrow}>01 / AVANT LA SESSION</p>
-          <h2>Écris tes règles avant de commencer.</h2>
+          <h2>Définissez les règles de votre séance.</h2>
           <p>
-            Définis tes propres limites. Le produit ne recommande ni allocation
-            ni niveau de risque.
+            Définissez vos propres limites. Le journal ne recommande ni
+            allocation ni niveau de risque.
           </p>
           {(
             [
@@ -512,7 +557,7 @@ export default function TradingWorkbench() {
             02 / OBSERVER SANS RÉÉCRIRE L’HISTOIRE
           </p>
           <h2>
-            {editing ? 'Modifier une opération' : 'Documente une opération.'}
+            {editing ? 'Modifier une opération' : 'Documentez une opération.'}
           </h2>
           <p role="status">{journalMessage}</p>
           {editing ? (
@@ -564,13 +609,59 @@ export default function TradingWorkbench() {
                 placeholder="Vide si inconnu ; 0 si nul"
               />
             </label>
+            <label>
+              Sens du trade
+              <select name="direction" defaultValue={editing?.direction || ''}>
+                <option value="">Non renseigné</option>
+                <option>Long</option>
+                <option>Short</option>
+              </select>
+            </label>
+            <label>
+              Respect du plan
+              <select
+                name="planFollowed"
+                defaultValue={editing?.planFollowed || ''}
+              >
+                <option value="">À évaluer</option>
+                <option value="Oui">Plan respecté</option>
+                <option value="Non">Écart au plan</option>
+              </select>
+            </label>
+            <label className={styles.wide}>
+              Contexte et confirmations d’entrée
+              <textarea
+                name="setup"
+                maxLength={1000}
+                defaultValue={editing?.setup}
+                placeholder="Pourquoi cette entrée ? Quels éléments du plan étaient présents ?"
+              />
+            </label>
+            <label>
+              État avant l’entrée
+              <input
+                name="emotionBefore"
+                maxLength={100}
+                defaultValue={editing?.emotionBefore}
+                placeholder="Votre observation, avec vos mots"
+              />
+            </label>
+            <label>
+              État après l’opération
+              <input
+                name="emotionAfter"
+                maxLength={100}
+                defaultValue={editing?.emotionAfter}
+                placeholder="À compléter lors de la revue"
+              />
+            </label>
             <label className={styles.wide}>
               Observation / leçon
               <textarea
                 name="lesson"
                 defaultValue={editing?.lesson}
                 maxLength={4000}
-                placeholder="Qu’as-tu observé ? As-tu respecté ton plan ?"
+                placeholder="Qu’avez-vous observé ? Avez-vous respecté votre plan ?"
               />
             </label>
             <p className={styles.wide}>
@@ -608,7 +699,7 @@ export default function TradingWorkbench() {
                 <tr>
                   <th>Date</th>
                   <th>Actif</th>
-                  <th>État</th>
+                  <th>État / discipline</th>
                   <th>Résultat net</th>
                   <th>Observation</th>
                   <th>Action</th>
@@ -619,11 +710,34 @@ export default function TradingWorkbench() {
                   <tr key={t.id}>
                     <td>{t.date}</td>
                     <td>{t.asset}</td>
-                    <td>{t.status}</td>
+                    <td>
+                      {t.status}
+                      <br />
+                      <small>
+                        {t.direction || 'Sens non renseigné'} ·{' '}
+                        {t.planFollowed === 'Non'
+                          ? 'Écart au plan'
+                          : t.planFollowed === 'Oui'
+                            ? 'Plan respecté'
+                            : 'Plan à évaluer'}
+                      </small>
+                    </td>
                     <td>
                       {t.status === 'Ouverte' ? 'Non réalisé' : money(t.pnl)}
                     </td>
-                    <td>{t.lesson || '—'}</td>
+                    <td>
+                      {t.lesson || '—'}
+                      {t.setup ? (
+                        <details>
+                          <summary>Contexte et état personnel</summary>
+                          <p>{t.setup}</p>
+                          <p>
+                            Avant : {t.emotionBefore || 'Non renseigné'} · Après
+                            : {t.emotionAfter || 'Non renseigné'}
+                          </p>
+                        </details>
+                      ) : null}
+                    </td>
                     <td>
                       <button
                         className={styles.secondary}
@@ -664,7 +778,10 @@ export default function TradingWorkbench() {
               </tbody>
             </table>
             {!trades.length ? (
-              <p>Aucune opération. Commence par une saisie de backtest.</p>
+              <p>
+                Votre journal est prêt. Ajoutez une première opération ou
+                chargez un cycle enregistré.
+              </p>
             ) : null}
           </div>
         </section>
@@ -721,7 +838,30 @@ export default function TradingWorkbench() {
             dans les calculs. Les résultats nuls comptent parmi les clôturées.
             Ce total monétaire n’est pas un rendement de portefeuille.
           </p>
-          <h3>À relire avant ta prochaine session</h3>
+          <h3>Discipline de la période</h3>
+          <p>
+            {report.planDocumented
+              ? `${report.planDeviations} écart(s) au plan sur ${report.planDocumented} opération(s) évaluée(s).`
+              : 'Le respect du plan n’est pas encore renseigné pour cette période.'}{' '}
+            Cette mesure repose sur vos déclarations, pour les opérations
+            ouvertes et clôturées de la période.
+          </p>
+          {reviewRows.filter(t => t.planFollowed === 'Non').length ? (
+            <ul>
+              {reviewRows
+                .filter(t => t.planFollowed === 'Non')
+                .map(t => (
+                  <li key={t.id}>
+                    <strong>
+                      {t.date} · {t.asset}
+                    </strong>{' '}
+                    —{' '}
+                    {t.lesson || 'Ajoutez une leçon pour documenter cet écart.'}
+                  </li>
+                ))}
+            </ul>
+          ) : null}
+          <h3>À relire avant votre prochaine séance</h3>
           {reviewRows.filter(t => t.lesson).length ? (
             <ul>
               {reviewRows
@@ -737,8 +877,8 @@ export default function TradingWorkbench() {
             </ul>
           ) : (
             <p>
-              Ajoute tes observations dans le journal pour préparer ta revue.
-              Aucune conclusion automatique n’est inventée.
+              Ajoutez vos observations dans le journal pour préparer votre
+              revue. Aucune conclusion automatique n’est inventée.
             </p>
           )}
           <button disabled={busy || editing !== null} onClick={download}>

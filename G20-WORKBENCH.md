@@ -85,3 +85,28 @@ conservée. La mise à jour de l’index et du cycle est atomique avec contrôle
 révision. Un index invalide ou la limite de 50 cycles ne laisse aucune écriture
 partielle. Les tests Redis couvrent deux cycles, leur relecture, l’isolement des
 comptes, la compatibilité du journal initial et la limite de collection.
+
+## Parcours produit et discipline
+
+L’accueil public présente désormais le journal de trading et une démonstration
+interactive fondée sur des données fictives. `/presentation` permet également
+aux utilisateurs connectés de consulter la présentation. L’assistant existant
+reste accessible. Aucun abonnement ni paiement n’est annoncé comme disponible.
+
+Les opérations peuvent inclure le sens, le contexte d’entrée, les états avant
+et après l’opération et une évaluation déclarée du respect du plan. Ces champs
+sont facultatifs : les anciens cycles et exports restent compatibles. La revue
+compte les écarts sur les seules évaluations renseignées de la période et ne
+déduit aucune appréciation psychologique ou financière. Les exports conservent
+les nouveaux champs ; les imports en valident les valeurs et longueurs.
+
+Le cycle affiché et son enregistrement sont accessibles dans une barre dédiée.
+Les outils de gestion et d’import sont repliables pour donner la priorité au
+plan, à la saisie et à la revue. La confirmation du chargement ouvre la section
+correspondante. La taille des champs et les dispositions CSS sont adaptées aux
+petits écrans ; la validation visuelle mobile complète reste à effectuer.
+
+Contrôle Chrome local : étapes de démonstration, somme de l’exemple 150 CAD,
+un écart sur trois opérations évaluées, accès au journal et présence des champs
+métier. 96 tests applicatifs passent. La capture visuelle native a échoué par
+expiration du délai ; aucun contrôle graphique mobile n’est donc revendiqué.

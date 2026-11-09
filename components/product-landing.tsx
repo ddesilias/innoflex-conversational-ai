@@ -8,47 +8,46 @@ export function ProductLanding() {
     <div className={styles.landing}>
       <section className={styles.introduction} aria-labelledby="product-title">
         <div>
-          <p className={styles.productName}>
-            INNOFLEX SI · ASSISTANT PERSONNEL
-          </p>
+          <p className={styles.productName}>INNOFLEX SI / JOURNAL DE TRADING</p>
           <h1 id="product-title">
-            Un e-mail à écrire.
+            Préparez vos séances.
             <br />
-            Une semaine à organiser.
+            Documentez vos décisions.
             <br />
-            Un sujet à comprendre.
+            Prenez du recul.
           </h1>
         </div>
         <div className={styles.introAside}>
           <p>
-            Vous apportez le contexte.
-            <br />
-            INNOFLEX vous aide à trouver une formulation, un plan ou une
-            explication qui vous sert.
+            Votre plan, vos opérations et vos revues réunis dans un espace de
+            travail. Pour les traders autonomes qui veulent garder une trace
+            précise de leur pratique.
           </p>
-          <Link href="/signup" className={styles.primary}>
-            Créer mon espace <span aria-hidden="true">→</span>
+          <Link href="/trading-journal" className={styles.primary}>
+            Ouvrir le journal <span aria-hidden="true">↗</span>
           </Link>
           <span className={styles.registrationNote}>
-            L’inscription ne demande pas de carte bancaire.
+            Accès pilote · aucun paiement demandé.
+            <br />
+            Un compte permet d’enregistrer et de retrouver vos cycles.
           </span>
           <a className={styles.exploreLink} href="#apercu">
-            Regarder un exemple ↓
+            Explorer une séance de démonstration ↓
           </a>
         </div>
       </section>
       <section
         id="apercu"
         className={styles.previewSection}
-        aria-label="Aperçu du fonctionnement"
+        aria-label="Démonstration du journal"
       >
         <ProductPreview />
         <div className={styles.previewFootnote}>
           <p>
-            <strong>À essayer ici :</strong> choisissez un besoin, puis comparez
-            la demande et une proposition.
+            <strong>Parcourez les trois étapes.</strong> Les chiffres et
+            observations de cet aperçu sont fictifs.
           </p>
-          <span>Exemples préparés · pas de génération IA en direct</span>
+          <span>Aucun cours de marché en direct</span>
         </div>
       </section>
       <section
@@ -57,37 +56,37 @@ export function ProductLanding() {
         aria-labelledby="uses-title"
       >
         <div className={styles.sectionHeading}>
-          <span>LES USAGES</span>
+          <span>VOTRE PRATIQUE, DANS SON CONTEXTE</span>
           <h2 id="uses-title">
-            Des choses précises,
+            Une trace avant,
             <br />
-            que vous faites déjà.
+            pendant et après.
           </h2>
         </div>
         <div className={styles.useRows}>
           <article>
-            <h3>Écrire un message</h3>
+            <h3>01 / Préparer</h3>
             <p>
-              Une réponse à un client, une relance ou un message difficile à
-              formuler.
+              Écrivez votre méthode, vos confirmations et vos conditions d’arrêt
+              avant la séance.
             </p>
-            <span>Un brouillon à relire et adapter.</span>
+            <span>Votre propre plan comme point de référence.</span>
           </article>
           <article>
-            <h3>Préparer sa semaine</h3>
+            <h3>02 / Documenter</h3>
             <p>
-              Des tâches en vrac, des échéances et un temps limité pour tout
-              faire.
+              Consignez le sens du trade, le contexte, votre état personnel et
+              le résultat net après frais.
             </p>
-            <span>Des priorités et un plan de travail.</span>
+            <span>Le réel et le backtest restent séparés.</span>
           </article>
           <article>
-            <h3>Comprendre un sujet</h3>
+            <h3>03 / Revoir</h3>
             <p>
-              Un concept nouveau, un texte compliqué ou une question à
-              approfondir.
+              Retrouvez les écarts déclarés au plan et les leçons de la semaine.
+              Revenez sur un cycle précédent sans l’écraser.
             </p>
-            <span>Une explication avec des exemples.</span>
+            <span>Des calculs lisibles, des observations conservées.</span>
           </article>
         </div>
       </section>
@@ -97,27 +96,34 @@ export function ProductLanding() {
         aria-labelledby="practical-title"
       >
         <div className={styles.practicalIntro}>
-          <span>PRISE EN MAIN</span>
+          <span>UN JOURNAL QUE VOUS GARDEZ</span>
           <h2 id="practical-title">
-            Pas besoin de parler
-            <br />
-            comme une machine.
+            Vos cycles restent
+            <br />à portée de main.
           </h2>
           <p>
-            Une demande ordinaire suffit. Ajoutez ce qui compte : à qui vous
-            écrivez, ce que vous connaissez déjà ou le temps dont vous disposez.
+            Chaque cycle possède son plan et ses opérations. Enregistrez-le sur
+            votre compte, retrouvez-le après connexion ou emportez une copie
+            JSON.
           </p>
         </div>
         <div className={styles.requestExample}>
-          <span>UNE DEMANDE AVEC DU CONTEXTE</span>
+          <span>DU PREMIER BROUILLON À LA REVUE</span>
           <blockquote>
-            « Je dois répondre à un client qui attend sa livraison. Le colis
-            arrive jeudi. Je veux m’excuser, sans en faire trop. »
+            Créer un cycle.
+            <br />
+            Consigner la séance.
+            <br />
+            Relire les décisions.
           </blockquote>
           <p>
-            Vous relisez la proposition, vous ajustez le ton, vous décidez de la
-            suite. L’assistant n’envoie pas le message à votre place.
+            La sauvegarde est manuelle et son état est visible. Le chargement
+            d’un cycle demande confirmation avant de remplacer le brouillon
+            ouvert.
           </p>
+          <Link href="/trading-journal" className={styles.exploreLink}>
+            Essayer avec votre premier cycle →
+          </Link>
         </div>
       </section>
       <section
@@ -127,42 +133,51 @@ export function ProductLanding() {
       >
         <div className={styles.sectionHeading}>
           <span>AVANT DE COMMENCER</span>
-          <h2 id="details-title">Ce qu’il faut savoir.</h2>
+          <h2 id="details-title">Un périmètre clair.</h2>
         </div>
         <div className={styles.detailList}>
           <details open>
-            <summary>Où en est le service ?</summary>
+            <summary>Qu’est-ce qui est disponible aujourd’hui ?</summary>
             <p>
-              INNOFLEX SI est en phase pilote. Vous pouvez créer un compte ; le
-              chat dépend de son activation. Les offres payantes ne sont pas
-              ouvertes. Les tarifs et les conditions seront présentés avant
-              toute souscription.
+              Le plan, le journal, la modification et la clôture des opérations,
+              les revues par cycle ou sur sept jours, les cycles indépendants et
+              l’import/export JSON. Le service est en phase pilote ; les
+              abonnements ne sont pas encore ouverts.
             </p>
           </details>
           <details>
-            <summary>Que deviennent mes conversations ?</summary>
+            <summary>Comment les résultats sont-ils calculés ?</summary>
             <p>
-              Les conversations sont enregistrées dans votre historique,
-              accessible après connexion. Le partage nécessite une action de
-              votre part. Lorsqu’un modèle IA est activé, les messages lui sont
-              transmis pour produire la réponse. Ne saisissez pas de mots de
-              passe, clés secrètes ou données sensibles.
+              Le total net additionne les montants saisis pour les opérations
+              clôturées et renseignées, dans la devise du cycle. Les positions
+              ouvertes et les montants inconnus sont exclus. Le respect du plan
+              repose sur votre propre évaluation. Ces indicateurs ne constituent
+              pas un rendement de portefeuille.
             </p>
           </details>
           <details>
-            <summary>Puis-je me fier à chaque réponse ?</summary>
+            <summary>Où sont enregistrées mes données ?</summary>
             <p>
-              Une réponse IA peut être inexacte. Vérifiez les faits importants
-              et demandez conseil à un professionnel pour les décisions qui le
-              nécessitent. Une proposition est un point de travail, pas une
-              garantie de résultat.
+              Les cycles enregistrés sont associés à votre compte et à
+              l’environnement utilisé. Un brouillon non enregistré reste dans
+              l’onglet et disparaît au rechargement. Vous pouvez exporter une
+              copie JSON. Les fonctions du journal ne transmettent pas vos
+              saisies à un modèle IA.
             </p>
           </details>
           <details>
-            <summary>À qui puis-je poser mes questions ?</summary>
+            <summary>Le produit donne-t-il des signaux de trading ?</summary>
             <p>
-              Le service est développé par INNOFLEX ÉQUIPE. Pour une question,
-              un retour sur le pilote ou une demande concernant vos données :{' '}
+              Le journal sert à organiser et à revoir vos propres décisions. Il
+              ne fournit pas de signaux d’achat ou de vente, n’exécute aucun
+              ordre et n’intègre pas de flux de marché en direct.
+            </p>
+          </details>
+          <details>
+            <summary>Qui développe le service ?</summary>
+            <p>
+              INNOFLEX ÉQUIPE. Pour un retour sur le pilote ou une question sur
+              vos données :{' '}
               <a href="mailto:dimitry.d@innoflexequipe.com">
                 dimitry.d@innoflexequipe.com
               </a>
@@ -173,14 +188,14 @@ export function ProductLanding() {
       </section>
       <footer className={styles.footer}>
         <div>
-          <Link href="/" aria-label="INNOFLEX SI — Accueil">
+          <Link href="/presentation" aria-label="INNOFLEX SI — Présentation">
             <BrandLockup />
           </Link>
           <p>Un produit INNOFLEX ÉQUIPE</p>
         </div>
         <div className={styles.footerLinks}>
-          <Link href="/login">Connexion</Link>
-          <Link href="/signup">Inscription</Link>
+          <Link href="/trading-journal">Le journal</Link>
+          <Link href="/login?next=/trading-journal">Connexion</Link>
           <a href="mailto:dimitry.d@innoflexequipe.com">Contact</a>
         </div>
         <small>© {new Date().getFullYear()} INNOFLEX ÉQUIPE</small>

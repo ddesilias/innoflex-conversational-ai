@@ -232,3 +232,156 @@
     grid-column: auto;
   }
 }
+.shell button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+.shell input,
+.shell textarea,
+.shell select {
+  font-size: 16px;
+}
+.shell th {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #52627a;
+  background: #eef3ff;
+}
+.shell td small {
+  font-size: 11px;
+  color: #52627a;
+  display: inline-block;
+  margin-top: 6px;
+}
+.shell td details {
+  margin-top: 10px;
+}
+.shell td summary {
+  font-size: 12px;
+  color: #1d4ed8;
+  cursor: pointer;
+}
+.shell td details p {
+  font-size: 12px;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+.shell table caption {
+  font-size: 15px;
+}
+.shell .panel > h3 {
+  border-top: 1px solid #dbe3f0;
+  padding-top: 24px;
+}
+.actionBar {
+  position: sticky;
+  top: 64px;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 22px;
+  background: #0b1736;
+  color: #fff;
+  border-radius: 8px;
+  margin: 24px 0 0;
+  box-shadow: 0 8px 24px #0b173612;
+}
+.actionBar > div {
+  min-width: 0;
+}
+.actionBar span {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: #b7c9ed;
+}
+.actionBar strong {
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 6px 0;
+  overflow-wrap: anywhere;
+}
+.actionBar small {
+  font-size: 12px;
+  color: #d3def3;
+}
+.actionBar button {
+  white-space: nowrap;
+  min-height: 44px;
+}
+.saveFeedback {
+  font-size: 12px;
+  color: #52627a;
+  margin: 12px 0 20px;
+}
+.cycleManager {
+  border: 1px solid #dbe3f0;
+  background: white;
+  border-radius: 7px;
+  margin: 12px 0;
+  padding: 0 20px;
+}
+.cycleManager > summary {
+  cursor: pointer;
+  padding: 16px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #172554;
+}
+.cycleManager > .panel {
+  padding: 0 0 20px;
+}
+.cycleManager > .panel > label {
+  margin: 8px 0 18px;
+}
+.tabs {
+  margin-top: 26px;
+}
+.tabs span {
+  font-size: 11px;
+  color: #52627a;
+  margin-right: 6px;
+}
+.context {
+  padding: 18px 0;
+}
+.notice {
+  font-size: 12px;
+  line-height: 1.7;
+}
+.intro {
+  padding: 38px 0 20px;
+}
+.shell button {
+  min-height: 42px;
+}
+.shell input,
+.shell select {
+  min-height: 44px;
+}
+@media (max-width: 640px) {
+  .actionBar {
+    top: 64px;
+    padding: 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .actionBar button {
+    width: 100%;
+  }
+  .actionBar strong {
+    font-size: 16px;
+  }
+  .cycleManager {
+    padding: 0 14px;
+  }
+  .tabs button {
+    padding: 14px 12px;
+  }
+  .intro h1 {
+    letter-spacing: -1px;
+  }
+}

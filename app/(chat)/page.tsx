@@ -7,7 +7,7 @@ import { Session } from '@/lib/types'
 import { getMissingKeys } from '@/app/actions'
 
 export const metadata = {
-  title: { absolute: 'INNOFLEX SI — Assistant personnel' }
+  title: { absolute: 'INNOFLEX SI — Journal et revue de trading' }
 }
 
 export default async function IndexPage() {

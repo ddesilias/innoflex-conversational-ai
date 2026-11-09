@@ -6,6 +6,11 @@ export type Trade = {
   status: 'Ouverte' | 'Clôturée'
   pnl: number | null
   lesson: string
+  direction?: '' | 'Long' | 'Short'
+  setup?: string
+  emotionBefore?: string
+  emotionAfter?: string
+  planFollowed?: '' | 'Oui' | 'Non'
 }
 // The caller supplies one cycle, one mode and one currency. Missing results
 // remain unknown; open positions never contribute to realized results.
@@ -27,6 +32,10 @@ export function reviewTrades(trades: Trade[]) {
     wins,
     losses,
     flat: closed.length - wins - losses,
+    planDocumented: trades.filter(
+      t => t.planFollowed === 'Oui' || t.planFollowed === 'Non'
+    ).length,
+    planDeviations: trades.filter(t => t.planFollowed === 'Non').length,
     netCents: closed.length ? closed.reduce((sum, t) => sum + t.pnl!, 0) : null,
     winRate: closed.length ? wins / closed.length : null
   }
@@ -102,6 +111,16 @@ export function parseCycleDraft(text: string): CycleDraft {
       (t.status === 'Ouverte' && t.pnl !== null)
     )
       return fail()
+    if (
+      (t.direction !== undefined &&
+        !['', 'Long', 'Short'].includes(t.direction)) ||
+      (t.planFollowed !== undefined &&
+        !['', 'Oui', 'Non'].includes(t.planFollowed)) ||
+      (t.setup !== undefined && !string(t.setup, 1000)) ||
+      (t.emotionBefore !== undefined && !string(t.emotionBefore, 100)) ||
+      (t.emotionAfter !== undefined && !string(t.emotionAfter, 100))
+    )
+      return fail()
     ids.add(t.id)
     return {
       id: t.id,
@@ -110,7 +129,14 @@ export function parseCycleDraft(text: string): CycleDraft {
       mode: t.mode,
       status: t.status,
       pnl: t.pnl,
-      lesson: t.lesson
+      lesson: t.lesson,
+      ...(t.direction !== undefined ? { direction: t.direction } : {}),
+      ...(t.setup !== undefined ? { setup: t.setup } : {}),
+      ...(t.emotionBefore !== undefined
+        ? { emotionBefore: t.emotionBefore }
+        : {}),
+      ...(t.emotionAfter !== undefined ? { emotionAfter: t.emotionAfter } : {}),
+      ...(t.planFollowed !== undefined ? { planFollowed: t.planFollowed } : {})
     }
   })
   return {

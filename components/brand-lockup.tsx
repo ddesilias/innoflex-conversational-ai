@@ -9,7 +9,7 @@ export function BrandLockup() {
         <span className={styles.name}>
           INNOFLEX <span>SI</span>
         </span>
-        <span className={styles.description}>Assistant personnel</span>
+        <span className={styles.description}>Journal & revue trading</span>
       </span>
     </span>
   )
