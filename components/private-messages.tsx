@@ -8,13 +8,15 @@ import {
   listPrivateRooms,
   loadPrivateRoom,
   sendPrivateMessage,
+  renewPrivateInvitation,
+  revokePrivateInvitation,
   type PrivateRoom
 } from '@/app/messages/actions'
 import styles from './private-messages.module.css'
 
 export function PrivateMessages() {
   const [rooms, setRooms] = useState<
-    { id: string; name: string; joined: boolean }[]
+    { id: string; name: string; joined: boolean; invitationRevoked: boolean }[]
   >([])
   const [room, setRoom] = useState<PrivateRoom | null>(null)
   const [busy, setBusy] = useState(false)
@@ -40,6 +42,7 @@ export function PrivateMessages() {
       const result = await loadPrivateRoom(id)
       if (result.ok && 'room' in result) {
         setRoom(result.room)
+        setInvitation('')
         setDraft('')
         nonce.current = ''
         setNotice(
@@ -121,10 +124,50 @@ export function PrivateMessages() {
       setBusy(false)
     }
   }
+  async function manageInvitation(mode: 'renew' | 'revoke') {
+    if (!room || busy) return
+    if (
+      !window.confirm(
+        mode === 'renew'
+          ? 'Tous les anciens codes seront invalidés. Créer un nouveau code valable 24 heures ?'
+          : 'Le code sera inutilisable. La conversation et ses messages seront conservés. Révoquer l’invitation ?'
+      )
+    )
+      return
+    const id = room.id
+    setBusy(true)
+    setInvitation('')
+    try {
+      const result =
+        mode === 'renew'
+          ? await renewPrivateInvitation(id)
+          : await revokePrivateInvitation(id)
+      if (!result.ok) {
+        setNotice(result.message)
+        return
+      }
+      if ('invitation' in result && typeof result.invitation === 'string')
+        setInvitation(result.invitation)
+      setNotice(
+        mode === 'renew'
+          ? 'Nouveau code créé. Tous les anciens codes sont invalides. Copiez le nouveau code dans le panneau de gauche.'
+          : 'Invitation révoquée. Aucun ancien code ne permet de rejoindre cette conversation.'
+      )
+      const updated = await loadPrivateRoom(id)
+      if (updated.ok && 'room' in updated) setRoom(updated.room)
+      await refresh()
+    } catch {
+      setNotice(
+        'Modification non confirmée. Actualisez la conversation. Si le nouveau code n’a pas été reçu, vous pouvez en créer un autre.'
+      )
+    } finally {
+      setBusy(false)
+    }
+  }
   return (
     <div className={styles.page}>
       <div className={styles.heading}>
-        <p>TRADING & INVESTMENT / ÉCHANGES ENTRE UTILISATEURS</p>
+        <p>TRADING & INVESTISSEMENT / ÉCHANGES ENTRE UTILISATEURS</p>
         <h1>Messages privés</h1>
         <span>
           Deux personnes, sur invitation. Pour parler à l’assistant IA, utilisez{' '}
@@ -166,7 +209,9 @@ export function PrivateMessages() {
                   <small>
                     {item.joined
                       ? 'Deux participants'
-                      : 'Invitation en attente'}
+                      : item.invitationRevoked
+                        ? 'Invitation révoquée'
+                        : 'Invitation en attente'}
                   </small>
                 </button>
               </li>
@@ -245,13 +290,41 @@ export function PrivateMessages() {
                   <p>
                     {room.joined
                       ? 'Deux participants'
-                      : 'En attente de la personne invitée'}
+                      : room.invitationRevoked
+                        ? 'Invitation révoquée'
+                        : 'En attente de la personne invitée'}
                   </p>
                 </div>
                 <button disabled={busy} onClick={() => select(room.id)}>
                   Actualiser les messages
                 </button>
               </header>
+              {room.isOwner && !room.joined ? (
+                <div className={styles.invitationControls}>
+                  <div>
+                    <strong>Gérer l’invitation</strong>
+                    <p>
+                      Code perdu, expiré ou partagé par erreur ? Un nouveau code
+                      remplace tous les précédents. Révoquer un code ne retire
+                      pas une personne déjà présente.
+                    </p>
+                  </div>
+                  <div>
+                    <button
+                      disabled={busy}
+                      onClick={() => manageInvitation('renew')}
+                    >
+                      Créer un nouveau code
+                    </button>
+                    <button
+                      disabled={busy || room.invitationRevoked}
+                      onClick={() => manageInvitation('revoke')}
+                    >
+                      Révoquer l’invitation
+                    </button>
+                  </div>
+                </div>
+              ) : null}
               <ol className={styles.messages}>
                 {room.messages.map(message => (
                   <li key={message.id} data-mine={message.mine}>

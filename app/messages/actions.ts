@@ -11,6 +11,8 @@ import {
   createRoomScript,
   joinRoomScript,
   readRoomScript,
+  renewInvitationScript,
+  revokeInvitationScript,
   sendMessageScript
 } from '@/lib/messaging/store'
 
@@ -24,6 +26,8 @@ export type PrivateRoom = {
   id: string
   name: string
   joined: boolean
+  isOwner: boolean
+  invitationRevoked: boolean
   messages: PrivateMessage[]
 }
 const unavailable = {
@@ -69,7 +73,14 @@ async function readForUser(
       throw Error('Invalid message')
     return { id: m.id, text: m.text, mine: m.author === user, at: m.at }
   })
-  return { id, name: room.name, joined: Boolean(room.joined), messages }
+  return {
+    id,
+    name: room.name,
+    joined: room.joined === true,
+    isOwner: room.isOwner === true,
+    invitationRevoked: room.invitationRevoked === true,
+    messages
+  }
 }
 
 export async function listPrivateRooms() {
@@ -89,7 +100,12 @@ export async function listPrivateRooms() {
       ok: true as const,
       rooms: rooms
         .filter((room): room is PrivateRoom => room !== null)
-        .map(({ id, name, joined }) => ({ id, name, joined }))
+        .map(({ id, name, joined, invitationRevoked }) => ({
+          id,
+          name,
+          joined,
+          invitationRevoked
+        }))
     }
   } catch {
     return unavailable
@@ -159,6 +175,55 @@ export async function joinPrivateRoom(invitation: string) {
           ok: false as const,
           message:
             'Invitation invalide, déjà utilisée, personnelle ou limite de conversations atteinte.'
+        }
+  } catch {
+    return unavailable
+  }
+}
+export async function renewPrivateInvitation(id: string) {
+  const session = await auth()
+  if (!session?.user?.id || !validRoomId(id))
+    return { ok: false as const, message: 'Invitation inaccessible.' }
+  try {
+    const token = randomBytes(32).toString('hex')
+    const result = Number(
+      await kv.eval(
+        renewInvitationScript,
+        [
+          roomKey(id),
+          invitationKey(token),
+          messagingPrefix() + 'invite-rate:' + session.user.id
+        ],
+        [session.user.id, id]
+      )
+    )
+    return result === 1
+      ? { ok: true as const, invitation: id + '.' + token }
+      : {
+          ok: false as const,
+          message:
+            result === -1
+              ? 'Patientez une minute avant de créer un autre code.'
+              : 'Seul le créateur peut remplacer un code avant son acceptation.'
+        }
+  } catch {
+    return unavailable
+  }
+}
+export async function revokePrivateInvitation(id: string) {
+  const session = await auth()
+  if (!session?.user?.id || !validRoomId(id))
+    return { ok: false as const, message: 'Invitation inaccessible.' }
+  try {
+    const result = Number(
+      await kv.eval(revokeInvitationScript, [roomKey(id)], [session.user.id])
+    )
+    return result === 1
+      ? { ok: true as const }
+      : {
+          ok: false as const,
+          message:
+            'Seul le créateur peut révoquer un code avant son acceptation.'
         }
   } catch {
     return unavailable

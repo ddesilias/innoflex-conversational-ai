@@ -163,6 +163,24 @@
   flex-direction: column;
   min-width: 0;
 }
+.invitationControls {
+  margin: 16px 0;
+  padding: 14px;
+  border: 1px solid #cbd8f7;
+  border-radius: 6px;
+  background: #f8faff;
+  font-size: 12px;
+}
+.invitationControls p {
+  color: #52627a;
+  line-height: 1.6;
+  margin: 8px 0 12px;
+}
+.invitationControls > div:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 .roomHeading {
   display: flex;
   justify-content: space-between;

@@ -7,5 +7,5 @@ test('private messages use separate namespaces and validated identities',()=>{
 });
 test('anonymous messaging cannot reach storage or create invitations',async()=>{
  const actions=load('app/messages/actions.ts',{'@/auth':{auth:async()=>null},'@vercel/kv':{kv:new Proxy({},{get(){throw Error('Storage reached')}})},'@/lib/messaging/store':store});
- for(const result of [await actions.listPrivateRooms(),await actions.loadPrivateRoom('id'),await actions.createPrivateRoom('Topic'),await actions.joinPrivateRoom('token'),await actions.sendPrivateMessage('id','body','id')])assert.equal(result.ok,false);
+ for(const result of [await actions.listPrivateRooms(),await actions.loadPrivateRoom('id'),await actions.createPrivateRoom('Topic'),await actions.joinPrivateRoom('token'),await actions.renewPrivateInvitation('id'),await actions.revokePrivateInvitation('id'),await actions.sendPrivateMessage('id','body','id')])assert.equal(result.ok,false);
 });

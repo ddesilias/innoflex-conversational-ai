@@ -1,4 +1,24 @@
-# Préparation commerciale — assistant personnel INNOFLEX
+# Préparation commerciale — INNOFLEX Trading & Investissement
+
+## Priorités actuelles
+
+Le produit pilote associe journal de trading, revue des décisions, assistant IA
+et messagerie privée dans des espaces séparés. Le tableau de bord assure le suivi
+des environnements ; un statut HTTP disponible ne certifie pas le parcours métier.
+
+- Messagerie : remplacement et révocation des invitations avant acceptation,
+  contrôlés côté serveur. Restent le blocage, la gestion de conservation/effacement
+  et un parcours humain à deux comptes en préproduction.
+- Accès : valider les parcours complets de connexion et de récupération de compte.
+- IA : migration du parcours de conversation, erreurs et interruption à terminer ;
+  aucun essai payant autorisé à ce stade.
+- Facturation : parcours Stripe de test et droits à valider avant activation d’une
+  offre payante. Aucun paiement réel activé.
+- Production : ne pas confondre le renommage des ressources avec une promotion du
+  code de préproduction.
+
+Les sections suivantes retracent les validations successives ; leurs anciens
+comptages et constats de configuration ne constituent pas l’état courant complet.
 
 Le pilote n’est pas encore prêt à être commercialisé. Les correctifs sont sur la branche `security/session-bound-chat-access` ; ils ne certifient pas la version de production.
 

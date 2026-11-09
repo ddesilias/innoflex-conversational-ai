@@ -290,3 +290,59 @@ test('private messages require invitation membership and keep AI and other accou
  assert.equal((await alice.sendPrivateMessage(created.id,'blocked',randomUUID())).ok,false);
  assert.equal((await session(null).listPrivateRooms()).ok,false);
 });
+
+function messagingSessionFactory() {
+ function moduleFrom(file, dependencies={}) {const output={};vm.runInNewContext(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,{exports:output,require:name=>name in dependencies?dependencies[name]:require(name),process:{env:{NODE_ENV:'development'}}});return output}
+ const accounts=moduleFrom('lib/accounts/keys.ts');
+ const store=moduleFrom('lib/messaging/store.ts',{'@/lib/accounts/keys':accounts});
+ const session=id=>moduleFrom('app/messages/actions.ts',{'@/auth':{auth:async()=>({user:{id}})},'@/lib/messaging/store':store,'@vercel/kv':{kv:{eval:evaluate,smembers:key=>redis('SMEMBERS',key)}}});
+ return {store,session};
+}
+test('invitation replacement and revocation reject old codes and preserve private history',async()=>{
+ const {store,session}=messagingSessionFactory(),owner=session('invite-owner'),guest=session('invite-guest'),outsider=session('invite-outsider');
+ const room=await owner.createPrivateRoom('Invitation controls');
+ assert.equal((await owner.loadPrivateRoom(room.id)).room.isOwner,true);
+ assert.equal((await outsider.renewPrivateInvitation(room.id)).ok,false);
+ assert.equal((await outsider.revokePrivateInvitation(room.id)).ok,false);
+ await owner.sendPrivateMessage(room.id,'Keep this draft discussion',randomUUID());
+ const replacement=await owner.renewPrivateInvitation(room.id);assert.equal(replacement.ok,true);
+ assert.equal((await guest.joinPrivateRoom(room.invitation)).ok,false);
+ assert.equal((await owner.revokePrivateInvitation(room.id)).ok,true);
+ assert.equal((await guest.joinPrivateRoom(replacement.invitation)).ok,false);
+ assert.equal((await owner.loadPrivateRoom(room.id)).room.invitationRevoked,true);
+ assert.equal((await owner.listPrivateRooms()).rooms[0].invitationRevoked,true);
+ assert.equal((await owner.loadPrivateRoom(room.id)).room.messages.length,1);
+ const current=await owner.renewPrivateInvitation(room.id);
+ assert.equal((await guest.joinPrivateRoom(current.invitation)).ok,true);
+ assert.equal((await guest.loadPrivateRoom(room.id)).room.isOwner,false);
+ assert.equal((await guest.revokePrivateInvitation(room.id)).ok,false);
+ assert.equal((await owner.renewPrivateInvitation(room.id)).ok,false);
+ assert.equal((await owner.revokePrivateInvitation(room.id)).ok,false);
+ assert.equal((await guest.loadPrivateRoom(room.id)).room.messages.length,1);
+ assert.equal(await redis('HEXISTS',store.roomKey(room.id),'invitation'),0);
+});
+test('concurrent replacements leave only one usable code and renewal is bounded',async()=>{
+ const {store,session}=messagingSessionFactory(),owner=session('rotate-owner'),guest=session('rotate-guest');
+ const room=await owner.createPrivateRoom('Concurrent codes');
+ const results=await Promise.all(Array.from({length:12},()=>owner.renewPrivateInvitation(room.id)));
+ assert.equal(results.filter(r=>r.ok).length,10);
+ const currentKey=await redis('HGET',store.roomKey(room.id),'invitation');
+ const codes=results.filter(r=>r.ok);
+ const isCurrent=r=>currentKey===store.messagingPrefix()+'invite:'+require('node:crypto').createHash('sha256').update(r.invitation.split('.')[1]).digest('hex');
+ assert.equal(codes.filter(isCurrent).length,1);
+ for(const r of codes.filter(r=>!isCurrent(r)))assert.equal((await guest.joinPrivateRoom(r.invitation)).ok,false);
+ assert.equal((await guest.joinPrivateRoom(codes.find(isCurrent).invitation)).ok,true);
+ assert.equal((await guest.joinPrivateRoom(room.invitation)).ok,false);
+});
+test('legacy codes can be revoked and acceptance racing revocation never removes a participant',async()=>{
+ const {store,session}=messagingSessionFactory(),owner=session('legacy-invite-owner'),guest=session('legacy-invite-guest');
+ const legacy=await owner.createPrivateRoom('Legacy invitation');
+ await redis('HDEL',store.roomKey(legacy.id),'invitation');
+ assert.equal((await owner.revokePrivateInvitation(legacy.id)).ok,true);
+ assert.equal((await guest.joinPrivateRoom(legacy.invitation)).ok,false);
+ const race=await owner.createPrivateRoom('Accept or revoke');
+ const [accepted,revoked]=await Promise.all([guest.joinPrivateRoom(race.invitation),owner.revokePrivateInvitation(race.id)]);
+ assert.equal(Number(accepted.ok)+Number(revoked.ok),1);
+ const state=await owner.loadPrivateRoom(race.id);assert.equal(state.room.joined,accepted.ok);
+ assert.equal((await guest.loadPrivateRoom(race.id)).ok,accepted.ok);
+});
