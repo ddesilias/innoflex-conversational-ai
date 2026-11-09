@@ -291,7 +291,7 @@ export default function TradingWorkbench() {
     <div className={styles.shell}>
       <div className={styles.intro}>
         <p className={styles.eyebrow}>PRÉPARER / DOCUMENTER / APPRENDRE</p>
-        <h1>Votre journal de décisions.</h1>
+        <h1>Journal de trading</h1>
         <p>
           Préparez votre séance, consignez vos décisions et retrouvez les écarts
           à votre plan.
@@ -617,7 +617,7 @@ export default function TradingWorkbench() {
           ) : null}
           <form
             key={`${editing?.id || 'new'}-${formVersion}`}
-            id="g20-operation-form"
+            id="trading-operation-form"
             onSubmit={addTrade}
             className={styles.form}
           >
@@ -823,7 +823,7 @@ export default function TradingWorkbench() {
                           )
                           setFormVersion(value => value + 1)
                           document
-                            .getElementById('g20-operation-form')
+                            .getElementById('trading-operation-form')
                             ?.scrollIntoView({
                               behavior: 'smooth',
                               block: 'start'

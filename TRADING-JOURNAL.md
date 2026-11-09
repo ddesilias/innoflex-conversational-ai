@@ -1,4 +1,4 @@
-# Atelier G20 — état du premier parcours
+# Journal de trading — état du produit
 
 Disponible sur `/trading-journal` : plan personnel, opérations réel/backtest,
 modification et clôture des opérations, revue du cycle ou de sept jours à partir d’une date, export/import JSON version 1.
@@ -64,7 +64,7 @@ Le formulaire « Retrouvez votre journal G20 » a été observé dans Chrome le
 9 novembre 2026. Aucune authentification réelle n’a été effectuée lors de cette
 vérification. Les 90 tests applicatifs passent, dont le contrôle des destinations.
 
-## Préproduction G20
+## Préproduction du journal
 
 Le premier lot G20 est publié sur la branche `security/session-bound-chat-access`
 (commit `3da9a9d`). Le déploiement Vercel a atteint READY. La vérification HTTP
