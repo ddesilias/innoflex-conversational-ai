@@ -4,6 +4,7 @@ import { signIn } from '@/auth'
 import { ResultCode } from '@/lib/utils'
 import { z } from 'zod'
 import { createAccount } from '@/lib/accounts/store'
+import { AuthAttemptError } from '@/lib/accounts/attempts'
 import { AuthError } from 'next-auth'
 
 interface Result {
@@ -45,6 +46,9 @@ export async function signup(
 
       return result
     } catch (error) {
+      if (error instanceof AuthAttemptError) {
+        return { type: 'error', resultCode: error.status === 429 ? ResultCode.TooManyAttempts : ResultCode.UnknownError }
+      }
       if (error instanceof AuthError) {
         switch (error.type) {
           case 'CredentialsSignin':

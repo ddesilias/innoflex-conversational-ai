@@ -63,6 +63,7 @@ export const getStringFromBuffer = (buffer: ArrayBuffer) =>
     .join('')
 
 export enum ResultCode {
+  TooManyAttempts = 'TOO_MANY_ATTEMPTS',
   InvalidCredentials = 'INVALID_CREDENTIALS',
   InvalidSubmission = 'INVALID_SUBMISSION',
   UserAlreadyExists = 'USER_ALREADY_EXISTS',
@@ -73,17 +74,19 @@ export enum ResultCode {
 
 export const getMessageFromCode = (resultCode: string) => {
   switch (resultCode) {
+    case ResultCode.TooManyAttempts:
+      return 'Trop de tentatives. Patientez avant de réessayer.'
     case ResultCode.InvalidCredentials:
-      return 'Invalid credentials!'
+      return 'Connexion refusée. Vérifiez vos identifiants ou patientez après plusieurs essais.'
     case ResultCode.InvalidSubmission:
-      return 'Invalid submission, please try again!'
+      return 'Vérifiez les informations saisies puis réessayez.'
     case ResultCode.UserAlreadyExists:
-      return 'User already exists, please log in!'
+      return 'Un compte existe déjà avec cette adresse. Connectez-vous.'
     case ResultCode.UserCreated:
-      return 'User created, welcome!'
+      return 'Votre compte est créé. Bienvenue !'
     case ResultCode.UnknownError:
-      return 'Something went wrong, please try again!'
+      return 'Le service est momentanément indisponible. Réessayez plus tard.'
     case ResultCode.UserLoggedIn:
-      return 'Logged in!'
+      return 'Vous êtes connecté.'
   }
 }

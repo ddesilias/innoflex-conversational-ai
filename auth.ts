@@ -2,6 +2,7 @@ import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import { authConfig } from './auth.config'
 import { z } from 'zod'
+import { AuthAttemptError } from './lib/accounts/attempts'
 import { authenticateAccount } from './lib/accounts/store'
 
 export const { auth, signIn, signOut } = NextAuth({
@@ -18,7 +19,13 @@ export const { auth, signIn, signOut } = NextAuth({
 
         if (parsedCredentials.success) {
           const { email, password } = parsedCredentials.data
-          return authenticateAccount(email, password)
+          try {
+            return await authenticateAccount(email, password)
+          } catch (error) {
+            // Keep the response independent of whether the account exists.
+            if (error instanceof AuthAttemptError && error.status === 429) return null
+            throw error
+          }
         }
 
         return null

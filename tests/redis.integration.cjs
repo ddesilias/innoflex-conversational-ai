@@ -12,10 +12,11 @@ let container
 function load(file) {
   const output = {}
   vm.runInNewContext(ts.transpileModule(fs.readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText,
-    { exports: output, require: name => { if (name === 'server-only') return {}; if (name === 'node:crypto') return require('node:crypto'); if (name === './password') return {}; if (name === '@vercel/kv') return { kv: {} }; throw Error(name) } })
+    { exports: output, require: name => { if (name === 'server-only') return {}; if (name === 'node:crypto') return require('node:crypto'); if (name === './attempts') return {}; if (name === './password') return {}; if (name === '@vercel/kv') return { kv: {} }; throw Error(name) } })
   return output
 }
 const { createAccountScript, upgradePasswordScript } = load('lib/accounts/store.ts')
+const { authAttemptScript } = load('lib/accounts/attempts.ts')
 const { quotaScript } = load('lib/security/quota.ts')
 const { saveChatScript } = load('lib/security/save-chat.ts')
 const { bindCustomerScript } = load('lib/billing/customer-store.ts')
@@ -91,3 +92,25 @@ test('password upgrades compare identity and old credentials atomically', async 
   assert.equal(await evaluate(upgradePasswordScript, [key], ['alice', 'old', 'old-salt', 'stale', 'stale-salt']), 0)
   assert.equal(await redis('HGET', key, 'password'), 'new')
 })
+
+test('authentication counters enforce limits concurrently without extending lockouts', async () => {
+  const keys = ['auth-attempt:login:alice', 'auth-attempt:login:global'];
+  const results = await Promise.all(Array.from({length:8},()=>evaluate(authAttemptScript, keys, [3,900,100,60])));
+  assert.equal(results.filter(result=>result[0]===1).length, 3);
+  assert.equal(await redis('GET', keys[0]), '3');
+  const ttl = await redis('TTL', keys[0]);
+  assert.equal((await evaluate(authAttemptScript, keys, [3,900,100,60]))[0], 0);
+  assert.ok(await redis('TTL', keys[0]) <= ttl);
+  assert.equal(await redis('GET', keys[1]), '3');
+});
+test('global authentication budget blocks rotating identities and expires', async () => {
+  const global = 'auth-attempt:signup:global';
+  const consume = email => evaluate(authAttemptScript, [`auth-attempt:signup:${email}`, global], [3,3600,2,60]);
+  assert.equal((await consume('alice'))[0], 1);
+  assert.equal((await consume('bob'))[0], 1);
+  assert.equal((await consume('charlie'))[0], 0);
+  assert.equal(await redis('EXISTS', 'auth-attempt:signup:charlie'), 0);
+  await redis('EXPIRE', global, -1);
+  assert.equal((await consume('charlie'))[0], 1);
+  assert.ok(await redis('TTL', global) > 0);
+});

@@ -38,3 +38,7 @@ Sources : [avis Next.js](https://github.com/advisories/GHSA-2464-fhr4-w9xw), [av
 Le stockage des nouveaux mots de passe utilise désormais scrypt asynchrone (N=131072, r=8, p=1), un sel aléatoire et une comparaison en temps constant. Les comptes SHA-256 existants migrent lors d’une connexion correcte ; un script Redis compare l’identité et l’ancienne empreinte avant toute mise à jour. La création est atomique. Les fonctions de lecture/création du stockage ne sont plus des actions serveur publiques ; la session reçoit uniquement l’identifiant et l’adresse du compte. Les nouvelles inscriptions exigent 12 à 256 caractères.
 
 Cette étape porte la validation à 56 tests et 7 tests Redis isolés, avec TypeScript et compilation réussis. Le contrôle des tentatives répétées, la récupération de compte et les parcours réels restent à traiter. Voir [la préparation commerciale](../COMMERCIAL-READINESS.md). Aucun compte réel n’a été migré pendant ces tests.
+
+## Limitation des tentatives d’accès
+
+La création et l’authentification des comptes vérifient désormais des compteurs Redis atomiques par adresse et globaux avant la lecture du compte ou scrypt. Les parcours connexion et inscription ont leurs propres limites et expirations. Une indisponibilité de la protection bloque l’opération ; un refus ne prolonge pas le blocage. Les seuils initiaux et les limites restantes sont documentés dans [la préparation commerciale](../COMMERCIAL-READINESS.md). Les validations passent à 59 tests et 9 tests Redis isolés. Aucun essai sur un compte réel n’a été déclenché.

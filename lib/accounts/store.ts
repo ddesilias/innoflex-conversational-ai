@@ -1,4 +1,5 @@
 import 'server-only'
+import { consumeAuthAttempt } from './attempts'
 import { kv } from '@vercel/kv'
 import { randomUUID } from 'node:crypto'
 import type { User } from '@/lib/types'
@@ -18,11 +19,13 @@ return 1
 `
 // This module is server-only, not a server-action entry point.
 export async function createAccount(email: string, plaintext: string): Promise<boolean> {
+  await consumeAuthAttempt((script, keys, args) => kv.eval(script, keys, args), email, 'signup')
   const credential = await hashPassword(plaintext)
   return Number(await kv.eval(createAccountScript, [`user:${email}`],
     [randomUUID(), email, credential.password, credential.salt])) === 1
 }
 export async function authenticateAccount(email: string, plaintext: string) {
+  await consumeAuthAttempt((script, keys, args) => kv.eval(script, keys, args), email, 'login')
   const user = await kv.hgetall<User>(`user:${email}`)
   if (!user || !user.id || user.email !== email || !await verifyPassword(plaintext, user)) return null
   if (needsPasswordUpgrade(user.password)) {
