@@ -1,0 +1,202 @@
+.panel {
+  width: 100%;
+  max-width: 420px;
+  color: #17213a;
+}
+.back {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  color: #738096;
+  margin-bottom: 42px;
+}
+.back:hover {
+  color: #2962ff;
+}
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  font-weight: 600;
+  color: #2962ff;
+}
+.formHeading h1 {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -1.7px;
+  line-height: 1.2;
+  margin: 14px 0;
+}
+.formHeading > p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #738096;
+  margin-bottom: 32px;
+}
+.fields {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.fields label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #34435d;
+}
+.fields input {
+  display: block;
+  width: 100%;
+  min-height: 50px;
+  border: 1px solid #dbe1eb;
+  border-radius: 7px;
+  background: #fff;
+  color: #17213a;
+  padding: 13px 15px;
+  font-size: 15px;
+  outline: none;
+  box-shadow: 0 1px 2px #17213a03;
+}
+.fields > input {
+  margin-top: 10px;
+}
+.fields input::placeholder {
+  color: #98a2b3;
+}
+.fields input:focus {
+  border-color: #2962ff;
+  box-shadow: 0 0 0 3px #2962ff12;
+}
+.fields:disabled {
+  opacity: 0.7;
+}
+.passwordLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 23px 0 10px;
+}
+.passwordLabel > a {
+  font-size: 11px;
+  color: #2962ff;
+}
+.passwordInput {
+  position: relative;
+}
+.passwordInput input {
+  padding-right: 50px;
+}
+.passwordInput > button {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  color: #7c879b;
+  border-radius: 5px;
+}
+.passwordInput > button:hover {
+  background: #f4f6fb;
+  color: #2962ff;
+}
+.submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 50px;
+  background: #2962ff;
+  color: #fff;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 25px;
+}
+.submit:hover {
+  background: #214ed1;
+}
+.submit:disabled {
+  cursor: wait;
+}
+.error {
+  padding: 12px 14px;
+  border: 1px solid #f0c9cd;
+  background: #fff5f5;
+  color: #a32c40;
+  font-size: 12px;
+  line-height: 1.6;
+  border-radius: 6px;
+  margin-top: 18px;
+}
+.signup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #738096;
+  padding: 24px 0;
+  border-bottom: 1px solid #e9edf3;
+}
+.signup a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #2962ff;
+  font-weight: 600;
+}
+.privacy {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #7d8aa0;
+  margin: 23px 0;
+}
+.privacy > svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.privacy p {
+  font-size: 11px;
+  line-height: 1.7;
+}
+.support {
+  font-size: 10px;
+  color: #8a95a7;
+  text-align: center;
+  margin-top: 25px;
+}
+.support a {
+  color: #5e6e88;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.panel a:focus-visible,
+.panel button:focus-visible {
+  outline: 3px solid #7c3aed;
+  outline-offset: 3px;
+}
+@media (max-width: 640px) {
+  .back {
+    margin-bottom: 30px;
+  }
+  .formHeading h1 {
+    font-size: 34px;
+  }
+  .formHeading > p {
+    font-size: 13px;
+    margin-bottom: 28px;
+  }
+  .signup {
+    font-size: 11px;
+  }
+  .passwordLabel > a {
+    font-size: 10px;
+  }
+}

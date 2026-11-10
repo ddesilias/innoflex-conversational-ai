@@ -1,0 +1,128 @@
+.page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  width: 100%;
+  min-height: calc(100dvh - 68px);
+  background: #fff;
+}
+.story {
+  position: relative;
+  overflow: hidden;
+  background: #101f3e;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 64px clamp(32px, 6vw, 100px);
+}
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: #8ba7dc;
+  font-weight: 600;
+}
+.story h2 {
+  font-size: clamp(33px, 3.8vw, 54px);
+  font-weight: 650;
+  letter-spacing: -0.055em;
+  line-height: 1.13;
+  margin: 25px 0;
+}
+.story h2 > span {
+  color: #85acff;
+}
+.description {
+  color: #a8b8d4;
+  font-size: 14px;
+  line-height: 1.8;
+  max-width: 360px;
+}
+.steps {
+  list-style: none;
+  padding: 0;
+  margin: 40px 0 0;
+  max-width: 370px;
+  border-top: 1px solid #ffffff16;
+}
+.steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 20px 0;
+  border-bottom: 1px solid #ffffff16;
+}
+.steps li > span {
+  font-size: 10px;
+  color: #7190c6;
+  padding-top: 4px;
+  font-family: monospace;
+}
+.steps strong {
+  font-size: 13px;
+  font-weight: 550;
+}
+.steps p {
+  font-size: 11px;
+  color: #91a6ca;
+  line-height: 1.7;
+  margin-top: 5px;
+}
+.note {
+  font-size: 10px;
+  line-height: 1.7;
+  color: #7d94ba;
+  margin-top: 36px;
+  max-width: 340px;
+}
+.formArea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 56px;
+}
+.story:after {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border: 1px solid #ffffff05;
+  border-radius: 50%;
+  right: -260px;
+  top: 10%;
+  pointer-events: none;
+  box-shadow:
+    0 0 0 70px #ffffff02,
+    0 0 0 140px #ffffff02;
+}
+@media (min-width: 1600px) {
+  .page {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  }
+  .story {
+    padding-left: max(70px, calc((100vw - 1360px) / 2));
+  }
+}
+@media (max-width: 1000px) {
+  .story {
+    padding: 48px 32px;
+  }
+  .formArea {
+    padding: 40px 32px;
+  }
+  .story h2 {
+    font-size: 38px;
+  }
+}
+@media (max-width: 760px) {
+  .page {
+    grid-template-columns: 1fr;
+    min-height: calc(100dvh - 62px);
+  }
+  .story {
+    display: none;
+  }
+  .formArea {
+    align-items: flex-start;
+    padding: 36px 24px 48px;
+  }
+}
