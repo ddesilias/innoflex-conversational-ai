@@ -44,11 +44,7 @@ export function TradingPerformance({
         <strong>{format(series[series.length - 1].cents)}</strong>
       </figcaption>
       <svg viewBox="0 0 800 190" role="img" aria-labelledby={title}>
-        <title id={title}>
-          {series.length} opération(s) clôturée(s), cumul final{' '}
-          {format(series[series.length - 1].cents)}. Ordre des dates d’opération
-          saisies.
-        </title>
+        <title id={title}>{`${series.length} opération(s) clôturée(s), cumul final ${format(series[series.length - 1].cents)}. Ordre des dates d’opération saisies.`}</title>
         {[35, 95, 155].map(line => (
           <line
             key={line}

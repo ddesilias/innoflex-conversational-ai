@@ -113,11 +113,7 @@ export function MarketPreview() {
           </div>
           <div className={styles.graph}>
             <svg viewBox="0 0 840 350" role="img" aria-labelledby={titleId}>
-              <title id={titleId}>
-                Graphique en chandeliers fictif pour {instrument.symbol},
-                période illustrative {periods[period]}. Aucun cours réel ni
-                signal d’achat.
-              </title>
+              <title id={titleId}>{`Graphique en chandeliers fictif pour ${instrument.symbol}, période illustrative ${periods[period]}. Aucun cours réel ni signal d’achat.`}</title>
               {[20, 40, 60, 80, 100].map(v => (
                 <g key={v}>
                   <line x1="12" x2="760" y1={y(v)} y2={y(v)} stroke="#e9ecf2" />
