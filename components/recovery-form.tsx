@@ -1,4 +1,5 @@
 'use client'
+import styles from './account-form.module.css'
 import { useActionState, useEffect, useRef, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import Link from 'next/link'
@@ -24,7 +25,7 @@ function Submit({ disabled, reset }: { disabled: boolean; reset: boolean }) {
     <button
       type="submit"
       disabled={disabled || pending}
-      className="w-full rounded-md bg-primary p-3 font-medium text-primary-foreground disabled:opacity-50"
+      className={styles.submit}
     >
       {pending
         ? 'Traitement…'
@@ -56,38 +57,40 @@ export function RecoveryForm({
     window.history.replaceState(null, '', window.location.pathname)
   }, [reset])
   const finished = state?.code === 'changed' || state?.code === 'accepted'
-  const inputClass = 'w-full rounded-md border bg-background px-3 py-2'
+  const inputClass = ''
   return (
-    <section className="mx-auto my-12 w-full max-w-md rounded-xl border bg-background p-6 shadow-sm">
-      <p className="mb-2 text-sm text-muted-foreground">
-        INNOFLEX · Votre compte
-      </p>
-      <h1 className="mb-3 text-2xl font-semibold">
-        {reset ? 'Choisissez un nouveau mot de passe' : 'Mot de passe oublié ?'}
-      </h1>
-      <p className="mb-6 text-sm text-muted-foreground">
+    <div className={`${styles.panel} ${styles.fields}`}>
+      <p className={styles.eyebrow}>INNOFLEX · Votre compte</p>
+      <div className={styles.formHeading}>
+        <h1>
+          {reset
+            ? 'Choisissez un nouveau mot de passe'
+            : 'Mot de passe oublié ?'}
+        </h1>
+      </div>
+      <p className={styles.fieldHint}>
         {reset
           ? 'Utilisez au moins 12 caractères. Vos anciennes sessions seront invalidées.'
           : 'Indiquez l’adresse utilisée pour votre compte INNOFLEX.'}
       </p>
       {!available ? (
-        <p role="status" className="mb-4 rounded-md border p-3">
-          La récupération de compte n’est pas encore disponible. Le service
-          d’envoi doit être configuré.
+        <p role="status" className={styles.recoveryStatus}>
+          La récupération est momentanément indisponible. Réessayez plus tard ou
+          contactez le support INNOFLEX.
         </p>
       ) : null}
       {reset && available && !token && !finished ? (
-        <p role="status" className="mb-4 rounded-md border p-3">
+        <p role="status" className={styles.recoveryStatus}>
           Ouvrez le lien reçu par e-mail pour continuer. Sans lien valide,
           demandez-en un nouveau.
         </p>
       ) : null}
       {!finished ? (
-        <form action={dispatch} className="space-y-4">
+        <form action={dispatch} className={styles.recoveryFields}>
           {reset ? (
             <>
               <input type="hidden" name="token" value={token} />
-              <label className="block space-y-2">
+              <label>
                 <span>Nouveau mot de passe</span>
                 <input
                   className={inputClass}
@@ -100,7 +103,7 @@ export function RecoveryForm({
                   disabled={!available || !token}
                 />
               </label>
-              <label className="block space-y-2">
+              <label>
                 <span>Confirmer le mot de passe</span>
                 <input
                   className={inputClass}
@@ -115,7 +118,7 @@ export function RecoveryForm({
               </label>
             </>
           ) : (
-            <label className="block space-y-2">
+            <label>
               <span>Adresse e-mail</span>
               <input
                 className={inputClass}
@@ -132,16 +135,16 @@ export function RecoveryForm({
         </form>
       ) : null}
       {state ? (
-        <p role="status" className="mt-4 rounded-md border p-3 text-sm">
+        <p role="status" className={styles.recoveryStatus}>
           {messages[state.code]}
         </p>
       ) : null}
-      <nav className="mt-6 flex flex-wrap gap-4 text-sm underline">
+      <nav className={styles.recoveryNav}>
         <Link href="/login">Retour à la connexion</Link>
         {reset ? (
           <Link href="/forgot-password">Demander un nouveau lien</Link>
         ) : null}
       </nav>
-    </section>
+    </div>
   )
 }

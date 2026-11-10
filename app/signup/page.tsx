@@ -1,5 +1,6 @@
 import { auth } from '@/auth'
-import SignupForm from '@/components/signup-form'
+import AccountForm from '@/components/account-form'
+import { AuthShell } from '@/components/auth-shell'
 import { Session } from '@/lib/types'
 import { redirect } from 'next/navigation'
 import { loginReturnPath } from '@/lib/accounts/return-path'
@@ -17,8 +18,8 @@ export default async function SignupPage({
   }
 
   return (
-    <main className="flex items-center justify-center min-h-screen w-full">
-      <SignupForm returnTo={returnTo} />
-    </main>
+    <AuthShell label="Inscription à INNOFLEX">
+      <AccountForm mode="signup" returnTo={returnTo} />
+    </AuthShell>
   )
 }

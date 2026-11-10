@@ -1,6 +1,7 @@
 'use client'
 
 import { useFormStatus } from 'react-dom'
+import { signup } from '@/app/signup/actions'
 import { authenticate } from '@/app/login/actions'
 import Link from 'next/link'
 import { useActionState, useEffect, useState } from 'react'
@@ -15,15 +16,20 @@ import {
 import { IconSpinner } from './ui/icons'
 import { getMessageFromCode } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
-import styles from './login-form.module.css'
+import styles from './account-form.module.css'
 
-export default function LoginForm({
+export default function AccountForm({
+  mode = 'login',
   returnTo = '/'
 }: {
+  mode?: 'login' | 'signup'
   returnTo?: '/' | '/trading-journal' | '/messages'
 }) {
   const router = useRouter()
-  const [result, dispatch] = useActionState(authenticate, undefined)
+  const [result, dispatch] = useActionState(
+    mode === 'signup' ? signup : authenticate,
+    undefined
+  )
   useEffect(() => {
     if (result && result.type !== 'error') {
       toast.success(getMessageFromCode(result.resultCode))
@@ -39,17 +45,22 @@ export default function LoginForm({
       </Link>
       <div className={styles.formHeading}>
         <span className={styles.eyebrow}>VOTRE ESPACE PERSONNEL</span>
-        <h1>Bon retour.</h1>
+        <h1>
+          {mode === 'signup' ? 'Votre espace commence ici.' : 'Bon retour.'}
+        </h1>
         <p>
-          {returnTo === '/messages'
-            ? 'Connectez-vous pour retrouver vos échanges privés.'
-            : returnTo === '/trading-journal'
-              ? 'Retrouvez vos analyses, vos opérations et votre dernier cycle de trading.'
-              : 'Connectez-vous à votre espace Trading & Investissement.'}
+          {mode === 'signup'
+            ? 'Créez votre compte pour commencer votre journal. Accès pilote gratuit, sans carte bancaire.'
+            : returnTo === '/messages'
+              ? 'Connectez-vous pour retrouver vos échanges privés.'
+              : returnTo === '/trading-journal'
+                ? 'Retrouvez vos analyses, vos opérations et votre dernier cycle de trading.'
+                : 'Connectez-vous à votre espace Trading & Investissement.'}
         </p>
       </div>
       <form action={dispatch}>
-        <LoginFields
+        <AccountFields
+          signupMode={mode === 'signup'}
           error={
             result?.type === 'error'
               ? getMessageFromCode(result.resultCode)
@@ -58,9 +69,14 @@ export default function LoginForm({
         />
       </form>
       <p className={styles.signup}>
-        Vous découvrez INNOFLEX ?{' '}
-        <Link href={returnTo !== '/' ? `/signup?next=${returnTo}` : '/signup'}>
-          Créer un compte <ArrowRight size={13} />
+        {mode === 'signup'
+          ? 'Vous avez déjà un compte ?'
+          : 'Vous découvrez INNOFLEX ?'}
+        <Link
+          href={`${mode === 'signup' ? '/login' : '/signup'}${returnTo !== '/' ? `?next=${returnTo}` : ''}`}
+        >
+          {mode === 'signup' ? 'Se connecter' : 'Créer un compte'}{' '}
+          <ArrowRight size={13} />
         </Link>
       </p>
       <div className={styles.privacy}>
@@ -78,7 +94,13 @@ export default function LoginForm({
   )
 }
 
-function LoginFields({ error }: { error?: string }) {
+function AccountFields({
+  error,
+  signupMode
+}: {
+  error?: string
+  signupMode: boolean
+}) {
   const { pending } = useFormStatus()
   const [visible, setVisible] = useState(false)
   return (
@@ -98,18 +120,22 @@ function LoginFields({ error }: { error?: string }) {
       />
       <div className={styles.passwordLabel}>
         <label htmlFor="password">Mot de passe</label>
-        <Link href="/forgot-password">Mot de passe oublié ?</Link>
+        {!signupMode ? (
+          <Link href="/forgot-password">Mot de passe oublié ?</Link>
+        ) : null}
       </div>
       <div className={styles.passwordInput}>
         <input
           id="password"
           type={visible ? 'text' : 'password'}
           name="password"
-          placeholder="Votre mot de passe"
-          autoComplete="current-password"
+          placeholder={
+            signupMode ? 'Au moins 12 caractères' : 'Votre mot de passe'
+          }
+          autoComplete={signupMode ? 'new-password' : 'current-password'}
           maxLength={256}
           required
-          minLength={6}
+          minLength={signupMode ? 12 : 6}
           aria-describedby={error ? 'login-error' : undefined}
         />
         <button
@@ -123,6 +149,12 @@ function LoginFields({ error }: { error?: string }) {
           {visible ? <EyeSlash size={20} /> : <Eye size={20} />}
         </button>
       </div>
+      {signupMode ? (
+        <p className={styles.fieldHint}>
+          Utilisez au moins 12 caractères. Évitez de réutiliser un mot de passe
+          d’un autre service.
+        </p>
+      ) : null}
       {error && !pending ? (
         <p id="login-error" role="alert" className={styles.error}>
           {error}
@@ -136,11 +168,13 @@ function LoginFields({ error }: { error?: string }) {
       >
         {pending ? (
           <>
-            <IconSpinner /> Connexion en cours…
+            <IconSpinner />{' '}
+            {signupMode ? 'Création en cours…' : 'Connexion en cours…'}
           </>
         ) : (
           <>
-            Se connecter <ArrowRight size={18} />
+            {signupMode ? 'Créer mon espace' : 'Se connecter'}{' '}
+            <ArrowRight size={18} />
           </>
         )}
       </button>

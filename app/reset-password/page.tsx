@@ -1,3 +1,4 @@
+import { AuthShell } from '@/components/auth-shell'
 import { RecoveryForm } from '@/components/recovery-form'
 import { recoveryAvailable } from '@/lib/accounts/sendgrid'
 export const dynamic = 'force-dynamic'
@@ -9,5 +10,9 @@ export const metadata = {
   referrer: 'no-referrer'
 }
 export default function ResetPasswordPage() {
-  return <RecoveryForm reset available={recoveryAvailable()} />
+  return (
+    <AuthShell>
+      <RecoveryForm reset available={recoveryAvailable()} />
+    </AuthShell>
+  )
 }
