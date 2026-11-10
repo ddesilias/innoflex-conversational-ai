@@ -33,3 +33,18 @@
   letter-spacing: 0.035em;
   font-weight: 500;
 }
+.compact {
+  gap: 9px;
+}
+.compact img {
+  width: 30px;
+  height: 30px;
+}
+.compact .name {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.065em;
+}
+.compact .description {
+  display: none;
+}
