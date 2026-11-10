@@ -1,0 +1,374 @@
+.terminal {
+  background: #fff;
+  border: 1px solid #dce1e9;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 24px 70px -35px #14244a4d;
+  color: #17213a;
+  text-align: left;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px 20px;
+  border-bottom: 1px solid #e6e9ef;
+  font-size: 12px;
+  background: #fafbfe;
+}
+.topbar > span:first-child {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  font-weight: 650;
+}
+.topbar a {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: #2962ff;
+  font-weight: 600;
+}
+.demo {
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  border: 1px solid #dfe4ee;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #626f85;
+}
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 258px;
+}
+.chartArea {
+  min-width: 0;
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid #eef0f4;
+  padding: 10px 18px;
+  font-size: 12px;
+}
+.toolbar strong {
+  white-space: nowrap;
+  font-size: 12px;
+}
+.divider {
+  height: 20px;
+  width: 1px;
+  background: #e2e6ee;
+}
+.toolbar > div {
+  display: flex;
+  gap: 5px;
+}
+.toolbar button {
+  padding: 6px 9px;
+  border-radius: 5px;
+  color: #687387;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.toolbar button[aria-pressed='true'] {
+  background: #eaf0ff;
+  color: #2962ff;
+  font-weight: 650;
+}
+.chartType {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #687387;
+  font-size: 11px;
+}
+.instrument {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 22px 20px 0;
+}
+.symbol {
+  background: #edf2ff;
+  color: #2962ff;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+.instrument h3 {
+  font-size: 13px;
+  font-weight: 600;
+}
+.instrument div > span {
+  font-size: 10px;
+  color: #738096;
+}
+.instrument > strong {
+  margin-left: auto;
+  font-size: 22px;
+  letter-spacing: -0.6px;
+  color: #078b7a;
+  font-variant-numeric: tabular-nums;
+}
+.instrument small {
+  font-size: 9px;
+  color: #738096;
+  font-weight: 400;
+  display: block;
+  text-align: right;
+  letter-spacing: 0;
+}
+.graph {
+  padding: 12px 10px 0;
+}
+.graph svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.chartFooter {
+  padding: 12px 20px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 9px;
+  color: #7c879a;
+  border-top: 1px solid #eef0f4;
+}
+.chartFooter > span:first-child {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #101f3d;
+}
+.chartFooter > span:last-child {
+  margin-left: auto;
+}
+.watchlist {
+  border-left: 1px solid #e6e9ef;
+}
+.panelTitle {
+  padding: 18px 16px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border-bottom: 1px solid #e6e9ef;
+}
+.panelTitle h3 {
+  font-size: 12px;
+  font-weight: 650;
+}
+.listLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: #7c879a;
+  padding: 14px 16px 6px;
+}
+.watchlist > button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 14px;
+  width: 100%;
+  border-left: 2px solid transparent;
+  text-align: left;
+}
+.watchlist > button[aria-pressed='true'] {
+  background: #f1f5ff;
+  border-left-color: #2962ff;
+}
+.watchlist > button:hover {
+  background: #f5f7fc;
+}
+.assetIcon {
+  width: 27px;
+  height: 27px;
+  border: 1px solid #e1e6ef;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 10px;
+  color: #4c5e80;
+}
+.watchlist strong {
+  font-size: 11px;
+  display: block;
+}
+.watchlist small {
+  font-size: 9px;
+  color: #7c879a;
+  display: block;
+  margin-top: 4px;
+}
+.watchlist button > svg {
+  width: 50px;
+  margin-left: auto;
+}
+.session {
+  margin: 20px 14px 16px;
+  padding: 18px 14px;
+  background: #f6f8fc;
+  border: 1px solid #e5eaf3;
+  border-radius: 8px;
+}
+.session > span {
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  color: #738096;
+}
+.session h3 {
+  font-size: 14px;
+  font-weight: 650;
+  margin: 9px 0 16px;
+}
+.session p {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 10px 0;
+  font-size: 11px;
+  color: #5c6c84;
+}
+.session p svg {
+  color: #079d89;
+}
+.emptyCheck {
+  border: 1px solid #bec9da;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+.session a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #2962ff;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 20px;
+}
+.terminal button:focus-visible,
+.terminal a:focus-visible {
+  outline: 3px solid #7c3aed;
+  outline-offset: -3px;
+}
+@media (max-width: 900px) {
+  .body {
+    grid-template-columns: minmax(0, 1fr) 210px;
+  }
+  .topbar {
+    gap: 10px;
+  }
+  .demo {
+    font-size: 8px;
+  }
+  .session {
+    padding: 14px 10px;
+  }
+  .instrument h3 {
+    font-size: 11px;
+  }
+  .instrument > strong {
+    font-size: 19px;
+  }
+  .toolbar {
+    gap: 8px;
+  }
+  .chartType {
+    display: none;
+  }
+}
+@media (max-width: 640px) {
+  .terminal {
+    border-radius: 10px;
+  }
+  .topbar {
+    padding: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .topbar > span:first-child {
+    font-size: 11px;
+  }
+  .topbar a {
+    font-size: 10px;
+  }
+  .demo {
+    order: 3;
+    width: 100%;
+    text-align: center;
+    background: #f1f5ff;
+  }
+  .body {
+    grid-template-columns: 1fr;
+  }
+  .watchlist {
+    border-left: 0;
+    border-top: 1px solid #e6e9ef;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .panelTitle,
+  .listLabel,
+  .session {
+    display: none;
+  }
+  .watchlist > button {
+    padding: 14px 9px;
+    gap: 6px;
+    border-left: 0;
+    border-bottom: 2px solid transparent;
+  }
+  .watchlist > button[aria-pressed='true'] {
+    border-bottom-color: #2962ff;
+  }
+  .watchlist button > svg,
+  .watchlist small {
+    display: none;
+  }
+  .watchlist strong {
+    font-size: 10px;
+  }
+  .assetIcon {
+    width: 22px;
+    height: 22px;
+    font-size: 9px;
+  }
+  .instrument {
+    padding: 16px 12px 0;
+  }
+  .instrument h3 {
+    font-size: 11px;
+  }
+  .instrument > strong {
+    font-size: 17px;
+  }
+  .instrument div > span {
+    font-size: 9px;
+  }
+  .toolbar {
+    padding: 9px 12px;
+    gap: 9px;
+  }
+  .toolbar button {
+    padding: 5px 7px;
+  }
+  .chartFooter {
+    padding: 10px 12px;
+  }
+  .chartFooter p {
+    font-size: 8px;
+  }
+  .graph svg {
+    min-height: 190px;
+  }
+}

@@ -942,3 +942,217 @@
     padding-right: 24px;
   }
 }
+
+/* Public market workspace: shared brand, chart-first composition. */
+.marketHero {
+  padding: 54px 40px 0;
+  background: #fff;
+  text-align: center;
+  overflow: hidden;
+}
+.heroEyebrow {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  font-weight: 650;
+  color: #63718c;
+}
+.heroEyebrow > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2962ff;
+}
+.marketHero h1 {
+  font-size: clamp(48px, 6.5vw, 88px);
+  font-weight: 750;
+  letter-spacing: -0.065em;
+  line-height: 1.05;
+  color: #111c35;
+  margin: 24px 0;
+}
+.marketHero h1 > span {
+  color: #2962ff;
+}
+.heroDescription {
+  color: #63718c;
+  font-size: 17px;
+  line-height: 1.65;
+  max-width: 650px;
+  margin: 0 auto;
+}
+.heroActions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin: 28px 0 12px;
+}
+.heroPrimary,
+.heroSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  padding: 15px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  min-height: 50px;
+}
+.heroPrimary {
+  background: #2962ff;
+  color: white;
+  box-shadow: 0 4px 12px #2962ff24;
+}
+.heroPrimary:hover {
+  background: #214ed1;
+}
+.heroSecondary {
+  border: 1px solid #dce1ea;
+  color: #17213a;
+  background: #fff;
+}
+.heroSecondary:hover {
+  background: #f5f7fc;
+}
+.heroNote {
+  font-size: 11px;
+  color: #738096;
+}
+.heroNote span {
+  margin: 0 8px;
+  color: #b3bdcd;
+}
+.marketFrame {
+  max-width: 1240px;
+  margin: 46px auto 0;
+  position: relative;
+}
+.productStrip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 27px 0 35px;
+  border-bottom: 1px solid #e7eaf1;
+  color: #55657f;
+  font-size: 12px;
+}
+.productStrip > span:first-child {
+  font-size: 9px;
+  letter-spacing: 0.07em;
+  color: #8b95a8;
+}
+.productStrip > span:not(:first-child) {
+  color: #c8d0dd;
+}
+.previewHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 25px;
+  padding: 52px 0 26px;
+}
+.previewHeading div > p {
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  color: #63718c;
+  margin-bottom: 12px;
+}
+.previewHeading h2 {
+  font-size: 30px;
+  font-weight: 650;
+  letter-spacing: -1px;
+  line-height: 1.2;
+}
+.previewHeading > p {
+  font-size: 13px;
+  color: #63718c;
+  line-height: 1.7;
+}
+.landing {
+  background: #fff;
+}
+@media (min-width: 1440px) {
+  .marketHero {
+    padding-top: 68px;
+  }
+}
+@media (max-width: 900px) {
+  .marketHero {
+    padding: 40px 30px 0;
+  }
+  .productStrip {
+    gap: 16px;
+    font-size: 11px;
+  }
+  .productStrip > span:first-child {
+    display: none;
+  }
+  .previewHeading h2 {
+    font-size: 26px;
+  }
+}
+@media (max-width: 640px) {
+  .marketHero {
+    padding: 34px 16px 0;
+  }
+  .heroEyebrow {
+    font-size: 8px;
+    letter-spacing: 0.08em;
+  }
+  .marketHero h1 {
+    font-size: clamp(43px, 10vw, 60px);
+    margin: 23px 0;
+    letter-spacing: -0.065em;
+  }
+  .heroDescription {
+    font-size: 14px;
+    max-width: 340px;
+  }
+  .desktopBreak {
+    display: none;
+  }
+  .heroActions {
+    gap: 9px;
+    margin-top: 23px;
+  }
+  .heroPrimary,
+  .heroSecondary {
+    padding: 12px 14px;
+    font-size: 12px;
+    gap: 15px;
+    min-height: 46px;
+  }
+  .heroNote {
+    font-size: 9px;
+  }
+  .heroNote span {
+    margin: 0 4px;
+  }
+  .marketFrame {
+    margin-top: 30px;
+  }
+  .productStrip {
+    gap: 10px;
+    padding: 22px 0 25px;
+    font-size: 9px;
+  }
+  .previewHeading {
+    display: block;
+    padding: 32px 0 22px;
+  }
+  .previewHeading h2 {
+    font-size: 26px;
+  }
+  .previewHeading > p {
+    margin-top: 12px;
+    font-size: 12px;
+  }
+}

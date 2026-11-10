@@ -1,39 +1,50 @@
 import Link from 'next/link'
 import { BrandLockup } from './brand-lockup'
+import { MarketPreview } from './market-preview'
 import { ProductPreview } from './product-preview'
 import styles from './product-landing.module.css'
 
 export function ProductLanding() {
   return (
     <div className={styles.landing}>
-      <section className={styles.introduction} aria-labelledby="product-title">
-        <div>
-          <p className={styles.productName}>INNOFLEX Trading & Investissement / JOURNAL DE TRADING</p>
-          <h1 id="product-title">
-            Préparez vos séances.
-            <br />
-            Documentez vos décisions.
-            <br />
-            Prenez du recul.
-          </h1>
-        </div>
-        <div className={styles.introAside}>
-          <p>
-            Votre plan, vos opérations et vos revues réunis dans un espace de
-            travail. Pour les traders autonomes qui veulent garder une trace
-            précise de leur pratique.
-          </p>
-          <Link href="/trading-journal" className={styles.primary}>
-            Ouvrir le journal <span aria-hidden="true">↗</span>
+      <section className={styles.marketHero} aria-labelledby="product-title">
+        <p className={styles.heroEyebrow}>
+          <span /> INNOFLEX TRADING & INVESTISSEMENT
+        </p>
+        <h1 id="product-title">
+          Les marchés bougent.
+          <br />
+          <span>Gardez le cap.</span>
+        </h1>
+        <p className={styles.heroDescription}>
+          Un espace pour préparer vos séances, tenir votre journal
+          <br className={styles.desktopBreak} /> et comprendre vos décisions. Du
+          premier trade à la revue.
+        </p>
+        <div className={styles.heroActions}>
+          <Link
+            href="/signup?next=/trading-journal"
+            className={styles.heroPrimary}
+          >
+            Créer mon espace <span aria-hidden="true">↗</span>
           </Link>
-          <span className={styles.registrationNote}>
-            Accès pilote · aucun paiement demandé.
-            <br />
-            Connectez-vous pour accéder au journal et retrouver vos cycles.
-          </span>
-          <a className={styles.exploreLink} href="#apercu">
-            Explorer une séance de démonstration ↓
+          <a href="#apercu" className={styles.heroSecondary}>
+            Découvrir le journal
           </a>
+        </div>
+        <p className={styles.heroNote}>
+          Accès pilote gratuit <span>·</span> Aucune carte bancaire demandée
+        </p>
+        <div className={styles.marketFrame}>
+          <MarketPreview />
+        </div>
+        <div className={styles.productStrip}>
+          <span>VOTRE MÉTHODE, UN SEUL ESPACE</span>
+          <p>Plan de séance</p>
+          <span aria-hidden="true">/</span>
+          <p>Journal de trading</p>
+          <span aria-hidden="true">/</span>
+          <p>Revue des décisions</p>
         </div>
       </section>
       <section
@@ -41,6 +52,17 @@ export function ProductLanding() {
         className={styles.previewSection}
         aria-label="Démonstration du journal"
       >
+        <div className={styles.previewHeading}>
+          <div>
+            <p>LE JOURNAL EN ACTION</p>
+            <h2>Chaque décision mérite du contexte.</h2>
+          </div>
+          <p>
+            Explorez un cycle de démonstration,
+            <br />
+            de la préparation au bilan.
+          </p>
+        </div>
         <ProductPreview />
         <div className={styles.previewFootnote}>
           <p>
@@ -188,7 +210,10 @@ export function ProductLanding() {
       </section>
       <footer className={styles.footer}>
         <div>
-          <Link href="/presentation" aria-label="INNOFLEX Trading & Investissement — Présentation">
+          <Link
+            href="/presentation"
+            aria-label="INNOFLEX Trading & Investissement — Présentation"
+          >
             <BrandLockup />
           </Link>
           <p>Un produit INNOFLEX ÉQUIPE</p>
