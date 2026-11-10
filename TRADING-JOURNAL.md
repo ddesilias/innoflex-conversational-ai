@@ -149,3 +149,11 @@ Vérification locale sans cookies : `/trading-journal` répond 307 vers
 compilation réussissent. Les tests distinguent sessions absentes, incomplètes et
 identité authentifiée. Le parcours de création réelle d’un nouveau compte et
 l’envoi de récupération restent à valider de bout en bout.
+
+## Reprise du travail à l’ouverture
+
+Après connexion, le journal charge côté serveur le dernier cycle de la liste du
+compte, avec ses opérations, son plan et sa révision de sauvegarde. Les cycles
+historiques restent accessibles. Une indisponibilité de lecture est signalée et
+n’est pas présentée comme un compte vide. L’enregistrement reste manuel et les
+conflits de révision restent protégés côté serveur.

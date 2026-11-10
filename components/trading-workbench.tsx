@@ -19,27 +19,48 @@ import {
   saveTradingDraft
 } from '@/app/trading-journal/actions'
 
-export default function TradingWorkbench() {
+export default function TradingWorkbench({
+  initial
+}: {
+  initial?: {
+    cycles: { id: string; name: string; updatedAt: string }[]
+    id: string
+    draft: CycleDraft | null
+    revision: number
+    message: string
+  }
+}) {
   const [tab, setTab] = useState('Plan')
-  const [revision, setRevision] = useState(0)
-  const [activeCycleId, setActiveCycleId] = useState('default')
-  const [selectedCycleId, setSelectedCycleId] = useState('default')
+  const [revision, setRevision] = useState(initial?.revision || 0)
+  const [activeCycleId, setActiveCycleId] = useState(initial?.id || 'default')
+  const [selectedCycleId, setSelectedCycleId] = useState(
+    initial?.id || 'default'
+  )
   const [loadedCycleId, setLoadedCycleId] = useState<string | null>(null)
   const [cycles, setCycles] = useState<
     { id: string; name: string; updatedAt: string }[]
-  >([])
+  >(initial?.cycles || [])
   const [confirmNew, setConfirmNew] = useState(false)
   const [busy, setBusy] = useState(false)
-  const [savedSnapshot, setSavedSnapshot] = useState<string | null>(null)
+  const [savedSnapshot, setSavedSnapshot] = useState<string | null>(
+    initial?.draft ? JSON.stringify(initial.draft) : null
+  )
   const [storageMessage, setStorageMessage] = useState(
-    'Tes cycles restent séparés par compte et par environnement. Enregistrement manuel.'
+    initial?.message ||
+      'Tes cycles restent séparés par compte et par environnement. Enregistrement manuel.'
   )
   const [loadedRevision, setLoadedRevision] = useState<number | null>(null)
-  const [cycle, setCycle] = useState('Mon premier cycle')
-  const [mode, setMode] = useState<Trade['mode']>('Backtest')
-  const [currency, setCurrency] = useState('CAD')
-  const [plan, setPlan] = useState({ method: '', limits: '', avoid: '' })
-  const [trades, setTrades] = useState<Trade[]>([])
+  const [cycle, setCycle] = useState(
+    initial?.draft?.cycle || 'Mon premier cycle'
+  )
+  const [mode, setMode] = useState<Trade['mode']>(
+    initial?.draft?.mode || 'Backtest'
+  )
+  const [currency, setCurrency] = useState<string>(initial?.draft?.currency || 'CAD')
+  const [plan, setPlan] = useState(
+    initial?.draft?.plan || { method: '', limits: '', avoid: '' }
+  )
+  const [trades, setTrades] = useState<Trade[]>(initial?.draft?.trades || [])
   const [error, setError] = useState('')
   const [editing, setEditing] = useState<Trade | null>(null)
   const [formVersion, setFormVersion] = useState(0)
